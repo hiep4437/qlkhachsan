@@ -10,6 +10,13 @@ public class bookings {
 	private String trangThai;
 	private Date ngayTao;
 	private String ghiChu;
+
+	// Thong tin join tu booking_rooms, rooms, room_types, customers
+	private String cccd;
+	private String tang;
+	private int soNguoi;
+	private String soPhong;
+
 	public int getIdDatPhong() {
 		return idDatPhong;
 	}
@@ -52,7 +59,32 @@ public class bookings {
 	public void setGhiChu(String ghiChu) {
 		this.ghiChu = ghiChu;
 	}
-	
+
+	public String getCccd() {
+		return cccd;
+	}
+	public void setCccd(String cccd) {
+		this.cccd = cccd;
+	}
+	public String getTang() {
+		return tang;
+	}
+	public void setTang(String tang) {
+		this.tang = tang;
+	}
+	public int getSoNguoi() {
+		return soNguoi;
+	}
+	public void setSoNguoi(int soNguoi) {
+		this.soNguoi = soNguoi;
+	}
+	public String getSoPhong() {
+		return soPhong;
+	}
+	public void setSoPhong(String soPhong) {
+		this.soPhong = soPhong;
+	}
+
 	public bookings(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
 			Date ngayTao, String ghiChu) {
 		super();
@@ -64,9 +96,17 @@ public class bookings {
 		this.ngayTao = ngayTao;
 		this.ghiChu = ghiChu;
 	}
+
+	public bookings(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
+			Date ngayTao, String ghiChu, String cccd, String tang, int soNguoi, String soPhong) {
+		this(idDatPhong, idKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu);
+		this.cccd = cccd;
+		this.tang = tang;
+		this.soNguoi = soNguoi;
+		this.soPhong = soPhong;
+	}
+
 	public bookings() {
 		super();
 	}
-	
-
 }

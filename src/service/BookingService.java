@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import dao.BookingDAO;
 import model.bookings;
@@ -32,6 +33,16 @@ public class BookingService {
         }
 
         return dao.them(t);
+    }
+
+    // Dat phong nhanh kem phong va tao hoa don
+    public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId, double pricePerNight) {
+        return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight);
+    }
+
+    // Tra phong va thanh toan, chuyen phong sang CLEANING
+    public boolean traPhongVaThanhToan(int bookingId, int roomId, double tienPhong, double phuThu, double giamGia, double tongTien, String phuongThuc) {
+        return dao.traPhongVaThanhToan(bookingId, roomId, tienPhong, phuThu, giamGia, tongTien, phuongThuc);
     }
 
     // Sua dat phong
@@ -75,8 +86,8 @@ public class BookingService {
 
         return dao.timKiem(t);
     }
+
     public int capNhatTrangThai(int id, String trangThai) {
         return dao.capNhatTrangThai(id, trangThai);
     }
-    
 }

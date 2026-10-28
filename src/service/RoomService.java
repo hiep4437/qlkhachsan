@@ -1,66 +1,74 @@
-
 package service;
 
 import java.util.ArrayList;
 import dao.RoomDAO;
+import model.ThongTinPhongDangO;
 import model.rooms;
 
 public class RoomService {
 
-    RoomDAO dao = new RoomDAO();
+	RoomDAO dao = new RoomDAO();
 
-    // Them phong
-    public int them(rooms t) {
-        if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
-            System.out.println("Vui long nhap so phong!");
-            return 0;
-        }
+	// Them phong
+	public int them(rooms t) {
+		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+			return 0;
+		}
 
-        if (t.getMaLoaiPhong() <= 0 || t.getGiaMoiDem() <= 0) {
-            System.out.println("Loai phong hoac gia khong hop le!");
-            return 0;
-        }
+		if (t.getGiaMoiDem() <= 0) {
+			return 0;
+		}
 
-        return dao.them(t);
-    }
+		return dao.them(t);
+	}
 
-    // Sua phong
-    public int sua(rooms t) {
-        if (t.getMaPhong() <= 0) {
-            System.out.println("Ma phong khong hop le!");
-            return 0;
-        }
+	// Sua phong
+	public int sua(rooms t) {
+		if (t.getMaPhong() <= 0) {
+			return 0;
+		}
 
-        if (t.getSoPhong() == null || t.getSoPhong().isEmpty()
-                || t.getMaLoaiPhong() <= 0 || t.getGiaMoiDem() <= 0) {
-            System.out.println("Thong tin phong khong hop le!");
-            return 0;
-        }
+		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+			return 0;
+		}
 
-        return dao.sua(t);
-    }
+		if (t.getGiaMoiDem() <= 0) {
+			return 0;
+		}
 
-    // Xoa phong
-    public int xoa(rooms t) {
-        if (t.getMaPhong() <= 0) {
-            System.out.println("Ma phong khong hop le!");
-            return 0;
-        }
+		return dao.sua(t);
+	}
 
-        return dao.xoa(t);
-    }
+	// Xoa phong
+	public int xoa(rooms r) {
+		if (r.getMaPhong() <= 0) {
+			return 0;
+		}
 
-    // Xuat danh sach phong
-    public ArrayList<rooms> xuat() {
-        return dao.xuat();
-    }
+		return dao.xoa(r);
+	}
 
-    // Tim phong theo so phong
-    public rooms timKiem(rooms t) {
-        if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
-            return null;
-        }
+	// Xuat danh sach phong
+	public ArrayList<rooms> xuat() {
+		return dao.xuat();
+	}
 
-        return dao.timKiem(t);
-    }
+	// Tim kiem phong
+	public rooms timKiem(rooms t) {
+		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+			return null;
+		}
+
+		return dao.timKiem(t);
+	}
+
+	// Doi trang thai phong
+	public int doiTrangThai(int roomId, String trangThai) {
+		return dao.doiTrangThai(roomId, trangThai);
+	}
+
+	// Lay thong tin khach dang o
+	public ThongTinPhongDangO layThongTinKhachDangO(int roomId) {
+		return dao.layThongTinKhachDangO(roomId);
+	}
 }

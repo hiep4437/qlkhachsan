@@ -46,32 +46,25 @@ public class BookingController {
         try {
             view.model.setRowCount(0);
 
-            ArrayList<customers> dsKhach = customerService.xuat();
-
             for (bookings b : service.xuat()) {
-                String cccd = "";
-
-                for (customers kh : dsKhach) {
-                    if (kh.getIdKhachHang() == b.getIdKhachHang()) {
-                        cccd = kh.getSoCCCD();
-                        break;
-                    }
-                }
+                String cccd = b.getCccd() != null ? b.getCccd() : "";
+                String tang = b.getTang() != null ? b.getTang() : "";
+                String soNguoi = b.getSoNguoi() > 0 ? String.valueOf(b.getSoNguoi()) : "";
 
                 view.model.addRow(new Object[]{
                     b.getIdDatPhong(),
                     cccd,
                     b.getNgayNhanPhong(),
                     b.getNgayTraPhong(),
-                    "",
-                    "",
+                    tang,
+                    soNguoi,
                     hienThiTrangThai(b.getTrangThai()),
                     b.getGhiChu()
                 });
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(view,
-                    "Loi tai du lieu: " + e.getMessage());
+                    "Lỗi tải dữ liệu: " + e.getMessage());
         }
     }
 
@@ -351,28 +344,21 @@ public class BookingController {
                 }
             }
 
-            ArrayList<customers> dsKhach = customerService.xuat();
-
             for (bookings b : service.xuat()) {
                 if (kh == null
                         || b.getIdKhachHang() == kh.getIdKhachHang()) {
 
-                    String soCCCD = "";
-
-                    for (customers c : dsKhach) {
-                        if (c.getIdKhachHang() == b.getIdKhachHang()) {
-                            soCCCD = c.getSoCCCD();
-                            break;
-                        }
-                    }
+                    String soCCCD = b.getCccd() != null ? b.getCccd() : "";
+                    String tang = b.getTang() != null ? b.getTang() : "";
+                    String soNguoi = b.getSoNguoi() > 0 ? String.valueOf(b.getSoNguoi()) : "";
 
                     view.model.addRow(new Object[]{
                         b.getIdDatPhong(),
                         soCCCD,
                         b.getNgayNhanPhong(),
                         b.getNgayTraPhong(),
-                        "",
-                        "",
+                        tang,
+                        soNguoi,
                         hienThiTrangThai(b.getTrangThai()),
                         b.getGhiChu()
                     });

@@ -1,42 +1,52 @@
-
 package dao;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import model.users;
 
 public class UserDAO {
 
-    // Them nguoi dung
+    // Them nguoi dung moi
     public int themNguoiDung(users t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        if (timTheoUsername(t.getTenDangNhap()) != null) {
+            System.out.println("Tai khoan da ton tai: " + t.getTenDangNhap());
+            return -1; // Da ton tai
+        }
 
-            users u = timKiem(t);
+        String sql;
+        boolean hasId = t.getIdNguoiDung() > 0;
+        if (hasId) {
+            sql = "INSERT INTO users (user_id, username, password_hash, full_name, role, is_active) VALUES (?, ?, ?, ?, ?, ?)";
+        } else {
+            sql = "INSERT INTO users (username, password_hash, full_name, role, is_active) VALUES (?, ?, ?, ?, ?)";
+        }
 
-            if (u == null) {
-                String sql = "INSERT INTO users "
-                        + "(user_id, username, password_hash, full_name, role, is_active) "
-                        + "VALUES (" + t.getIdNguoiDung() + ", '"
-                        + t.getTenDangNhap() + "', '"
-                        + t.getMatKhau() + "', '"
-                        + t.getHoTen() + "', '"
-                        + t.getVaiTro() + "', "
-                        + (t.isTrangThai() ? 1 : 0) + ")";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-                int kq = st.executeUpdate(sql);
-                System.out.println("Da them nguoi dung: " + t.getTenDangNhap());
-                conn.close();
-                return kq;
-            } else {
-                System.out.println("Tai khoan da ton tai.");
-                conn.close();
-                return 0;
+            int idx = 1;
+            if (hasId) {
+                ps.setInt(idx++, t.getIdNguoiDung());
             }
+            ps.setString(idx++, t.getTenDangNhap().trim());
+            ps.setString(idx++, t.getMatKhau());
+            ps.setString(idx++, t.getHoTen().trim());
+            ps.setString(idx++, t.getVaiTro() != null ? t.getVaiTro() : "STAFF");
+            ps.setBoolean(idx++, t.isTrangThai());
 
+            int kq = ps.executeUpdate();
+            if (kq > 0 && !hasId) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        t.setIdNguoiDung(rs.getInt(1));
+                    }
+                }
+            }
+            System.out.println("Da them nguoi dung: " + t.getTenDangNhap());
+            return kq;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -45,57 +55,61 @@ public class UserDAO {
 
     // Sua nguoi dung
     public int suaNguoiDung(users t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        boolean coDoiMatKhau = t.getMatKhau() != null && !t.getMatKhau().trim().isEmpty();
+        String sql;
+        if (coDoiMatKhau) {
+            sql = "UPDATE users SET username = ?, password_hash = ?, full_name = ?, role = ?, is_active = ? WHERE user_id = ?";
+        } else {
+            sql = "UPDATE users SET username = ?, full_name = ?, role = ?, is_active = ? WHERE user_id = ?";
+        }
 
-            String sql = "UPDATE users SET "
-                    + "username = '" + t.getTenDangNhap() + "', "
-                    + "password_hash = '" + t.getMatKhau() + "', "
-                    + "full_name = '" + t.getHoTen() + "', "
-                    + "role = '" + t.getVaiTro() + "', "
-                    + "is_active = " + (t.isTrangThai() ? 1 : 0)
-                    + " WHERE user_id = " + t.getIdNguoiDung();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            int kq = st.executeUpdate(sql);
-            conn.close();
-            return kq;
+            int idx = 1;
+            ps.setString(idx++, t.getTenDangNhap().trim());
+            if (coDoiMatKhau) {
+                ps.setString(idx++, t.getMatKhau());
+            }
+            ps.setString(idx++, t.getHoTen().trim());
+            ps.setString(idx++, t.getVaiTro());
+            ps.setBoolean(idx++, t.isTrangThai());
+            ps.setInt(idx++, t.getIdNguoiDung());
 
+            return ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    // Xoa nguoi dung
-    public int xoaNguoiDung(users t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
-
-            String sql = "DELETE FROM users WHERE user_id = "
-                    + t.getIdNguoiDung();
-
-            int kq = st.executeUpdate(sql);
-            conn.close();
-            return kq;
-
+    // Xoa nguoi dung theo ID
+    public int xoaNguoiDung(int idNguoiDung) {
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idNguoiDung);
+            return ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    // Xoa nguoi dung theo object (backward compatibility)
+    public int xoaNguoiDung(users t) {
+        if (t == null) return 0;
+        return xoaNguoiDung(t.getIdNguoiDung());
     }
 
     // Xuat danh sach nguoi dung
     public ArrayList<users> xuat() {
         ArrayList<users> ds = new ArrayList<>();
+        String sql = "SELECT * FROM users ORDER BY user_id ASC";
 
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
-
-            String sql = "SELECT * FROM users";
-            ResultSet rs = st.executeQuery(sql);
+        try (Connection conn = DBConnection.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 users t = new users(
@@ -106,12 +120,8 @@ public class UserDAO {
                         rs.getString("role"),
                         rs.getBoolean("is_active")
                 );
-
                 ds.add(t);
             }
-
-            conn.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,36 +129,100 @@ public class UserDAO {
         return ds;
     }
 
-    // Tim kiem theo ten dang nhap
+    // Tim kiem theo ten dang nhap (backward compatibility)
     public users timKiem(users t) {
-        users kq = null;
+        if (t == null || t.getTenDangNhap() == null) return null;
+        return timTheoUsername(t.getTenDangNhap());
+    }
 
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
-
-            String sql = "SELECT * FROM users WHERE username = '"
-                    + t.getTenDangNhap() + "'";
-
-            ResultSet rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                kq = new users(
-                        rs.getInt("user_id"),
-                        rs.getString("username"),
-                        rs.getString("password_hash"),
-                        rs.getString("full_name"),
-                        rs.getString("role"),
-                        rs.getBoolean("is_active")
-                );
+    // Tim kiem theo username
+    public users timTheoUsername(String username) {
+        if (username == null || username.trim().isEmpty()) return null;
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new users(
+                            rs.getInt("user_id"),
+                            rs.getString("username"),
+                            rs.getString("password_hash"),
+                            rs.getString("full_name"),
+                            rs.getString("role"),
+                            rs.getBoolean("is_active")
+                    );
+                }
             }
-
-            conn.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
-        return kq;
+    // Tim kiem theo ID
+    public users timTheoId(int userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new users(
+                            rs.getInt("user_id"),
+                            rs.getString("username"),
+                            rs.getString("password_hash"),
+                            rs.getString("full_name"),
+                            rs.getString("role"),
+                            rs.getBoolean("is_active")
+                    );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Doi mat khau nguoi dung
+    public int doiMatKhau(int userId, String matKhauMoi) {
+        String sql = "UPDATE users SET password_hash = ? WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, matKhauMoi);
+            ps.setInt(2, userId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // Doi trang thai hoat dong (khoa / mo khoa)
+    public int doiTrangThai(int userId, boolean isActive) {
+        String sql = "UPDATE users SET is_active = ? WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, isActive);
+            ps.setInt(2, userId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // Cap nhat thong tin ca nhan (ho ten)
+    public int capNhatHoTen(int userId, String hoTen) {
+        String sql = "UPDATE users SET full_name = ? WHERE user_id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, hoTen.trim());
+            ps.setInt(2, userId);
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
