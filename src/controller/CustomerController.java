@@ -1,194 +1,324 @@
-
 package controller;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Window;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
+import model.bookings;
 import model.customers;
+import service.BookingService;
 import service.CustomerService;
+import view.DialogThemSuaKhachHang;
 import view.ViewQuanLyKhachHang;
 
 public class CustomerController {
 
-	ViewQuanLyKhachHang view;
-	CustomerService service = new CustomerService();
+    ViewQuanLyKhachHang view;
+    CustomerService service = new CustomerService();
+    BookingService bookingService = new BookingService();
+    java.util.function.Consumer<String> onChuyenTabDatPhong;
 
-	public CustomerController(ViewQuanLyKhachHang view) {
-		this.view = view;
+    public CustomerController(ViewQuanLyKhachHang view) {
+        this(view, null);
+    }
 
-		taiDuLieu();
+    public CustomerController(ViewQuanLyKhachHang view, java.util.function.Consumer<String> onChuyenTabDatPhong) {
+        this.view = view;
+        this.onChuyenTabDatPhong = onChuyenTabDatPhong;
 
-		view.btnThem.addActionListener(e -> them());
-		view.btnSua.addActionListener(e -> sua());
-		view.btnXoa.addActionListener(e -> xoa());
-		view.btnTimKiem.addActionListener(e -> timKiem());
+        taiDuLieu();
 
-		view.btnLamMoi.addActionListener(e -> {
-			view.lamMoi();
-			taiDuLieu();
-		});
-	}
+        // Nút thêm, sửa, lịch sử, xóa
+        view.btnThem.addActionListener(e -> them());
+        view.btnSua.addActionListener(e -> sua());
+        view.btnLichSu.addActionListener(e -> xemLichSu());
+        view.btnXoa.addActionListener(e -> xoa());
 
-	// Hiển thị danh sách khách hàng
-	void taiDuLieu() {
-		view.model.setRowCount(0);
+        // Tìm kiếm
+        view.btnTimKiem.addActionListener(e -> apDungBoLoc());
+        view.txtTimKiem.addActionListener(e -> apDungBoLoc());
 
-		ArrayList<customers> ds = service.xuat();
+        // Nút làm mới (5s countdown & disable)
+        view.btnLamMoi.addActionListener(e -> {
+            view.batDauDemNguocLamMoi(() -> {
+                view.lamMoi();
+                taiDuLieu();
+            });
+        });
+    }
 
-		for (customers c : ds) {
-			view.model.addRow(new Object[] { c.getIdKhachHang(), c.getNameKhachHang(), c.getSoCCCD(),
-					c.getSoDienThoai(), c.getEmail(), c.getDiaChi() });
-		}
-	}
+    public void taiDuLieu() {
+        view.model.setRowCount(0);
 
-	// Tìm khách hàng theo CCCD
-	customers timTheoCCCD(String cccd) {
-		for (customers c : service.xuat()) {
-			if (c.getSoCCCD() != null && c.getSoCCCD().equals(cccd)) {
-				return c;
-			}
-		}
-		return null;
-	}
+        ArrayList<customers> ds = service.xuat();
+        for (customers kh : ds) {
+            int soLan = service.demSoLanDatPhong(kh.getIdKhachHang());
 
-	// Lấy dữ liệu để thêm khách hàng
-	customers layDuLieuThem() {
-		String hoTen = view.txtHoTen.getText().trim();
-		String cccd = view.txtCCCD.getText().trim();
-		String sdt = view.txtSDT.getText().trim();
-		String email = view.txtEmail.getText().trim();
-		String diaChi = view.txtDiaChi.getText().trim();
+            view.model.addRow(new Object[] {
+                kh.getIdKhachHang(),
+                kh.getNameKhachHang(),
+                kh.getSoCCCD() != null ? kh.getSoCCCD() : "",
+                kh.getSoDienThoai() != null ? kh.getSoDienThoai() : "",
+                kh.getEmail() != null ? kh.getEmail() : "",
+                kh.getDiaChi() != null ? kh.getDiaChi() : "",
+                soLan
+            });
+        }
 
-		if (hoTen.isEmpty() || cccd.isEmpty()) {
-			throw new IllegalArgumentException("Vui lòng nhập họ tên và CCCD!");
-		}
+        view.lblThongKe.setText("Tổng số: " + ds.size() + " khách hàng trong hệ thống");
+        apDungBoLoc();
+    }
 
-		return new customers(0, hoTen, cccd, sdt, email, diaChi);
-	}
+    void apDungBoLoc() {
+        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
 
-	// Thêm khách hàng
-	void them() {
-		try {
-			customers c = layDuLieuThem();
+        if (view.sorter == null) return;
 
-			if (service.them(c) > 0) {
-				JOptionPane.showMessageDialog(view, "Thêm khách hàng thành công!");
-				taiDuLieu();
-				view.lamMoi();
-			} else {
-				JOptionPane.showMessageDialog(view, "Thêm khách hàng thất bại!");
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage());
-		}
-	}
+        if (tuKhoa.isEmpty()) {
+            view.sorter.setRowFilter(null);
+            return;
+        }
 
-	// Sửa: chỉ cập nhật các ô đã nhập
-	void sua() {
-		try {
-			String cccd = view.txtCCCD.getText().trim();
+        view.sorter.setRowFilter(new RowFilter<DefaultTableModel, Object>() {
+            @Override
+            public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
+                for (int i = 0; i < entry.getValueCount(); i++) {
+                    Object val = entry.getValue(i);
+                    if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
 
-			if (cccd.isEmpty()) {
-				JOptionPane.showMessageDialog(view, "Vui lòng nhập CCCD của khách hàng cần sửa!");
-				return;
-			}
+    Window getParentWindow() {
+        Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
+        return w != null ? w : view;
+    }
 
-			customers c = timTheoCCCD(cccd);
+    customers timTheoMa(int id) {
+        customers t = new customers();
+        t.setIdKhachHang(id);
+        return service.timKiem(t);
+    }
 
-			if (c == null) {
-				JOptionPane.showMessageDialog(view, "Không tìm thấy khách hàng có CCCD này!");
-				return;
-			}
+    // Xem lịch sử đặt phòng của khách: Chuyển sang tab Quản lý đặt phòng và tự tìm theo CCCD (tất cả trạng thái, toàn thời gian)
+    void xemLichSu() {
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để xem lịch sử đặt phòng!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-			String hoTen = view.txtHoTen.getText().trim();
-			String sdt = view.txtSDT.getText().trim();
-			String email = view.txtEmail.getText().trim();
-			String diaChi = view.txtDiaChi.getText().trim();
+        int modelRow = view.table.convertRowIndexToModel(selectedRow);
+        String cccd = (String) view.model.getValueAt(modelRow, 2);
+        String tenKhach = (String) view.model.getValueAt(modelRow, 1);
 
-			if (!hoTen.isEmpty())
-				c.setNameKhachHang(hoTen);
+        if (cccd == null || cccd.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(view, "Khách hàng " + tenKhach + " chưa cập nhật số CCCD nên không thể tra cứu!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-			if (!sdt.isEmpty())
-				c.setSoDienThoai(sdt);
+        String cccdTim = cccd.trim();
 
-			if (!email.isEmpty())
-				c.setEmail(email);
+        // 1. Kiểm tra nếu có callback
+        if (onChuyenTabDatPhong != null) {
+            onChuyenTabDatPhong.accept(cccdTim);
+            return;
+        }
 
-			if (!diaChi.isEmpty())
-				c.setDiaChi(diaChi);
+        // 2. Kiểm tra nếu Window cha là ViewTrangChu
+        Window parent = getParentWindow();
+        if (parent instanceof view.ViewTrangChu) {
+            ((view.ViewTrangChu) parent).chuyenSangTabDatPhongVaTimKiem(cccdTim);
+            return;
+        }
 
-			if (service.sua(c) > 0) {
-				JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thành công!");
-				taiDuLieu();
-				view.lamMoi();
-			} else {
-				JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thất bại!");
-			}
+        // 3. Fallback: Nếu không trong ViewTrangChu thì mở modal
+        moModalLichSuDatPhong(modelRow, tenKhach, cccdTim);
+    }
 
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage());
-		}
-	}
+    private void moModalLichSuDatPhong(int modelRow, String tenKhach, String cccd) {
+        int maKH = (int) view.model.getValueAt(modelRow, 0);
 
-	// Xóa chỉ bằng CCCD
-	void xoa() {
-		String cccd = view.txtCCCD.getText().trim();
+        // Lấy tất cả các đơn đặt phòng của khách này
+        ArrayList<bookings> tatCa = bookingService.xuat();
+        ArrayList<bookings> cuaKhach = new ArrayList<>();
+        for (bookings b : tatCa) {
+            if (b.getIdKhachHang() == maKH || (cccd != null && !cccd.isEmpty() && cccd.equals(b.getCccd()))) {
+                cuaKhach.add(b);
+            }
+        }
 
-		if (cccd.isEmpty()) {
-			JOptionPane.showMessageDialog(view, "Vui lòng nhập CCCD cần xóa!");
-			return;
-		}
+        JDialog dlg = new JDialog(getParentWindow(), "Lịch sử thuê phòng - Khách hàng: " + tenKhach, JDialog.ModalityType.APPLICATION_MODAL);
+        dlg.setSize(800, 480);
+        dlg.setLocationRelativeTo(getParentWindow());
+        dlg.setLayout(new BorderLayout());
 
-		customers c = timTheoCCCD(cccd);
+        JPanel pHead = new JPanel(new BorderLayout());
+        pHead.setBackground(new Color(24, 44, 97));
+        pHead.setBorder(new EmptyBorder(12, 16, 12, 16));
 
-		if (c == null) {
-			JOptionPane.showMessageDialog(view, "Không tìm thấy khách hàng!");
-			return;
-		}
+        JLabel lblTitle = new JLabel("LỊCH SỬ THUÊ PHÒNG CỦA KHÁCH HÀNG: " + tenKhach.toUpperCase());
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        lblTitle.setForeground(Color.WHITE);
 
-		int chon = JOptionPane.showConfirmDialog(view, "Bạn có chắc muốn xóa khách hàng có CCCD " + cccd + "?",
-				"Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        JLabel lblSub = new JLabel("Tổng số lần đặt: " + cuaKhach.size() + " lượt | CCCD: " + cccd);
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSub.setForeground(new Color(200, 220, 240));
 
-		if (chon == JOptionPane.YES_OPTION) {
-			if (service.xoa(c) > 0) {
-				JOptionPane.showMessageDialog(view, "Xóa khách hàng thành công!");
-				taiDuLieu();
-				view.lamMoi();
-			} else {
-				JOptionPane.showMessageDialog(view,
-						"Không thể xóa khách hàng vì có thể đang liên kết với dữ liệu đặt phòng!");
-			}
-		}
-	}
+        pHead.add(lblTitle, BorderLayout.NORTH);
+        pHead.add(lblSub, BorderLayout.SOUTH);
+        dlg.add(pHead, BorderLayout.NORTH);
 
-	// Tìm kiếm theo CCCD
+        String[] cols = { "Mã ĐP", "Phòng", "Loại phòng", "Ngày nhận", "Ngày trả", "Số người", "Trạng thái", "Ghi chú" };
+        DefaultTableModel modelLS = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-	void timKiem() {
-		String cccd = view.txtTimKiem.getText().trim();
+        for (bookings b : cuaKhach) {
+            String tt = b.getTrangThai();
+            if (tt.contains("CHECKED_IN") || tt.contains("Đã nhận")) tt = "Đang ở";
+            else if (tt.contains("CHECKED_OUT") || tt.contains("Đã trả")) tt = "Đã trả phòng";
+            else if (tt.contains("CANCELLED") || tt.contains("Đã hủy")) tt = "Đã hủy";
+            else tt = "Chờ nhận phòng";
 
-		if (cccd.isEmpty()) {
-			JOptionPane.showMessageDialog(view, "Vui lòng nhập CCCD cần tìm!");
-			return;
-		}
+            modelLS.addRow(new Object[] {
+                b.getIdDatPhong(),
+                !b.getSoPhong().isEmpty() ? "P." + b.getSoPhong() : "---",
+                b.getTenLoaiPhong(),
+                b.getNgayNhanPhong(),
+                b.getNgayTraPhong(),
+                b.getSoNguoi(),
+                tt,
+                b.getGhiChu() != null ? b.getGhiChu() : ""
+            });
+        }
 
-		view.model.setRowCount(0);
+        JTable tblLS = new JTable(modelLS);
+        tblLS.setRowHeight(32);
+        tblLS.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-		ArrayList<customers> ds = service.xuat();
-		boolean timThay = false;
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+        center.setHorizontalAlignment(SwingConstants.CENTER);
+        tblLS.getColumnModel().getColumn(0).setCellRenderer(center);
+        tblLS.getColumnModel().getColumn(1).setCellRenderer(center);
+        tblLS.getColumnModel().getColumn(3).setCellRenderer(center);
+        tblLS.getColumnModel().getColumn(4).setCellRenderer(center);
+        tblLS.getColumnModel().getColumn(5).setCellRenderer(center);
+        tblLS.getColumnModel().getColumn(6).setCellRenderer(center);
 
-		for (customers c : ds) {
-			if (c.getSoCCCD() != null && c.getSoCCCD().trim().contains(cccd)) {
+        dlg.add(new JScrollPane(tblLS), BorderLayout.CENTER);
 
-				view.model.addRow(new Object[] { c.getIdKhachHang(), c.getNameKhachHang(), c.getSoCCCD(),
-						c.getSoDienThoai(), c.getEmail(), c.getDiaChi() });
+        JPanel pFoot = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnDong = new JButton("Đóng");
+        btnDong.addActionListener(ev -> dlg.dispose());
+        pFoot.add(btnDong);
+        dlg.add(pFoot, BorderLayout.SOUTH);
 
-				timThay = true;
-			}
-		}
+        dlg.setVisible(true);
+    }
 
-		if (!timThay) {
-			JOptionPane.showMessageDialog(view, "Không tìm thấy khách hàng có CCCD: " + cccd);
-		}
-	}
+    // Thêm khách hàng bằng Modal Dialog
+    void them() {
+        try {
+            DialogThemSuaKhachHang dialog = new DialogThemSuaKhachHang(getParentWindow(), null);
+            dialog.setVisible(true);
 
+            if (dialog.isSaved()) {
+                customers k = dialog.getCustomer();
+                if (service.them(k) > 0) {
+                    JOptionPane.showMessageDialog(view, "Thêm khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Thêm thất bại! Số CCCD có thể đã tồn tại trong hệ thống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Sửa khách hàng bằng Modal Dialog
+    void sua() {
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int modelRow = view.table.convertRowIndexToModel(selectedRow);
+            int maKH = (int) view.model.getValueAt(modelRow, 0);
+
+            customers canSua = timTheoMa(maKH);
+            if (canSua == null) {
+                JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin khách hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            DialogThemSuaKhachHang dialog = new DialogThemSuaKhachHang(getParentWindow(), canSua);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                customers capNhat = dialog.getCustomer();
+                if (service.sua(capNhat) > 0) {
+                    JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Xóa khách hàng
+    void xoa() {
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = view.table.convertRowIndexToModel(selectedRow);
+        int maKH = (int) view.model.getValueAt(modelRow, 0);
+        String hoTen = (String) view.model.getValueAt(modelRow, 1);
+
+        int chon = JOptionPane.showConfirmDialog(
+                view,
+                "Bạn có chắc muốn xóa khách hàng \"" + hoTen + "\" (Mã KH: " + maKH + ") không?\n"
+                        + "Lưu ý: Không thể xóa nếu khách hàng đang có đơn đặt phòng hoặc hóa đơn liên quan.",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (chon == JOptionPane.YES_OPTION) {
+            customers canXoa = new customers();
+            canXoa.setIdKhachHang(maKH);
+            if (service.xoa(canXoa) > 0) {
+                JOptionPane.showMessageDialog(view, "Xóa khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                taiDuLieu();
+            } else {
+                JOptionPane.showMessageDialog(view, "Xóa thất bại! Khách hàng này có dữ liệu đặt phòng hoặc hóa đơn ràng buộc.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 }

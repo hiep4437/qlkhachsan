@@ -1,6 +1,8 @@
 package model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+
 public class invoices {
 	private int idHoaDon;
 	private int idDatPhong;
@@ -11,6 +13,16 @@ public class invoices {
 	private float tongTien;
 	private String phuongThucThanhToan;
 	private String trangThaiThanhToan;
+
+	// Thong tin lien ket tu dat_phong, phong, loai_phong, khach_hang
+	private String soPhong;
+	private String tenLoaiPhong;
+	private String tenKhachHang;
+	private String soDienThoai;
+	private String soCCCD;
+	private Date ngayNhanPhong;
+	private Date ngayTraPhong;
+
 	public int getIdHoaDon() {
 		return idHoaDon;
 	}
@@ -65,9 +77,52 @@ public class invoices {
 	public void setTrangThaiThanhToan(String trangThaiThanhToan) {
 		this.trangThaiThanhToan = trangThaiThanhToan;
 	}
+
+	public String getSoPhong() {
+		return soPhong != null ? soPhong : "";
+	}
+	public void setSoPhong(String soPhong) {
+		this.soPhong = soPhong;
+	}
+	public String getTenLoaiPhong() {
+		return tenLoaiPhong != null ? tenLoaiPhong : "";
+	}
+	public void setTenLoaiPhong(String tenLoaiPhong) {
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+	public String getTenKhachHang() {
+		return tenKhachHang != null ? tenKhachHang : "";
+	}
+	public void setTenKhachHang(String tenKhachHang) {
+		this.tenKhachHang = tenKhachHang;
+	}
+	public String getSoDienThoai() {
+		return soDienThoai != null ? soDienThoai : "";
+	}
+	public void setSoDienThoai(String soDienThoai) {
+		this.soDienThoai = soDienThoai;
+	}
+	public String getSoCCCD() {
+		return soCCCD != null ? soCCCD : "";
+	}
+	public void setSoCCCD(String soCCCD) {
+		this.soCCCD = soCCCD;
+	}
+	public Date getNgayNhanPhong() {
+		return ngayNhanPhong;
+	}
+	public void setNgayNhanPhong(Date ngayNhanPhong) {
+		this.ngayNhanPhong = ngayNhanPhong;
+	}
+	public Date getNgayTraPhong() {
+		return ngayTraPhong;
+	}
+	public void setNgayTraPhong(Date ngayTraPhong) {
+		this.ngayTraPhong = ngayTraPhong;
+	}
+
 	public invoices(int idHoaDon, int idDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
 			float tongTien, String phuongThucThanhToan, String trangThaiThanhToan) {
-		super();
 		this.idHoaDon = idHoaDon;
 		this.idDatPhong = idDatPhong;
 		this.ngayLap = ngayLap;
@@ -78,9 +133,22 @@ public class invoices {
 		this.phuongThucThanhToan = phuongThucThanhToan;
 		this.trangThaiThanhToan = trangThaiThanhToan;
 	}
+
+	public invoices(int idHoaDon, int idDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
+			float tongTien, String phuongThucThanhToan, String trangThaiThanhToan,
+			String soPhong, String tenLoaiPhong, String tenKhachHang, String soDienThoai, String soCCCD,
+			Date ngayNhanPhong, Date ngayTraPhong) {
+		this(idHoaDon, idDatPhong, ngayLap, tienPhong, phuThu, giamGia, tongTien, phuongThucThanhToan, trangThaiThanhToan);
+		this.soPhong = soPhong;
+		this.tenLoaiPhong = tenLoaiPhong;
+		this.tenKhachHang = tenKhachHang;
+		this.soDienThoai = soDienThoai;
+		this.soCCCD = soCCCD;
+		this.ngayNhanPhong = ngayNhanPhong;
+		this.ngayTraPhong = ngayTraPhong;
+	}
+
 	public invoices() {
 		super();
 	}
-	
-
 }

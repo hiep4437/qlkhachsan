@@ -3,6 +3,7 @@ D:\public_html\Java\qlkhachsan\src\controller\CustomerController.java
 D:\public_html\Java\qlkhachsan\src\controller\InvoiceController.java
 D:\public_html\Java\qlkhachsan\src\controller\LoginController.java
 D:\public_html\Java\qlkhachsan\src\controller\RoomController.java
+D:\public_html\Java\qlkhachsan\src\controller\StatisticController.java
 D:\public_html\Java\qlkhachsan\src\controller\UserController.java
 D:\public_html\Java\qlkhachsan\src\dao\BookingDAO.java
 D:\public_html\Java\qlkhachsan\src\dao\BookingRoomDAO.java
@@ -11,6 +12,7 @@ D:\public_html\Java\qlkhachsan\src\dao\DBConnection.java
 D:\public_html\Java\qlkhachsan\src\dao\InvoiceDAO.java
 D:\public_html\Java\qlkhachsan\src\dao\RoomDAO.java
 D:\public_html\Java\qlkhachsan\src\dao\RoomTypeDAO.java
+D:\public_html\Java\qlkhachsan\src\dao\StatisticDAO.java
 D:\public_html\Java\qlkhachsan\src\dao\UserDAO.java
 D:\public_html\Java\qlkhachsan\src\main\Main.java
 D:\public_html\Java\qlkhachsan\src\model\bookings.java
@@ -25,9 +27,18 @@ D:\public_html\Java\qlkhachsan\src\service\BookingService.java
 D:\public_html\Java\qlkhachsan\src\service\CustomerService.java
 D:\public_html\Java\qlkhachsan\src\service\InvoiceService.java
 D:\public_html\Java\qlkhachsan\src\service\RoomService.java
+D:\public_html\Java\qlkhachsan\src\service\StatisticService.java
 D:\public_html\Java\qlkhachsan\src\service\UserService.java
+D:\public_html\Java\qlkhachsan\src\view\DialogChiTietHoaDon.java
+D:\public_html\Java\qlkhachsan\src\view\DialogThemSuaDatPhong.java
+D:\public_html\Java\qlkhachsan\src\view\DialogThemSuaHoaDon.java
+D:\public_html\Java\qlkhachsan\src\view\DialogThemSuaKhachHang.java
+D:\public_html\Java\qlkhachsan\src\view\DialogThemSuaPhong.java
+D:\public_html\Java\qlkhachsan\src\view\DialogThemSuaTaiKhoan.java
 D:\public_html\Java\qlkhachsan\src\view\DialogThongTinTaiKhoan.java
+D:\public_html\Java\qlkhachsan\src\view\DialogTraPhongThanhToan.java
 D:\public_html\Java\qlkhachsan\src\view\UIStyle.java
+D:\public_html\Java\qlkhachsan\src\view\ViewBaoCaoThongKe.java
 D:\public_html\Java\qlkhachsan\src\view\ViewDangNhap.java
 D:\public_html\Java\qlkhachsan\src\view\ViewDatPhong.java
 D:\public_html\Java\qlkhachsan\src\view\ViewHoaDon.java

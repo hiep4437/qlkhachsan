@@ -1,373 +1,376 @@
-
 package controller;
 
-import view.ViewDatPhong;
-import model.bookings;
-import model.customers;
-import model.rooms;
-import service.BookingService;
-import service.CustomerService;
-import service.RoomService;
-
-import java.sql.Date;
-import java.time.temporal.ChronoUnit;
+import java.awt.Window;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import dao.BookingRoomDAO;
+import model.bookings;
+import service.BookingService;
+import view.DialogThemSuaDatPhong;
+import view.DialogTraPhongThanhToan;
+import view.ViewDatPhong;
 
 public class BookingController {
     ViewDatPhong view;
     BookingService service = new BookingService();
-    CustomerService customerService = new CustomerService();
-    RoomService roomService = new RoomService();
-
-    int idKhachHang = 0;
+    BookingRoomDAO bookingRoomDAO = new BookingRoomDAO();
 
     public BookingController(ViewDatPhong view) {
         this.view = view;
 
         taiDuLieu();
 
+        // Nút thêm, sửa, check-in, check-out, hủy
+        view.btnThem.addActionListener(e -> them());
+        view.btnSua.addActionListener(e -> sua());
         view.btnCheckIn.addActionListener(e -> checkIn());
         view.btnCheckOut.addActionListener(e -> checkOut());
-        view.btnLayGia.addActionListener(e -> layGiaTien());
-        view.btnKiemTraCCCD.addActionListener(e -> kiemTraCCCD());
-        view.btnTimPhong.addActionListener(e -> timPhongTrong());
-        view.btnTimKiem.addActionListener(e -> timKiemTheoCCCD());
+        view.btnHuyDat.addActionListener(e -> huyDat());
 
-        view.btnDatLai.addActionListener(e -> {
-            view.lamMoi();
-            idKhachHang = 0;
-            taiDuLieu();
+        // Tìm kiếm & Lọc
+        view.btnTimKiem.addActionListener(e -> apDungBoLoc());
+        view.txtTimKiem.addActionListener(e -> apDungBoLoc());
+        view.cboLocTrangThai.addActionListener(e -> apDungBoLoc());
+        view.cboLocThoiGian.addActionListener(e -> apDungBoLoc());
+
+        // Nút làm mới (5s countdown & disable)
+        view.btnLamMoi.addActionListener(e -> {
+            view.batDauDemNguocLamMoi(() -> {
+                view.lamMoi();
+                taiDuLieu();
+            });
         });
     }
 
-    // Tai danh sach dat phong
-    void taiDuLieu() {
+    public void taiDuLieu() {
         try {
             view.model.setRowCount(0);
 
-            for (bookings b : service.xuat()) {
+            ArrayList<bookings> ds = service.xuat();
+            int tong = ds.size();
+            int daNhan = 0;
+            int dangCho = 0;
+
+            for (bookings b : ds) {
+                String tt = hienThiTrangThai(b.getTrangThai());
+                if (tt.contains("Đang ở") || tt.contains("Đã nhận"))
+                    daNhan++;
+                else if (tt.contains("Đã đặt") || tt.contains("Chờ"))
+                    dangCho++;
+
                 String cccd = b.getCccd() != null ? b.getCccd() : "";
-                String tang = b.getTang() != null ? b.getTang() : "";
-                String soNguoi = b.getSoNguoi() > 0 ? String.valueOf(b.getSoNguoi()) : "";
+                String soPhong = !b.getSoPhong().isEmpty() ? "P." + b.getSoPhong() : "";
+                String tenKhach = b.getTenKhachHang() != null ? b.getTenKhachHang() : "";
+                String sdt = b.getSoDienThoai() != null ? b.getSoDienThoai() : "";
+                int soNguoi = b.getSoNguoi() > 0 ? b.getSoNguoi() : 1;
 
-                view.model.addRow(new Object[]{
-                    b.getIdDatPhong(),
-                    cccd,
-                    b.getNgayNhanPhong(),
-                    b.getNgayTraPhong(),
-                    tang,
-                    soNguoi,
-                    hienThiTrangThai(b.getTrangThai()),
-                    b.getGhiChu()
-                });
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view,
-                    "Lỗi tải dữ liệu: " + e.getMessage());
-        }
-    }
-
-    // Chuyen trang thai CSDL sang tieng Viet
-    String hienThiTrangThai(String trangThai) {
-        if (trangThai == null) return "";
-
-        switch (trangThai) {
-            case "BOOKED":
-                return "Đã đặt";
-            case "CHECKED_IN":
-                return "Đã nhận phòng";
-            case "CHECKED_OUT":
-                return "Đã trả phòng";
-            case "CANCELLED":
-                return "Đã hủy";
-            default:
-                return trangThai;
-        }
-    }
-
-    // Kiem tra CCCD, neu chua co thi them khach hang
-    void kiemTraCCCD() {
-        String cccd = view.txtCCCD.getText().trim();
-
-        if (cccd.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Vui lòng nhập CCCD!");
-            return;
-        }
-
-        customers tk = new customers();
-        tk.setSoCCCD(cccd);
-
-        customers kh = customerService.timKiem(tk);
-
-        if (kh != null) {
-            idKhachHang = kh.getIdKhachHang();
-            JOptionPane.showMessageDialog(view,
-                    "Tìm thấy khách hàng: " + kh.getNameKhachHang());
-            return;
-        }
-
-        JTextField ten = new JTextField();
-        JTextField sdt = new JTextField();
-        JTextField diaChi = new JTextField();
-        JTextField email = new JTextField();
-
-        Object[] form = {
-            "CCCD:", new JLabel(cccd),
-            "Họ tên:", ten,
-            "Số điện thoại:", sdt,
-            "Địa chỉ:", diaChi,
-            "Email:", email
-        };
-
-        int chon = JOptionPane.showConfirmDialog(
-                view, form, "Thêm khách hàng",
-                JOptionPane.OK_CANCEL_OPTION);
-
-        if (chon != JOptionPane.OK_OPTION) return;
-
-        if (ten.getText().trim().isEmpty()
-                || sdt.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(view,
-                    "Vui lòng nhập họ tên và số điện thoại!");
-            return;
-        }
-
-        customers moi = new customers(
-                0,
-                ten.getText().trim(),
-                cccd,
-                sdt.getText().trim(),
-                email.getText().trim(),
-                diaChi.getText().trim()
-        );
-
-        if (customerService.them(moi) > 0) {
-            customers timLai = customerService.timKiem(tk);
-
-            if (timLai != null) {
-                idKhachHang = timLai.getIdKhachHang();
-                JOptionPane.showMessageDialog(view,
-                        "Thêm khách hàng thành công!");
-            }
-        } else {
-            JOptionPane.showMessageDialog(view,
-                    "Thêm khách hàng thất bại!");
-        }
-    }
-
-    // Check-in
-    void checkIn() {
-        int row = view.table.getSelectedRow();
-
-        if (row == -1) {
-            JOptionPane.showMessageDialog(view,
-                    "Hãy chọn lượt đặt phòng!");
-            return;
-        }
-
-        int id = Integer.parseInt(
-                view.model.getValueAt(row, 0).toString());
-
-        String trangThai = view.model.getValueAt(row, 6).toString();
-
-        if (!trangThai.equals("BOOKED")
-                && !trangThai.equals("Đã đặt")) {
-            JOptionPane.showMessageDialog(view,
-                    "Lượt đặt phòng không thể check-in!");
-            return;
-        }
-
-        if (service.capNhatTrangThai(id, "CHECKED_IN") > 0) {
-            JOptionPane.showMessageDialog(view, "Check-in thành công!");
-            taiDuLieu();
-        } else {
-            JOptionPane.showMessageDialog(view, "Check-in thất bại!");
-        }
-    }
-
-    // Check-out, chi cho phep khach da check-in
-    void checkOut() {
-        int row = view.table.getSelectedRow();
-
-        if (row == -1) {
-            JOptionPane.showMessageDialog(view,
-                    "Hãy chọn lượt đặt phòng!");
-            return;
-        }
-
-        String trangThai = view.model.getValueAt(row, 6).toString();
-
-        if (!trangThai.equals("CHECKED_IN")
-                && !trangThai.equals("Đã nhận phòng")) {
-            JOptionPane.showMessageDialog(view,
-                    "Khách chưa check-in nên không thể check-out!");
-            return;
-        }
-
-        int id = Integer.parseInt(
-                view.model.getValueAt(row, 0).toString());
-
-        if (service.capNhatTrangThai(id, "CHECKED_OUT") > 0) {
-            JOptionPane.showMessageDialog(view, "Check-out thành công!");
-            taiDuLieu();
-        } else {
-            JOptionPane.showMessageDialog(view, "Check-out thất bại!");
-        }
-    }
-
-    // Tinh so dem va tam tinh tien phong da chon
-    void layGiaTien() {
-        try {
-            Date ngayNhan = Date.valueOf(
-                    view.cboNgayNhan.getSelectedItem().toString());
-
-            Date ngayTra = Date.valueOf(
-                    view.cboNgayTra.getSelectedItem().toString());
-
-            long soDem = ChronoUnit.DAYS.between(
-                    ngayNhan.toLocalDate(),
-                    ngayTra.toLocalDate());
-
-            if (soDem <= 0) {
-                JOptionPane.showMessageDialog(view,
-                        "Ngày trả phải sau ngày nhận!");
-                return;
-            }
-
-            int row = view.table.getSelectedRow();
-
-            if (row == -1) {
-                JOptionPane.showMessageDialog(view,
-                        "Số đêm: " + soDem
-                        + "\nHãy chọn phòng để tính tổng tiền.");
-                return;
-            }
-
-            JOptionPane.showMessageDialog(view,
-                    "Số đêm: " + soDem
-                    + "\nChức năng tính tiền cần mã phòng và giá phòng.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view,
-                    "Ngày không hợp lệ!");
-        }
-    }
-
-    // Lay tang tu so phong, vi du 101 la tang 1
-    int layTang(String soPhong) {
-        try {
-            if (soPhong == null || soPhong.isEmpty()) return -1;
-            return Integer.parseInt(soPhong.substring(0, 1));
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    // Tim phong theo tang dang chon
-    void timPhongTrong() {
-        try {
-            String tangChon = view.cboTang.getSelectedItem().toString();
-            int tang = Integer.parseInt(tangChon.replaceAll("[^0-9]", ""));
-
-            Date ngayNhan = Date.valueOf(
-                    view.cboNgayNhan.getSelectedItem().toString());
-
-            Date ngayTra = Date.valueOf(
-                    view.cboNgayTra.getSelectedItem().toString());
-
-            if (!ngayTra.after(ngayNhan)) {
-                JOptionPane.showMessageDialog(view,
-                        "Ngày trả phải sau ngày nhận!");
-                return;
-            }
-
-            ArrayList<rooms> dsPhong = roomService.xuat();
-            String[] cot = {
-                "Mã phòng", "Số phòng", "Mã loại phòng",
-                "Giá mỗi đêm", "Trạng thái"
-            };
-
-            javax.swing.table.DefaultTableModel bang =
-                    new javax.swing.table.DefaultTableModel(cot, 0);
-
-            for (rooms p : dsPhong) {
-                int tangPhong = layTang(p.getSoPhong());
-
-                if (tangPhong == tang
-                        && ("AVAILABLE".equalsIgnoreCase(p.getTrangThai())
-                        || "TRỐNG".equalsIgnoreCase(p.getTrangThai())
-                        || "TRONG".equalsIgnoreCase(p.getTrangThai()))) {
-
-                    bang.addRow(new Object[]{
-                        p.getMaPhong(),
-                        p.getSoPhong(),
-                        p.getMaLoaiPhong(),
-                        p.getGiaMoiDem(),
-                        p.getTrangThai()
-                    });
-                }
-            }
-
-            JTable tablePhong = new JTable(bang);
-            JOptionPane.showMessageDialog(view,
-                    new JScrollPane(tablePhong),
-                    "Danh sách phòng tầng " + tang,
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            if (bang.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(view,
-                        "Không tìm thấy phòng trống ở tầng " + tang);
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view,
-                    "Lỗi tìm phòng: " + e.getMessage());
-        }
-    }
-
-    // Tim dat phong theo CCCD
-    void timKiemTheoCCCD() {
-        try {
-            String cccd = view.txtTimKiem.getText().trim();
-            view.model.setRowCount(0);
-
-            customers kh = null;
-
-            if (!cccd.isEmpty()) {
-                customers tk = new customers();
-                tk.setSoCCCD(cccd);
-                kh = customerService.timKiem(tk);
-
-                if (kh == null) {
-                    JOptionPane.showMessageDialog(view,
-                            "Không tìm thấy khách hàng!");
-                    return;
-                }
-            }
-
-            for (bookings b : service.xuat()) {
-                if (kh == null
-                        || b.getIdKhachHang() == kh.getIdKhachHang()) {
-
-                    String soCCCD = b.getCccd() != null ? b.getCccd() : "";
-                    String tang = b.getTang() != null ? b.getTang() : "";
-                    String soNguoi = b.getSoNguoi() > 0 ? String.valueOf(b.getSoNguoi()) : "";
-
-                    view.model.addRow(new Object[]{
+                view.model.addRow(new Object[] {
                         b.getIdDatPhong(),
-                        soCCCD,
+                        soPhong,
+                        tenKhach,
+                        sdt,
+                        cccd,
                         b.getNgayNhanPhong(),
                         b.getNgayTraPhong(),
-                        tang,
                         soNguoi,
-                        hienThiTrangThai(b.getTrangThai()),
-                        b.getGhiChu()
-                    });
+                        tt,
+                        b.getGhiChu() != null ? b.getGhiChu() : ""
+                });
+            }
+
+            view.lblThongKe.setText(String.format("Tổng số: %d đơn | Đang ở: %d phòng | Chờ nhận phòng: %d",
+                    tong, daNhan, dangCho));
+
+            apDungBoLoc();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void apDungBoLoc() {
+        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
+        String trangThaiLoc = (String) view.cboLocTrangThai.getSelectedItem();
+        String thoiGianLoc = (String) view.cboLocThoiGian.getSelectedItem();
+
+        if (view.sorter == null) return;
+
+        List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+
+        // 1. Lọc theo từ khóa (Mã ĐP, Phòng, Khách, SĐT, CCCD)
+        if (!tuKhoa.isEmpty()) {
+            filters.add(new RowFilter<DefaultTableModel, Object>() {
+                @Override
+                public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
+                    for (int i = 0; i < entry.getValueCount(); i++) {
+                        Object val = entry.getValue(i);
+                        if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // 2. Lọc theo trạng thái
+        if (trangThaiLoc != null && !trangThaiLoc.equals("Tất cả trạng thái")) {
+            String regex = "";
+            if (trangThaiLoc.contains("Đang ở")) regex = "Đang ở|ĐÃ NHẬN PHÒNG|CHECKED_IN";
+            else if (trangThaiLoc.contains("Chờ")) regex = "Chờ nhận|ĐÃ ĐẶT|BOOKED";
+            else if (trangThaiLoc.contains("Đã trả")) regex = "ĐÃ TRẢ PHÒNG|CHECKED_OUT";
+            else if (trangThaiLoc.contains("Đã hủy")) regex = "ĐÃ HỦY|CANCELLED";
+
+            if (!regex.isEmpty()) {
+                filters.add(RowFilter.regexFilter("(?i)" + regex, 8));
+            }
+        }
+
+        // 3. Lọc theo thời gian (Hôm nay, Tháng này)
+        if (thoiGianLoc != null && !thoiGianLoc.equals("Tất cả thời gian")) {
+            LocalDate today = LocalDate.now();
+            String todayStr = today.toString(); // YYYY-MM-DD
+            String currentMonthStr = String.format("%04d-%02d", today.getYear(), today.getMonthValue());
+
+            filters.add(new RowFilter<DefaultTableModel, Object>() {
+                @Override
+                public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
+                    Object valNhan = entry.getValue(5); // Cột ngày nhận
+                    Object valTra = entry.getValue(6);  // Cột ngày trả
+                    String sNhan = valNhan != null ? valNhan.toString() : "";
+                    String sTra = valTra != null ? valTra.toString() : "";
+
+                    if (thoiGianLoc.equals("Hôm nay")) {
+                        return sNhan.contains(todayStr) || sTra.contains(todayStr);
+                    } else if (thoiGianLoc.equals("Tháng này")) {
+                        return sNhan.startsWith(currentMonthStr) || sTra.startsWith(currentMonthStr);
+                    }
+                    return true;
+                }
+            });
+        }
+
+        if (filters.isEmpty()) {
+            view.sorter.setRowFilter(null);
+        } else {
+            view.sorter.setRowFilter(RowFilter.andFilter(filters));
+        }
+    }
+
+    // Tìm kiếm toàn bộ đơn đặt phòng theo từ khóa (CCCD, tên khách...), tất cả trạng thái, toàn thời gian
+    public void timKiemToanBo(String tuKhoa) {
+        view.txtTimKiem.setText(tuKhoa != null ? tuKhoa.trim() : "");
+        view.cboLocTrangThai.setSelectedIndex(0); // Tất cả trạng thái
+        view.cboLocThoiGian.setSelectedIndex(0);  // Tất cả thời gian
+        apDungBoLoc();
+    }
+
+    Window getParentWindow() {
+        Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
+        return w != null ? w : view;
+    }
+
+    bookings timTheoMa(int id) {
+        bookings t = new bookings();
+        t.setIdDatPhong(id);
+        return service.timKiem(t);
+    }
+
+    String hienThiTrangThai(String trangThai) {
+        if (trangThai == null) return "Chờ nhận phòng";
+        switch (trangThai.trim().toUpperCase()) {
+            case "CHECKED_IN":
+            case "ĐÃ NHẬN PHÒNG":
+            case "1":
+                return "Đang ở";
+            case "CHECKED_OUT":
+            case "ĐÃ TRẢ PHÒNG":
+            case "2":
+                return "Đã trả phòng";
+            case "CANCELLED":
+            case "ĐÃ HỦY":
+            case "3":
+                return "Đã hủy";
+            default:
+                return "Chờ nhận phòng";
+        }
+    }
+
+    // Đặt phòng mới bằng Modal Dialog
+    void them() {
+        try {
+            DialogThemSuaDatPhong dialog = new DialogThemSuaDatPhong(getParentWindow(), null);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                bookings b = dialog.getBooking();
+                int bookingId = service.them(b);
+                if (bookingId > 0) {
+                    // Thêm phòng vào chi tiết đặt phòng
+                    if (dialog.getSelectedRoomId() > 0) {
+                        bookingRoomDAO.them(bookingId, dialog.getSelectedRoomId(), dialog.getSelectedRoomPrice());
+                    }
+                    JOptionPane.showMessageDialog(view, "Đặt phòng mới thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Đặt phòng thất bại! Vui lòng thử lại.", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(view,
-                    "Lỗi tìm kiếm: " + e.getMessage());
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    // Sửa đơn đặt phòng bằng Modal Dialog
+    void sua() {
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một đơn đặt phòng trong bảng để sửa!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int modelRow = view.table.convertRowIndexToModel(selectedRow);
+            int maDP = (int) view.model.getValueAt(modelRow, 0);
+
+            bookings canSua = timTheoMa(maDP);
+            if (canSua == null) {
+                JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin đơn đặt phòng!", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            DialogThemSuaDatPhong dialog = new DialogThemSuaDatPhong(getParentWindow(), canSua);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                bookings capNhat = dialog.getBooking();
+                if (service.sua(capNhat) > 0) {
+                    JOptionPane.showMessageDialog(view, "Cập nhật đơn đặt phòng thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Cập nhật đơn đặt phòng thất bại!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Nhận phòng (Check-in)
+    void checkIn() {
+        int row = view.table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn đơn đặt phòng cần Check-in!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = view.table.convertRowIndexToModel(row);
+        int id = (int) view.model.getValueAt(modelRow, 0);
+        String trangThai = view.model.getValueAt(modelRow, 8).toString();
+
+        if (!trangThai.contains("Chờ") && !trangThai.contains("Đã đặt") && !trangThai.equalsIgnoreCase("BOOKED")) {
+            JOptionPane.showMessageDialog(view, "Chỉ những đơn ở trạng thái 'Chờ nhận phòng' mới có thể Check-in!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int cf = JOptionPane.showConfirmDialog(
+                view,
+                "Xác nhận thực hiện Check-in nhận phòng cho đơn đặt #" + id + "?\nPhòng sẽ được chuyển sang trạng thái CÓ KHÁCH.",
+                "Xác nhận Check-in",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (cf == JOptionPane.YES_OPTION) {
+            if (service.nhanPhong(id)) {
+                JOptionPane.showMessageDialog(view, "Check-in thành công! Phòng đã chuyển sang CÓ KHÁCH.", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                taiDuLieu();
+            } else {
+                JOptionPane.showMessageDialog(view, "Check-in thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    // Trả phòng & Thanh toán (Check-out) - Hiện Bill chi tiết trước khi xác nhận
+    void checkOut() {
+        int row = view.table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn đơn đặt phòng đang lưu trú cần Trả phòng!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = view.table.convertRowIndexToModel(row);
+        int id = (int) view.model.getValueAt(modelRow, 0);
+        String trangThai = view.model.getValueAt(modelRow, 8).toString();
+
+        if (!trangThai.contains("Đang ở") && !trangThai.contains("Đã nhận") && !trangThai.equalsIgnoreCase("CHECKED_IN")) {
+            JOptionPane.showMessageDialog(view, "Khách chưa nhận phòng (Đang ở) nên không thể thực hiện Trả phòng!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        bookings b = timTheoMa(id);
+        if (b == null) {
+            JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin đơn đặt phòng #" + id, "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Mở Modal Trả phòng & Thanh toán (Check-out Bill)
+        DialogTraPhongThanhToan dlg = new DialogTraPhongThanhToan(getParentWindow(), b);
+        dlg.setVisible(true);
+
+        if (dlg.isCompleted()) {
+            taiDuLieu();
+        }
+    }
+
+    // Hủy đặt phòng
+    void huyDat() {
+        int row = view.table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn đơn đặt phòng cần hủy!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modelRow = view.table.convertRowIndexToModel(row);
+        int id = (int) view.model.getValueAt(modelRow, 0);
+        String trangThai = view.model.getValueAt(modelRow, 8).toString();
+
+        if (trangThai.contains("Đã trả") || trangThai.contains("Đã hủy")) {
+            JOptionPane.showMessageDialog(view, "Đơn đặt phòng này đã kết thúc hoặc đã hủy từ trước!",
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int chon = JOptionPane.showConfirmDialog(
+                view,
+                "Bạn có chắc muốn hủy đơn đặt phòng #" + id + " không?\nNếu phòng đang được giữ, hệ thống sẽ trả lại phòng trống.",
+                "Xác nhận hủy đặt phòng",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (chon == JOptionPane.YES_OPTION) {
+            if (service.huyDatPhong(id)) {
+                JOptionPane.showMessageDialog(view, "Đã hủy đơn đặt phòng thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                taiDuLieu();
+            } else {
+                JOptionPane.showMessageDialog(view, "Hủy đơn đặt phòng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 }

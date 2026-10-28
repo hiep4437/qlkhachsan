@@ -1,9 +1,9 @@
-
 package dao;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import model.room_types;
 
@@ -11,26 +11,29 @@ public class RoomTypeDAO {
 
 	// Them loai phong
 	public int them(room_types t) {
-		try {
-			Connection conn = DBConnection.getConnection();
-			Statement st = conn.createStatement();
+		room_types p = timKiem(t);
+		if (p != null) {
+			System.out.println("Tên loại phòng đã tồn tại!");
+			return 0;
+		}
 
-			room_types p = timKiem(t);
+		String sql = "INSERT INTO loai_phong (ten_loai_phong, suc_chua, mo_ta) VALUES (?, ?, ?)";
+		try (Connection conn = DBConnection.getConnection();
+		     PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-			if (p == null) {
-				String sql = "INSERT INTO room_types " + "(type_name, capacity, description) VALUES ('"
-						+ t.getTenLoaiPhong() + "', " + t.getSucChua() + ", '" + t.getMoTa() + "')";
+			ps.setString(1, t.getTenLoaiPhong().trim());
+			ps.setInt(2, t.getSucChua());
+			ps.setString(3, t.getMoTa());
 
-				int kq = st.executeUpdate(sql);
-				System.out.println("Da them loai phong!");
-				conn.close();
-				return kq;
-			} else {
-				System.out.println("Ma loai phong da ton tai!");
-				conn.close();
-				return 0;
+			int kq = ps.executeUpdate();
+			if (kq > 0) {
+				try (ResultSet rs = ps.getGeneratedKeys()) {
+					if (rs.next()) {
+						t.setMaLoaiPhong(rs.getInt(1));
+					}
+				}
 			}
-
+			return kq;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -39,18 +42,16 @@ public class RoomTypeDAO {
 
 	// Sua loai phong
 	public int sua(room_types t) {
-		try {
-			Connection conn = DBConnection.getConnection();
-			Statement st = conn.createStatement();
+		String sql = "UPDATE loai_phong SET ten_loai_phong = ?, suc_chua = ?, mo_ta = ? WHERE ma_loai_phong = ?";
+		try (Connection conn = DBConnection.getConnection();
+		     PreparedStatement ps = conn.prepareStatement(sql)) {
 
-			String sql = "UPDATE room_types SET " + "type_name = '" + t.getTenLoaiPhong() + "', " + "capacity = "
-					+ t.getSucChua() + ", " + "description = '" + t.getMoTa() + "' " + "WHERE room_type_id = "
-					+ t.getMaLoaiPhong();
+			ps.setString(1, t.getTenLoaiPhong().trim());
+			ps.setInt(2, t.getSucChua());
+			ps.setString(3, t.getMoTa());
+			ps.setInt(4, t.getMaLoaiPhong());
 
-			int kq = st.executeUpdate(sql);
-			conn.close();
-			return kq;
-
+			return ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -59,16 +60,12 @@ public class RoomTypeDAO {
 
 	// Xoa loai phong
 	public int xoa(room_types t) {
-		try {
-			Connection conn = DBConnection.getConnection();
-			Statement st = conn.createStatement();
+		String sql = "DELETE FROM loai_phong WHERE ma_loai_phong = ?";
+		try (Connection conn = DBConnection.getConnection();
+		     PreparedStatement ps = conn.prepareStatement(sql)) {
 
-			String sql = "DELETE FROM room_types WHERE room_type_id = " + t.getMaLoaiPhong();
-
-			int kq = st.executeUpdate(sql);
-			conn.close();
-			return kq;
-
+			ps.setInt(1, t.getMaLoaiPhong());
+			return ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -78,23 +75,21 @@ public class RoomTypeDAO {
 	// Xuat danh sach
 	public ArrayList<room_types> xuat() {
 		ArrayList<room_types> ds = new ArrayList<>();
+		String sql = "SELECT * FROM loai_phong ORDER BY ma_loai_phong ASC";
 
-		try {
-			Connection conn = DBConnection.getConnection();
-			Statement st = conn.createStatement();
-
-			String sql = "SELECT * FROM room_types";
-			ResultSet rs = st.executeQuery(sql);
+		try (Connection conn = DBConnection.getConnection();
+		     Statement st = conn.createStatement();
+		     ResultSet rs = st.executeQuery(sql)) {
 
 			while (rs.next()) {
-				room_types t = new room_types(rs.getInt("room_type_id"), rs.getString("type_name"),
-						rs.getInt("capacity"), rs.getString("description"));
-
+				room_types t = new room_types(
+						rs.getInt("ma_loai_phong"),
+						rs.getString("ten_loai_phong"),
+						rs.getInt("suc_chua"),
+						rs.getString("mo_ta")
+				);
 				ds.add(t);
 			}
-
-			conn.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,27 +99,29 @@ public class RoomTypeDAO {
 
 	// Tim kiem theo ten loai phong
 	public room_types timKiem(room_types t) {
-		room_types kq = null;
+		if (t == null || t.getTenLoaiPhong() == null || t.getTenLoaiPhong().trim().isEmpty()) {
+			return null;
+		}
 
-		try {
-			Connection conn = DBConnection.getConnection();
-			Statement st = conn.createStatement();
+		String sql = "SELECT * FROM loai_phong WHERE ten_loai_phong = ?";
+		try (Connection conn = DBConnection.getConnection();
+		     PreparedStatement ps = conn.prepareStatement(sql)) {
 
-			String sql = "SELECT * FROM room_types WHERE type_name = '" + t.getTenLoaiPhong() + "'";
-
-			ResultSet rs = st.executeQuery(sql);
-
-			if (rs.next()) {
-				kq = new room_types(rs.getInt("room_type_id"), rs.getString("type_name"), rs.getInt("capacity"),
-						rs.getString("description"));
+			ps.setString(1, t.getTenLoaiPhong().trim());
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return new room_types(
+							rs.getInt("ma_loai_phong"),
+							rs.getString("ten_loai_phong"),
+							rs.getInt("suc_chua"),
+							rs.getString("mo_ta")
+					);
+				}
 			}
-
-			conn.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return kq;
+		return null;
 	}
 }

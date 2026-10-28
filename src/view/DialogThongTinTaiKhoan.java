@@ -44,7 +44,7 @@ public class DialogThongTinTaiKhoan extends JDialog {
         JPanel avatarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
         avatarPanel.setOpaque(false);
 
-        JLabel lblAvatar = new JLabel("👤");
+        JLabel lblAvatar = new JLabel("");
         lblAvatar.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 42));
         lblAvatar.setForeground(Color.WHITE);
 
@@ -73,8 +73,8 @@ public class DialogThongTinTaiKhoan extends JDialog {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Segoe UI", Font.BOLD, 13));
 
-        tabbedPane.addTab("👤 Thông tin cá nhân", taoPanelThongTin());
-        tabbedPane.addTab("🔑 Đổi mật khẩu", taoPanelDoiMatKhau());
+        tabbedPane.addTab(" Thông tin cá nhân", taoPanelThongTin());
+        tabbedPane.addTab("Đổi mật khẩu", taoPanelDoiMatKhau());
 
         add(tabbedPane, BorderLayout.CENTER);
 
@@ -115,7 +115,7 @@ public class DialogThongTinTaiKhoan extends JDialog {
         txtRole.setEditable(false);
         txtRole.setBackground(new Color(240, 243, 246));
 
-        txtStatus = new JTextField(user.isTrangThai() ? "🟢 Đang hoạt động" : "🔒 Đã bị khóa");
+        txtStatus = new JTextField(user.isTrangThai() ? "Đang hoạt động" : "Đã bị khóa");
         txtStatus.setEditable(false);
         txtStatus.setBackground(new Color(240, 243, 246));
 
@@ -157,7 +157,7 @@ public class DialogThongTinTaiKhoan extends JDialog {
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
         btnPanel.setOpaque(false);
 
-        JButton btnLuu = new JButton("💾 Lưu họ tên mới");
+        JButton btnLuu = new JButton("Lưu họ tên mới");
         btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLuu.setBackground(new Color(37, 99, 235));
         btnLuu.setForeground(Color.WHITE);
@@ -209,7 +209,7 @@ public class DialogThongTinTaiKhoan extends JDialog {
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
         btnPanel.setOpaque(false);
 
-        JButton btnDoiPass = new JButton("🔑 Đổi mật khẩu");
+        JButton btnDoiPass = new JButton("Đổi mật khẩu");
         btnDoiPass.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnDoiPass.setBackground(new Color(16, 185, 129));
         btnDoiPass.setForeground(Color.WHITE);

@@ -105,7 +105,7 @@ public class ViewDangNhap extends JFrame {
         bottomPanel.setOpaque(false);
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        btnCauHinhServer = new JButton("⚙ Cấu hình máy chủ");
+        btnCauHinhServer = new JButton(" Cấu hình máy chủ");
         btnCauHinhServer.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         btnCauHinhServer.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnCauHinhServer.setFocusPainted(false);

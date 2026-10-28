@@ -4,6 +4,7 @@ public class rooms {
 	private int maPhong;
 	private String soPhong;
 	private int maLoaiPhong;
+	private int tang;
 	private float giaMoiDem;
 	private String trangThai;
 	private String moTa;
@@ -26,6 +27,12 @@ public class rooms {
 	}
 	public void setMaLoaiPhong(int maLoaiPhong) {
 		this.maLoaiPhong = maLoaiPhong;
+	}
+	public int getTang() {
+		return tang;
+	}
+	public void setTang(int tang) {
+		this.tang = tang;
 	}
 	public float getGiaMoiDem() {
 		return giaMoiDem;
@@ -67,6 +74,18 @@ public class rooms {
 		this.maPhong = maPhong;
 		this.soPhong = soPhong;
 		this.maLoaiPhong = maLoaiPhong;
+		this.giaMoiDem = giaMoiDem;
+		this.trangThai = trangThai;
+		this.moTa = moTa;
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+
+	public rooms(int maPhong, String soPhong, int maLoaiPhong, int tang, float giaMoiDem, String trangThai, String moTa, String tenLoaiPhong) {
+		super();
+		this.maPhong = maPhong;
+		this.soPhong = soPhong;
+		this.maLoaiPhong = maLoaiPhong;
+		this.tang = tang;
 		this.giaMoiDem = giaMoiDem;
 		this.trangThai = trangThai;
 		this.moTa = moTa;

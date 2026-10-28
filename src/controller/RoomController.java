@@ -1,51 +1,136 @@
 package controller;
 
+import java.awt.Window;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
+import dao.RoomTypeDAO;
 import model.rooms;
+import model.room_types;
 import service.RoomService;
+import view.DialogThemSuaPhong;
 import view.ViewQuanLyPhong;
 
 public class RoomController {
 
     ViewQuanLyPhong view;
     RoomService service = new RoomService();
+    RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
+    DecimalFormat dfCurrency = new DecimalFormat("#,###");
 
     public RoomController(ViewQuanLyPhong view) {
         this.view = view;
 
         taiDuLieu();
 
+        // Nút thêm, sửa, xóa
         view.btnThem.addActionListener(e -> them());
         view.btnSua.addActionListener(e -> sua());
         view.btnXoa.addActionListener(e -> xoa());
-        view.btnTimKiem.addActionListener(e -> timKiem());
+
+        // Tìm kiếm & Lọc
+        view.btnTimKiem.addActionListener(e -> apDungBoLoc());
+        view.txtTimKiem.addActionListener(e -> apDungBoLoc());
+        view.cboLocTrangThai.addActionListener(e -> apDungBoLoc());
+
+        // Làm mới với đếm ngược 5s & disable
         view.btnLamMoi.addActionListener(e -> {
-            view.lamMoi();
-            taiDuLieu();
+            view.batDauDemNguocLamMoi(() -> {
+                view.lamMoi();
+                taiDuLieu();
+            });
         });
     }
 
-    // Hien thi danh sach phong
-    void taiDuLieu() {
+    // Hiển thị danh sách phòng (JOIN tên loại phòng, không hiển thị mã loại phòng)
+    public void taiDuLieu() {
         view.model.setRowCount(0);
 
         ArrayList<rooms> ds = service.xuat();
 
+        int tong = ds.size();
+        int trong = 0;
+        int coKhach = 0;
+        int dangDon = 0;
+        int baoTri = 0;
+
         for (rooms r : ds) {
+            String tt = hienThiTrangThai(r.getTrangThai());
+            if ("TRỐNG".equals(tt)) trong++;
+            else if ("CÓ KHÁCH".equals(tt)) coKhach++;
+            else if ("ĐANG DỌN".equals(tt)) dangDon++;
+            else if ("BẢO TRÌ".equals(tt)) baoTri++;
+
+            String tenLoai = (r.getTenLoaiPhong() != null && !r.getTenLoaiPhong().trim().isEmpty())
+                    ? r.getTenLoaiPhong() : "Phòng tiêu chuẩn";
+
+            int tang = r.getTang() > 0 ? r.getTang() : 1;
+            String giaFmt = dfCurrency.format(r.getGiaMoiDem()) + " đ";
+
             view.model.addRow(new Object[] {
                 r.getMaPhong(),
                 r.getSoPhong(),
-                r.getMaLoaiPhong(),
-                r.getGiaMoiDem(),
-                hienThiTrangThai(r.getTrangThai()),
-                r.getMoTa()
+                tang,
+                tenLoai,
+                giaFmt,
+                tt,
+                r.getMoTa() != null ? r.getMoTa() : ""
             });
+        }
+
+        view.lblThongKe.setText(String.format("Tổng số: %d phòng  |  Trống: %d  |  Có khách: %d  |  Đang dọn: %d  |  Bảo trì: %d",
+                tong, trong, coKhach, dangDon, baoTri));
+
+        apDungBoLoc();
+    }
+
+    // Lọc dữ liệu trên bảng theo từ khóa tìm kiếm và trạng thái
+    void apDungBoLoc() {
+        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
+        String trangThaiLoc = (String) view.cboLocTrangThai.getSelectedItem();
+
+        if (view.sorter == null) return;
+
+        List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+
+        // Lọc từ khóa (số phòng, loại phòng, mô tả...)
+        if (!tuKhoa.isEmpty()) {
+            filters.add(new RowFilter<DefaultTableModel, Object>() {
+                @Override
+                public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
+                    for (int i = 0; i < entry.getValueCount(); i++) {
+                        Object val = entry.getValue(i);
+                        if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        // Lọc trạng thái
+        if (trangThaiLoc != null && !trangThaiLoc.equals("Tất cả trạng thái")) {
+            filters.add(RowFilter.regexFilter("^" + trangThaiLoc + "$", 5));
+        }
+
+        if (filters.isEmpty()) {
+            view.sorter.setRowFilter(null);
+        } else {
+            view.sorter.setRowFilter(RowFilter.andFilter(filters));
         }
     }
 
-    // Tim phong theo ma phong
+    // Lấy cửa sổ cha của view để căn giữa Modal Dialog
+    Window getParentWindow() {
+        Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
+        return w != null ? w : view;
+    }
+
+    // Tìm phòng theo mã phòng
     rooms timTheoMa(int ma) {
         for (rooms r : service.xuat()) {
             if (r.getMaPhong() == ma) {
@@ -55,223 +140,135 @@ public class RoomController {
         return null;
     }
 
-    // Lay du lieu tu giao dien
-    rooms layDuLieu() {
-        String soPhong = view.txtSoPhong.getText().trim();
-        String maLoai = view.txtMaLoai.getText().trim();
-        String gia = view.txtGia.getText().trim();
-        String moTa = view.txtMoTa.getText().trim();
-
-        if (soPhong.isEmpty() || maLoai.isEmpty() || gia.isEmpty()) {
-            throw new IllegalArgumentException(
-                "Vui long nhap so phong, ma loai va gia!"
-            );
-        }
-
-        rooms r = new rooms();
-        r.setSoPhong(soPhong);
-        r.setMaLoaiPhong(Integer.parseInt(maLoai));
-        r.setGiaMoiDem(Float.parseFloat(gia));
-        r.setTrangThai(chuyenTrangThai(
-            (String) view.cboTrangThai.getSelectedItem()
-        ));
-        r.setMoTa(moTa);
-
-        return r;
-    }
-
-    // Them phong
+    // Thêm phòng bằng Modal Dialog
     void them() {
         try {
-            rooms r = layDuLieu();
+            ArrayList<room_types> dsLoai = roomTypeDAO.xuat();
+            DialogThemSuaPhong dialog = new DialogThemSuaPhong(getParentWindow(), null, dsLoai);
+            dialog.setVisible(true);
 
-            if (service.them(r) > 0) {
-                JOptionPane.showMessageDialog(view, "Them phong thanh cong!");
-                taiDuLieu();
-            } else {
-                JOptionPane.showMessageDialog(view, "Them phong that bai!");
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view, "Ma loai va gia phai la so!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, e.getMessage());
-        }
-    }
-
-    // Sua phong: o trong thi giu gia tri cu
-    void sua() {
-        try {
-            String soPhong = view.txtSoPhong.getText().trim();
-
-            if (soPhong.isEmpty()) {
-                JOptionPane.showMessageDialog(view,
-                    "Vui lòng nhập số phòng cần sửa!");
-                return;
-            }
-
-            rooms r = null;
-
-            for (rooms p : service.xuat()) {
-                if (p.getSoPhong().equals(soPhong)) {
-                    r = p;
-                    break;
+            if (dialog.isSaved()) {
+                rooms phongMoi = dialog.getRoom();
+                if (service.them(phongMoi) > 0) {
+                    JOptionPane.showMessageDialog(view, "Thêm phòng mới thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Thêm phòng thất bại! Có thể số phòng đã tồn tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-            if (r == null) {
-                JOptionPane.showMessageDialog(view,
-                    "Không tìm thấy phòng " + soPhong + "!");
+    // Sửa phòng bằng Modal Dialog
+    void sua() {
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một phòng trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int modelRow = view.table.convertRowIndexToModel(selectedRow);
+            int maPhong = (int) view.model.getValueAt(modelRow, 0);
+
+            rooms phongCanSua = timTheoMa(maPhong);
+            if (phongCanSua == null) {
+                JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin phòng đã chọn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String loai = view.txtMaLoai.getText().trim();
-            String gia = view.txtGia.getText().trim();
-            String moTa = view.txtMoTa.getText().trim();
-            String trangThai = (String) view.cboTrangThai.getSelectedItem();
-
-            if (!loai.isEmpty())
-                r.setMaLoaiPhong(Integer.parseInt(loai));
-
-            if (!gia.isEmpty())
-                r.setGiaMoiDem(Float.parseFloat(gia));
-
-            if (!moTa.isEmpty())
-                r.setMoTa(moTa);
-
-            if (trangThai != null && !trangThai.isEmpty())
-                r.setTrangThai(chuyenTrangThai(trangThai));
-
-            if (service.sua(r) > 0) {
-                JOptionPane.showMessageDialog(view,
-                    "Sửa phòng thành công!");
-                taiDuLieu();
-                view.lamMoi();
-            } else {
-                JOptionPane.showMessageDialog(view,
-                    "Sửa phòng thất bại!");
+            // Kiểm tra trạng thái: phòng có khách không được sửa, phải check-out trước
+            String tt = phongCanSua.getTrangThai();
+            if ("OCCUPIED".equalsIgnoreCase(tt) || "CÓ KHÁCH".equalsIgnoreCase(tt) || "1".equals(tt)) {
+                JOptionPane.showMessageDialog(
+                    view,
+                    "Phòng " + phongCanSua.getSoPhong() + " đang có khách ở, không thể chỉnh sửa!\nVui lòng làm thủ tục trả phòng (Check-out) trước khi sửa.",
+                    "Cảnh báo",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
             }
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view,
-                "Mã loại phòng và giá phải là số!");
+            ArrayList<room_types> dsLoai = roomTypeDAO.xuat();
+            DialogThemSuaPhong dialog = new DialogThemSuaPhong(getParentWindow(), phongCanSua, dsLoai);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                rooms phongCapNhat = dialog.getRoom();
+                if (service.sua(phongCapNhat) > 0) {
+                    JOptionPane.showMessageDialog(view, "Cập nhật phòng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Cập nhật phòng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(view,
-                "Lỗi: " + e.getMessage());
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Tim theo dau so phong, vi du 3 tim 301, 302
-    void timKiem() {
-        String tuKhoa = view.txtTimKiem.getText().trim();
-
-        view.model.setRowCount(0);
-
-        for (rooms r : service.xuat()) {
-            if (r.getSoPhong() != null &&
-                r.getSoPhong().startsWith(tuKhoa)) {
-
-                view.model.addRow(new Object[] {
-                    r.getMaPhong(),
-                    r.getSoPhong(),
-                    r.getMaLoaiPhong(),
-                    r.getGiaMoiDem(),
-                    hienThiTrangThai(r.getTrangThai()),
-                    r.getMoTa()
-                });
-            }
-        }
-
-        if (view.model.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(view, "Khong tim thay phong!");
-        }
-    }
-
-    // Xoa bang so phong
+    // Xóa phòng
     void xoa() {
-        String soPhong = view.txtSoPhong.getText().trim();
-
-        if (soPhong.isEmpty()) {
-            soPhong = view.txtTimKiem.getText().trim();
-        }
-
-        if (soPhong.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Nhap so phong can xoa!");
+        int selectedRow = view.table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(view, "Vui lòng chọn một phòng trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        rooms canXoa = null;
+        try {
+            int modelRow = view.table.convertRowIndexToModel(selectedRow);
+            int maPhong = (int) view.model.getValueAt(modelRow, 0);
+            String soPhong = view.model.getValueAt(modelRow, 1).toString();
 
-        for (rooms r : service.xuat()) {
-            if (soPhong.equals(r.getSoPhong())) {
-                canXoa = r;
-                break;
+            rooms phongCanXoa = timTheoMa(maPhong);
+            if (phongCanXoa == null) {
+                JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin phòng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        }
 
-        if (canXoa == null) {
-            JOptionPane.showMessageDialog(view, "Khong tim thay phong!");
-            return;
-        }
+            int chon = JOptionPane.showConfirmDialog(
+                view,
+                "Bạn có chắc chắn muốn xóa phòng " + soPhong + " không?",
+                "Xác nhận xóa phòng",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
 
-        int chon = JOptionPane.showConfirmDialog(
-            view,
-            "Ban co chac muon xoa phong " + soPhong + "?",
-            "Xac nhan xoa",
-            JOptionPane.YES_NO_OPTION
-        );
-
-        if (chon == JOptionPane.YES_OPTION) {
-            if (service.xoa(canXoa) > 0) {
-                JOptionPane.showMessageDialog(view, "Xoa phong thanh cong!");
-                taiDuLieu();
-            } else {
-                JOptionPane.showMessageDialog(view, "Xoa phong that bai!");
+            if (chon == JOptionPane.YES_OPTION) {
+                if (service.xoa(phongCanXoa) > 0) {
+                    JOptionPane.showMessageDialog(view, "Đã xóa phòng " + soPhong + " thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    taiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(view, "Không thể xóa phòng " + soPhong + "! (Có thể phòng đang có hóa đơn/đặt phòng)", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Chuyen trang thai tieng Viet sang tieng Anh de luu DB
-    String chuyenTrangThai(String s) {
-        if (s == null) return "AVAILABLE";
-
-        switch (s) {
-            case "TRỐNG":
-            case "Trong":
-                return "AVAILABLE";
-
-            case "CÓ KHÁCH":
-            case "Co khach":
-                return "OCCUPIED";
-
-            case "ĐANG DỌN":
-            case "Dang don":
-                return "CLEANING";
-
-            case "BẢO TRÌ":
-            case "Bao tri":
-                return "MAINTENANCE";
-
-            default:
-                return s;
-        }
-    }
-
+    // Hiển thị chuỗi trạng thái tiếng Việt
     String hienThiTrangThai(String s) {
-        if (s == null) return "";
-
-        switch (s) {
+        if (s == null) return "TRỐNG";
+        switch (s.trim().toUpperCase()) {
             case "AVAILABLE":
+            case "TRỐNG":
+            case "0":
                 return "TRỐNG";
-
             case "OCCUPIED":
+            case "CÓ KHÁCH":
+            case "1":
                 return "CÓ KHÁCH";
-
             case "CLEANING":
+            case "ĐANG DỌN":
+            case "2":
                 return "ĐANG DỌN";
-
             case "MAINTENANCE":
+            case "BẢO TRÌ":
+            case "3":
                 return "BẢO TRÌ";
-
             default:
                 return s;
         }

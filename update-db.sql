@@ -1,1 +1,0 @@
--- update db thì ghi sql vào đây

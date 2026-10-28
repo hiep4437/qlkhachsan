@@ -11,11 +11,16 @@ public class bookings {
 	private Date ngayTao;
 	private String ghiChu;
 
-	// Thong tin join tu booking_rooms, rooms, room_types, customers
+	// Thong tin lien ket tu chi_tiet_dat_phong, phong, loai_phong, khach_hang
 	private String cccd;
 	private String tang;
 	private int soNguoi;
 	private String soPhong;
+	private int maPhong;
+	private double giaMoiDem;
+	private String tenLoaiPhong;
+	private String tenKhachHang;
+	private String soDienThoai;
 
 	public int getIdDatPhong() {
 		return idDatPhong;
@@ -61,13 +66,13 @@ public class bookings {
 	}
 
 	public String getCccd() {
-		return cccd;
+		return cccd != null ? cccd : "";
 	}
 	public void setCccd(String cccd) {
 		this.cccd = cccd;
 	}
 	public String getTang() {
-		return tang;
+		return tang != null ? tang : "";
 	}
 	public void setTang(String tang) {
 		this.tang = tang;
@@ -79,15 +84,45 @@ public class bookings {
 		this.soNguoi = soNguoi;
 	}
 	public String getSoPhong() {
-		return soPhong;
+		return soPhong != null ? soPhong : "";
 	}
 	public void setSoPhong(String soPhong) {
 		this.soPhong = soPhong;
 	}
 
+	public int getMaPhong() {
+		return maPhong;
+	}
+	public void setMaPhong(int maPhong) {
+		this.maPhong = maPhong;
+	}
+	public double getGiaMoiDem() {
+		return giaMoiDem;
+	}
+	public void setGiaMoiDem(double giaMoiDem) {
+		this.giaMoiDem = giaMoiDem;
+	}
+	public String getTenLoaiPhong() {
+		return tenLoaiPhong != null ? tenLoaiPhong : "";
+	}
+	public void setTenLoaiPhong(String tenLoaiPhong) {
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+	public String getTenKhachHang() {
+		return tenKhachHang != null ? tenKhachHang : "";
+	}
+	public void setTenKhachHang(String tenKhachHang) {
+		this.tenKhachHang = tenKhachHang;
+	}
+	public String getSoDienThoai() {
+		return soDienThoai != null ? soDienThoai : "";
+	}
+	public void setSoDienThoai(String soDienThoai) {
+		this.soDienThoai = soDienThoai;
+	}
+
 	public bookings(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
 			Date ngayTao, String ghiChu) {
-		super();
 		this.idDatPhong = idDatPhong;
 		this.idKhachHang = idKhachHang;
 		this.ngayNhanPhong = ngayNhanPhong;
@@ -104,6 +139,17 @@ public class bookings {
 		this.tang = tang;
 		this.soNguoi = soNguoi;
 		this.soPhong = soPhong;
+	}
+
+	public bookings(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
+			Date ngayTao, String ghiChu, String cccd, String tang, int soNguoi, String soPhong,
+			int maPhong, double giaMoiDem, String tenLoaiPhong, String tenKhachHang, String soDienThoai) {
+		this(idDatPhong, idKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu, cccd, tang, soNguoi, soPhong);
+		this.maPhong = maPhong;
+		this.giaMoiDem = giaMoiDem;
+		this.tenLoaiPhong = tenLoaiPhong;
+		this.tenKhachHang = tenKhachHang;
+		this.soDienThoai = soDienThoai;
 	}
 
 	public bookings() {

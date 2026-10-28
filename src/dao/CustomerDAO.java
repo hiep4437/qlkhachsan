@@ -1,9 +1,9 @@
-
 package dao;
 
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import model.customers;
 
@@ -11,29 +11,31 @@ public class CustomerDAO {
 
     // Them khach hang
     public int them(customers t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        customers p = timKiem(t);
+        if (p != null) {
+            System.out.println("So CCCD da ton tai!");
+            return 0;
+        }
 
-            customers p = timKiem(t);
+        String sql = "INSERT INTO khach_hang (ho_ten, so_cccd, so_dien_thoai, email, dia_chi) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            if (p == null) {
-                String sql = "INSERT INTO customers "
-                        + "(full_name, identity_no, phone, email, address) VALUES ('"
-                        + t.getNameKhachHang() + "', '"
-                        + t.getSoCCCD() + "', '"
-                        + t.getSoDienThoai() + "', '"
-                        + t.getEmail() + "', '"
-                        + t.getDiaChi() + "')";
+            ps.setString(1, t.getNameKhachHang().trim());
+            ps.setString(2, t.getSoCCCD() != null ? t.getSoCCCD().trim() : null);
+            ps.setString(3, t.getSoDienThoai() != null ? t.getSoDienThoai().trim() : null);
+            ps.setString(4, t.getEmail() != null ? t.getEmail().trim() : null);
+            ps.setString(5, t.getDiaChi() != null ? t.getDiaChi().trim() : null);
 
-                int kq = st.executeUpdate(sql);
-                conn.close();
-                return kq;
-            } else {
-                System.out.println("So CCCD da ton tai!");
-                conn.close();
-                return 0;
-            }
+            int kq = ps.executeUpdate();
+            if (kq > 0) {
+				try (ResultSet rs = ps.getGeneratedKeys()) {
+					if (rs.next()) {
+						t.setIdKhachHang(rs.getInt(1));
+					}
+				}
+			}
+            return kq;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -42,21 +44,18 @@ public class CustomerDAO {
 
     // Sua khach hang
     public int sua(customers t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        String sql = "UPDATE khach_hang SET ho_ten = ?, so_cccd = ?, so_dien_thoai = ?, email = ?, dia_chi = ? WHERE ma_khach_hang = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String sql = "UPDATE customers SET "
-                    + "full_name = '" + t.getNameKhachHang() + "', "
-                    + "identity_no = '" + t.getSoCCCD() + "', "
-                    + "phone = '" + t.getSoDienThoai() + "', "
-                    + "email = '" + t.getEmail() + "', "
-                    + "address = '" + t.getDiaChi() + "' "
-                    + "WHERE customer_id = " + t.getIdKhachHang();
+            ps.setString(1, t.getNameKhachHang().trim());
+            ps.setString(2, t.getSoCCCD() != null ? t.getSoCCCD().trim() : null);
+            ps.setString(3, t.getSoDienThoai() != null ? t.getSoDienThoai().trim() : null);
+            ps.setString(4, t.getEmail() != null ? t.getEmail().trim() : null);
+            ps.setString(5, t.getDiaChi() != null ? t.getDiaChi().trim() : null);
+            ps.setInt(6, t.getIdKhachHang());
 
-            int kq = st.executeUpdate(sql);
-            conn.close();
-            return kq;
+            return ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
@@ -65,46 +64,38 @@ public class CustomerDAO {
 
     // Xoa khach hang
     public int xoa(customers t) {
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        String sql = "DELETE FROM khach_hang WHERE ma_khach_hang = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String sql = "DELETE FROM customers WHERE customer_id = "
-                    + t.getIdKhachHang();
-
-            int kq = st.executeUpdate(sql);
-            conn.close();
-            return kq;
+            ps.setInt(1, t.getIdKhachHang());
+            return ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    // Xuat danh sach khach hang
+    // Xuat danh sach khach hang kem theo so lan dat phong
     public ArrayList<customers> xuat() {
         ArrayList<customers> ds = new ArrayList<>();
+        String sql = "SELECT * FROM khach_hang ORDER BY ma_khach_hang DESC";
 
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
-
-            String sql = "SELECT * FROM customers";
-            ResultSet rs = st.executeQuery(sql);
+        try (Connection conn = DBConnection.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 customers t = new customers(
-                        rs.getInt("customer_id"),
-                        rs.getString("full_name"),
-                        rs.getString("identity_no"),
-                        rs.getString("phone"),
+                        rs.getInt("ma_khach_hang"),
+                        rs.getString("ho_ten"),
+                        rs.getString("so_cccd"),
+                        rs.getString("so_dien_thoai"),
                         rs.getString("email"),
-                        rs.getString("address"));
-
+                        rs.getString("dia_chi")
+                );
                 ds.add(t);
             }
-
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,30 +103,47 @@ public class CustomerDAO {
         return ds;
     }
 
-    // Tim kiem theo CCCD
+    // Dem so lan dat phong cua khach hang
+    public int demSoLanDatPhong(int maKhachHang) {
+        String sql = "SELECT COUNT(*) FROM dat_phong WHERE ma_khach_hang = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, maKhachHang);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // Tim kiem khach hang theo CCCD hoac ID
     public customers timKiem(customers t) {
         customers kq = null;
+        if (t == null) return null;
 
-        try {
-            Connection conn = DBConnection.getConnection();
-            Statement st = conn.createStatement();
+        String sql = "SELECT * FROM khach_hang WHERE ma_khach_hang = ? OR (so_cccd IS NOT NULL AND so_cccd = ?)";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            String sql = "SELECT * FROM customers WHERE identity_no = '"
-                    + t.getSoCCCD() + "'";
+            ps.setInt(1, t.getIdKhachHang());
+            ps.setString(2, t.getSoCCCD() != null ? t.getSoCCCD().trim() : "");
 
-            ResultSet rs = st.executeQuery(sql);
-
-            if (rs.next()) {
-                kq = new customers(
-                        rs.getInt("customer_id"),
-                        rs.getString("full_name"),
-                        rs.getString("identity_no"),
-                        rs.getString("phone"),
-                        rs.getString("email"),
-                        rs.getString("address"));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    kq = new customers(
+                            rs.getInt("ma_khach_hang"),
+                            rs.getString("ho_ten"),
+                            rs.getString("so_cccd"),
+                            rs.getString("so_dien_thoai"),
+                            rs.getString("email"),
+                            rs.getString("dia_chi")
+                    );
+                }
             }
-
-            conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -40,9 +40,19 @@ public class BookingService {
         return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight);
     }
 
+    // Nhan phong (Check-in)
+    public boolean nhanPhong(int bookingId) {
+        return dao.nhanPhong(bookingId);
+    }
+
     // Tra phong va thanh toan, chuyen phong sang CLEANING
     public boolean traPhongVaThanhToan(int bookingId, int roomId, double tienPhong, double phuThu, double giamGia, double tongTien, String phuongThuc) {
         return dao.traPhongVaThanhToan(bookingId, roomId, tienPhong, phuThu, giamGia, tongTien, phuongThuc);
+    }
+
+    // Huy dat phong
+    public boolean huyDatPhong(int bookingId) {
+        return dao.huyDatPhong(bookingId);
     }
 
     // Sua dat phong
