@@ -57,7 +57,7 @@ public class ViewTrangChu extends JFrame {
     public ViewTrangChu(users user) {
         this.currentUser = (user != null) ? user : new users(1, "admin", "123456", "Quản trị viên", "ADMIN", true);
 
-        setTitle("Hệ thống quản lý khách sạn - Sơ đồ phòng & Vận hành");
+        setTitle("Hệ thống quản lý khách sạn");
         AppWindowIcon.apply(this);
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(env.getMaximumWindowBounds());
