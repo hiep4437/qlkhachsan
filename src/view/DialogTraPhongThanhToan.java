@@ -8,7 +8,9 @@ import java.time.temporal.ChronoUnit;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import model.bookings;
+import model.invoices;
 import service.BookingService;
+import service.InvoiceService;
 
 public class DialogTraPhongThanhToan extends JDialog {
 
@@ -249,12 +251,19 @@ public class DialogTraPhongThanhToan extends JDialog {
             boolean ok = bookingService.traPhongVaThanhToan(bookingId, roomId, tienPhong, pt, gg, tong, phuongThuc);
             if (ok) {
                 completed = true;
+                invoices hoaDon = new InvoiceService().timTheoDatPhong(bookingId);
                 JOptionPane.showMessageDialog(this,
                         "Thanh toán và Check-out thành công!\n"
                                 + "Tổng tiền: " + df.format(tong) + " (" + phuongThuc + ")\n"
-                                + "Phòng " + booking.getSoPhong() + " đã chuyển sang trạng thái ĐANG DỌN.",
+                                + "Phòng " + booking.getSoPhong() + " đã chuyển sang trạng thái ĐANG DỌN."
+                                + (hoaDon == null ? "\nKhông thể tải hóa đơn để xem trước."
+                                        : "\nHóa đơn sẵn sàng để xem trước và in."),
                         "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                Window parent = getOwner();
                 dispose();
+                if (hoaDon != null) {
+                    SwingUtilities.invokeLater(() -> DialogChiTietHoaDon.hienThiXemTruocHoaDon(parent, hoaDon));
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thực hiện trả phòng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -336,4 +345,3 @@ public class DialogTraPhongThanhToan extends JDialog {
         return completed;
     }
 }
-

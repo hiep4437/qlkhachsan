@@ -13,6 +13,7 @@ public class ViewDangNhap extends JFrame {
 
     public ViewDangNhap() {
         setTitle("Đăng nhập - Quản lý khách sạn");
+        AppWindowIcon.apply(this);
         setSize(420, 360);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

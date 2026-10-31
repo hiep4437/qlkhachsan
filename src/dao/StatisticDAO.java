@@ -105,28 +105,7 @@ public class StatisticDAO {
         return 0;
     }
 
-    // 5. Tỷ lệ lấp đầy phòng (%) & Số phòng đang có khách
-    public double[] getTyLeVaSoPhongDangO() {
-        String sql = "SELECT "
-                + "COUNT(*) as tong_phong, "
-                + "SUM(CASE WHEN trang_thai = 1 THEN 1 ELSE 0 END) as dang_o "
-                + "FROM phong";
-        try (Connection conn = DBConnection.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) {
-                int tong = rs.getInt("tong_phong");
-                int dangO = rs.getInt("dang_o");
-                double tyLe = (tong > 0) ? ((double) dangO / tong * 100) : 0;
-                return new double[] { tyLe, dangO, tong };
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new double[] { 0, 0, 0 };
-    }
-
-    // 6. Thống kê doanh thu theo từng phòng
+    // 5. Thống kê doanh thu theo từng phòng
     public ArrayList<ThongKePhong> thongKeTheoPhong(String kyLoc) {
         ArrayList<ThongKePhong> ds = new ArrayList<>();
 
@@ -178,17 +157,22 @@ public class StatisticDAO {
         return ds;
     }
 
-    // 7. Chi tiết hóa đơn doanh thu theo kỳ
+    // 6. Chi tiết hóa đơn doanh thu theo kỳ
     public ArrayList<ChiTietHoaDonBaoCao> layHoaDonTheoKy(String kyLoc) {
         ArrayList<ChiTietHoaDonBaoCao> ds = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT hd.ma_hoa_don, hd.ngay_lap, p.so_phong, kh.ho_ten, kh.so_dien_thoai, ")
+        sql.append("SELECT hd.ma_hoa_don, hd.ngay_lap, rooms.so_phong, kh.ho_ten, kh.so_dien_thoai, ")
            .append("hd.tien_phong, hd.phu_thu, hd.giam_gia, hd.tong_tien, hd.phuong_thuc_thanh_toan ")
            .append("FROM hoa_don hd ")
            .append("JOIN dat_phong dp ON hd.ma_dat_phong = dp.ma_dat_phong ")
-           .append("LEFT JOIN chi_tiet_dat_phong ctdp ON dp.ma_dat_phong = ctdp.ma_dat_phong ")
-           .append("LEFT JOIN phong p ON ctdp.ma_phong = p.ma_phong ")
+           .append("LEFT JOIN (")
+           .append("SELECT ctdp.ma_dat_phong, ")
+           .append("GROUP_CONCAT(DISTINCT p.so_phong ORDER BY p.so_phong SEPARATOR ', ') AS so_phong ")
+           .append("FROM chi_tiet_dat_phong ctdp ")
+           .append("JOIN phong p ON ctdp.ma_phong = p.ma_phong ")
+           .append("GROUP BY ctdp.ma_dat_phong")
+           .append(") rooms ON dp.ma_dat_phong = rooms.ma_dat_phong ")
            .append("LEFT JOIN khach_hang kh ON dp.ma_khach_hang = kh.ma_khach_hang ")
            .append("WHERE hd.trang_thai_thanh_toan = 1 ");
 
@@ -237,4 +221,3 @@ public class StatisticDAO {
         return ds;
     }
 }
-

@@ -58,6 +58,7 @@ public class ViewTrangChu extends JFrame {
         this.currentUser = (user != null) ? user : new users(1, "admin", "123456", "Quản trị viên", "ADMIN", true);
 
         setTitle("Hệ thống quản lý khách sạn - Sơ đồ phòng & Vận hành");
+        AppWindowIcon.apply(this);
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(env.getMaximumWindowBounds());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -126,6 +127,7 @@ public class ViewTrangChu extends JFrame {
         btnDangXuat.setForeground(Color.WHITE);
         btnDangXuat.setFocusPainted(false);
         btnDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnDangXuat.setPreferredSize(btnUserMenu.getPreferredSize());
         btnDangXuat.addActionListener(e -> dangXuat());
 
         userPanel.add(btnUserMenu);
@@ -642,7 +644,7 @@ public class ViewTrangChu extends JFrame {
     // =========================================================================
     private void moDialogDatPhongNhanh(rooms r) {
         JDialog dlg = new JDialog(this, "Đặt phòng / Check-in - Phòng " + r.getSoPhong(), true);
-        dlg.setSize(520, 520);
+        dlg.setSize(520, 560);
         dlg.setLocationRelativeTo(this);
         dlg.setLayout(new BorderLayout(10, 10));
 
@@ -681,6 +683,8 @@ public class ViewTrangChu extends JFrame {
         JTextField txtNgayNhan = new JTextField(today.toString(), 10);
         JTextField txtNgayTra = new JTextField(tomorrow.toString(), 10);
         JTextField txtGhiChu = new JTextField("Khách đặt trực tiếp", 15);
+        int sucChua = Math.max(1, r.getSucChua());
+        JSpinner spnSoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChua, 1));
 
         JLabel lblTamTinh = new JLabel(currencyFormat.format(r.getGiaMoiDem()) + " (1 đêm)");
         lblTamTinh.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -745,12 +749,20 @@ public class ViewTrangChu extends JFrame {
         g.gridy = 6;
         pForm.add(lblTamTinh, g);
 
-        // Hàng 7: Ghi chú
+        // Hàng 7: Số khách
         g.gridx = 0;
         g.gridy = 7;
-        pForm.add(new JLabel("Ghi chú:"), g);
+        pForm.add(new JLabel("Số khách (tối đa " + sucChua + "):"), g);
         g.gridx = 1;
         g.gridy = 7;
+        pForm.add(spnSoNguoi, g);
+
+        // Hàng 8: Ghi chú
+        g.gridx = 0;
+        g.gridy = 8;
+        pForm.add(new JLabel("Ghi chú:"), g);
+        g.gridx = 1;
+        g.gridy = 8;
         pForm.add(txtGhiChu, g);
 
         // Tính lại số tiền khi đổi ngày
@@ -852,7 +864,8 @@ public class ViewTrangChu extends JFrame {
 
             // Tiến hành đặt phòng & check-in
             int bookingId = bookingService.datPhongNhanh(customerId, dNhan, dTra, "CHECKED_IN",
-                    txtGhiChu.getText().trim(), r.getMaPhong(), r.getGiaMoiDem());
+                    txtGhiChu.getText().trim(), r.getMaPhong(), r.getGiaMoiDem(),
+                    (int) spnSoNguoi.getValue());
 
             if (bookingId > 0) {
                 JOptionPane.showMessageDialog(this,

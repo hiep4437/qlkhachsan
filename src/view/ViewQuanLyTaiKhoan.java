@@ -56,6 +56,7 @@ public class ViewQuanLyTaiKhoan extends JFrame {
     public ViewQuanLyTaiKhoan(users currentUser) {
         this.currentUser = currentUser;
         setTitle("Quản lý khách sạn - Quản lý tài khoản");
+        AppWindowIcon.apply(this);
         setSize(1050, 680);
         setMinimumSize(new Dimension(900, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

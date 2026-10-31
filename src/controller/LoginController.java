@@ -7,6 +7,7 @@ import view.ViewDangNhap;
 import view.ViewTrangChu;
 
 import java.sql.Connection;
+import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class LoginController {
@@ -16,6 +17,28 @@ public class LoginController {
     public LoginController(ViewDangNhap view) {
         this.view = view;
         view.getBtnDangNhap().addActionListener(e -> dangNhap());
+
+        KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
+        Action enterAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xuLyEnter();
+            }
+        };
+        view.txtTenDangNhap.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "login-enter");
+        view.txtTenDangNhap.getActionMap().put("login-enter", enterAction);
+        view.txtMatKhau.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "login-enter");
+        view.txtMatKhau.getActionMap().put("login-enter", enterAction);
+    }
+
+    private void xuLyEnter() {
+        if (view.getTenDangNhap().isEmpty()) {
+            view.txtTenDangNhap.requestFocusInWindow();
+        } else if (view.getMatKhau().trim().isEmpty()) {
+            view.txtMatKhau.requestFocusInWindow();
+        } else {
+            dangNhap();
+        }
     }
 
     void dangNhap() {

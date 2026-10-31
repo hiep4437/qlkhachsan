@@ -51,6 +51,7 @@ model\rooms.class
 view\DialogThongTinTaiKhoan.class
 view\ViewQuanLyPhong$3.class
 view\ViewHoaDon$2.class
+controller\LoginController$1.class
 view\ViewTrangChu.class
 controller\CustomerController$1.class
 controller\UserController.class
@@ -78,6 +79,7 @@ view\UIStyle.class
 service\RoomService.class
 view\UIStyle$RoundedBorder.class
 view\ViewBaoCaoThongKe$2.class
+view\AppWindowIcon.class
 service\UserService.class
 view\DialogThemSuaKhachHang.class
 controller\StatisticController$2.class

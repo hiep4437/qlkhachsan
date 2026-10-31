@@ -115,13 +115,10 @@ public class StatisticController {
         double tongDoanhThu = service.getTongDoanhThu();
         double doanhThuThang = service.getDoanhThuThangNay();
         double doanhThuNgay = service.getDoanhThuHomNay();
-        double[] phongInfo = service.getTyLeVaSoPhongDangO();
 
         view.lblValTongDoanhThu.setText(df.format(tongDoanhThu));
         view.lblValDoanhThuThang.setText(df.format(doanhThuThang));
         view.lblValDoanhThuNgay.setText(df.format(doanhThuNgay));
-        view.lblValTyLePhong.setText(dfTyLe.format(phongInfo[0]));
-        view.lblSubTyLePhong.setText((int) phongInfo[1] + "/" + (int) phongInfo[2] + " phòng đang có khách");
 
         // 2. Cập nhật dữ liệu bảng theo kỳ
         taiDuLieuTheoKy();
@@ -173,4 +170,3 @@ public class StatisticController {
         }
     }
 }
-

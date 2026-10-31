@@ -9,6 +9,7 @@ public class rooms {
 	private String trangThai;
 	private String moTa;
 	private String tenLoaiPhong;
+	private int sucChua = 1;
 
 	public int getMaPhong() {
 		return maPhong;
@@ -57,6 +58,12 @@ public class rooms {
 	}
 	public void setTenLoaiPhong(String tenLoaiPhong) {
 		this.tenLoaiPhong = tenLoaiPhong;
+	}
+	public int getSucChua() {
+		return sucChua;
+	}
+	public void setSucChua(int sucChua) {
+		this.sucChua = sucChua;
 	}
 
 	public rooms(int maPhong, String soPhong, int maLoaiPhong, float giaMoiDem, String trangThai, String moTa) {

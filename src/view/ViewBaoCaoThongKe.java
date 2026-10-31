@@ -13,9 +13,6 @@ public class ViewBaoCaoThongKe extends JFrame {
     public JLabel lblValTongDoanhThu;
     public JLabel lblValDoanhThuThang;
     public JLabel lblValDoanhThuNgay;
-    public JLabel lblValTyLePhong;
-    public JLabel lblSubTyLePhong;
-
     // Bộ lọc
     public JComboBox<String> cboKyBaoCao;
     public JButton btnLoc;
@@ -31,7 +28,8 @@ public class ViewBaoCaoThongKe extends JFrame {
     public DefaultTableModel modelHoaDon;
 
     public ViewBaoCaoThongKe() {
-        setTitle("Báo cáo thống kê doanh thu & Hiệu suất phòng");
+        setTitle("Báo cáo thống kê doanh thu");
+        AppWindowIcon.apply(this);
         setSize(1180, 720);
         setMinimumSize(new Dimension(1000, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +48,7 @@ public class ViewBaoCaoThongKe extends JFrame {
         JPanel pTitle = new JPanel(new BorderLayout());
         pTitle.setOpaque(false);
 
-        JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ DOANH THU & HIỆU SUẤT HOẠT ĐỘNG");
+        JLabel lblTitle = new JLabel("BÁO CÁO THỐNG KÊ DOANH THU");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         lblTitle.setForeground(new Color(30, 41, 59));
 
@@ -66,8 +64,8 @@ public class ViewBaoCaoThongKe extends JFrame {
         pTop.add(pTitle);
         pTop.add(Box.createVerticalStrut(12));
 
-        // 4 KPI Cards Panel
-        JPanel pCards = new JPanel(new GridLayout(1, 4, 12, 0));
+        // 3 KPI Cards Panel
+        JPanel pCards = new JPanel(new GridLayout(1, 3, 12, 0));
         pCards.setOpaque(false);
 
         // Card 1: Tổng doanh thu lũy kế
@@ -84,12 +82,6 @@ public class ViewBaoCaoThongKe extends JFrame {
         lblValDoanhThuNgay = new JLabel("0 đ");
         pCards.add(taoCardKPI("DOANH THU HÔM NAY", lblValDoanhThuNgay, "Doanh thu trong ngày",
                 new Color(211, 84, 0), new Color(254, 249, 231)));
-
-        // Card 4: Tỷ lệ lấp đầy phòng
-        lblValTyLePhong = new JLabel("0.0%");
-        lblSubTyLePhong = new JLabel("0/0 phòng có khách");
-        pCards.add(taoCardKPI("TỶ LỆ LẤP ĐẦY PHÒNG", lblValTyLePhong, lblSubTyLePhong,
-                new Color(142, 68, 173), new Color(245, 238, 248)));
 
         pTop.add(pCards);
         pTop.add(Box.createVerticalStrut(12));
@@ -160,7 +152,7 @@ public class ViewBaoCaoThongKe extends JFrame {
         JScrollPane spPhong = new JScrollPane(tblPhong);
         spPhong.getViewport().setBackground(Color.WHITE);
         tabPhong.add(spPhong, BorderLayout.CENTER);
-        subTabs.addTab("Hiệu suất & Doanh thu theo từng phòng", tabPhong);
+        subTabs.addTab("Doanh thu theo từng phòng", tabPhong);
 
         // Tab con 2: Chi tiết các hóa đơn thanh toán trong kỳ
         JPanel tabHoaDon = new JPanel(new BorderLayout());
@@ -254,4 +246,3 @@ public class ViewBaoCaoThongKe extends JFrame {
         timer.start();
     }
 }
-

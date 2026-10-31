@@ -41,6 +41,7 @@ public class ViewQuanLyPhong extends JFrame {
 
     public ViewQuanLyPhong() {
         setTitle("Quản lý khách sạn - Quản lý phòng");
+        AppWindowIcon.apply(this);
         setSize(1100, 680);
         setMinimumSize(new Dimension(900, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -39,25 +39,40 @@ public class BookingDAO {
 		String sql = "INSERT INTO dat_phong (ma_khach_hang, ngay_nhan_phong, ngay_tra_phong, so_luong_nguoi, trang_thai, ghi_chu) "
 				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-		try (Connection conn = DBConnection.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		try (Connection conn = DBConnection.getConnection()) {
+			conn.setAutoCommit(false);
+			if (t.getMaPhong() > 0 && !phongDuSucChua(conn, t.getMaPhong(), soNguoi)) {
+				conn.rollback();
+				return 0;
+			}
 
-			ps.setInt(1, t.getIdKhachHang());
-			ps.setDate(2, t.getNgayNhanPhong());
-			ps.setDate(3, t.getNgayTraPhong());
-			ps.setInt(4, soNguoi);
-			ps.setInt(5, ttSo);
-			ps.setString(6, t.getGhiChu());
+			try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+				ps.setInt(1, t.getIdKhachHang());
+				ps.setDate(2, t.getNgayNhanPhong());
+				ps.setDate(3, t.getNgayTraPhong());
+				ps.setInt(4, soNguoi);
+				ps.setInt(5, ttSo);
+				ps.setString(6, t.getGhiChu());
 
-			int kq = ps.executeUpdate();
-			if (kq > 0) {
-				try (ResultSet rs = ps.getGeneratedKeys()) {
-					if (rs.next()) {
-						t.setIdDatPhong(rs.getInt(1));
+				int kq = ps.executeUpdate();
+				if (kq > 0) {
+					try (ResultSet rs = ps.getGeneratedKeys()) {
+						if (rs.next()) {
+							t.setIdDatPhong(rs.getInt(1));
+						}
 					}
 				}
+				if (kq <= 0) {
+					conn.rollback();
+					return 0;
+				}
 			}
-			return kq;
+
+			if (t.getMaPhong() > 0) {
+				themChiTietPhong(conn, t.getIdDatPhong(), t.getMaPhong(), t.getGiaMoiDem());
+			}
+			conn.commit();
+			return t.getIdDatPhong();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
@@ -66,22 +81,32 @@ public class BookingDAO {
 
 	// Dat phong nhanh kem phong va tao hoa don tam tinh
 	public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId, double pricePerNight) {
+		return datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, 1);
+	}
+
+	public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId,
+			double pricePerNight, int soNguoi) {
 		Connection conn = null;
 		try {
 			conn = DBConnection.getConnection();
 			conn.setAutoCommit(false);
+			if (soNguoi < 1 || !phongDuSucChua(conn, roomId, soNguoi)) {
+				conn.rollback();
+				return 0;
+			}
 
 			// 1. Them dat_phong
 			int ttDatPhong = chuyenTrangThaiSangSo(status);
 			String sqlBooking = "INSERT INTO dat_phong (ma_khach_hang, ngay_nhan_phong, ngay_tra_phong, so_luong_nguoi, trang_thai, ghi_chu) "
-					+ "VALUES (?, ?, ?, 1, ?, ?)";
+					+ "VALUES (?, ?, ?, ?, ?, ?)";
 			int bookingId = 0;
 			try (PreparedStatement ps = conn.prepareStatement(sqlBooking, Statement.RETURN_GENERATED_KEYS)) {
 				ps.setInt(1, customerId);
 				ps.setDate(2, checkIn);
 				ps.setDate(3, checkOut);
-				ps.setInt(4, ttDatPhong);
-				ps.setString(5, note);
+				ps.setInt(4, soNguoi);
+				ps.setInt(5, ttDatPhong);
+				ps.setString(6, note);
 				ps.executeUpdate();
 				try (ResultSet rs = ps.getGeneratedKeys()) {
 					if (rs.next()) {
@@ -106,10 +131,13 @@ public class BookingDAO {
 
 			// 3. Neu check-in ngay (status=1 / CHECKED_IN) thi cap nhat phong sang OCCUPIED (1)
 			if (ttDatPhong == 1) {
-				String sqlRoom = "UPDATE phong SET trang_thai = 1 WHERE ma_phong = ?";
+				String sqlRoom = "UPDATE phong SET trang_thai = 1 WHERE ma_phong = ? AND trang_thai = 0";
 				try (PreparedStatement ps = conn.prepareStatement(sqlRoom)) {
 					ps.setInt(1, roomId);
-					ps.executeUpdate();
+					if (ps.executeUpdate() == 0) {
+						conn.rollback();
+						return 0;
+					}
 				}
 			}
 
@@ -147,19 +175,41 @@ public class BookingDAO {
 			conn = DBConnection.getConnection();
 			conn.setAutoCommit(false);
 
-			// 1. Cap nhat dat_phong sang CHECKED_IN (1)
-			String sqlBooking = "UPDATE dat_phong SET trang_thai = 1 WHERE ma_dat_phong = ?";
-			try (PreparedStatement ps = conn.prepareStatement(sqlBooking)) {
+			int roomId;
+			String sqlCapacity = "SELECT b.so_luong_nguoi, br.ma_phong, COALESCE(lp.suc_chua, 1) AS suc_chua, p.trang_thai "
+					+ "FROM dat_phong b "
+					+ "JOIN chi_tiet_dat_phong br ON b.ma_dat_phong = br.ma_dat_phong "
+					+ "JOIN phong p ON br.ma_phong = p.ma_phong "
+					+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
+					+ "WHERE b.ma_dat_phong = ? AND b.trang_thai = 0 FOR UPDATE";
+			try (PreparedStatement ps = conn.prepareStatement(sqlCapacity)) {
 				ps.setInt(1, bookingId);
-				ps.executeUpdate();
+				try (ResultSet rs = ps.executeQuery()) {
+					if (!rs.next() || rs.getInt("so_luong_nguoi") > rs.getInt("suc_chua")
+							|| rs.getInt("trang_thai") != 0) {
+						conn.rollback();
+						return false;
+					}
+					roomId = rs.getInt("ma_phong");
+				}
 			}
 
-			// 2. Tim phong cua don dat nay va cap nhat phong sang OCCUPIED (1)
-			String sqlRoom = "UPDATE phong p JOIN chi_tiet_dat_phong ctdp ON p.ma_phong = ctdp.ma_phong "
-					+ "SET p.trang_thai = 1 WHERE ctdp.ma_dat_phong = ?";
-			try (PreparedStatement ps = conn.prepareStatement(sqlRoom)) {
+			String sqlBooking = "UPDATE dat_phong SET trang_thai = 1 WHERE ma_dat_phong = ? AND trang_thai = 0";
+			try (PreparedStatement ps = conn.prepareStatement(sqlBooking)) {
 				ps.setInt(1, bookingId);
-				ps.executeUpdate();
+				if (ps.executeUpdate() != 1) {
+					conn.rollback();
+					return false;
+				}
+			}
+
+			String sqlRoom = "UPDATE phong SET trang_thai = 1 WHERE ma_phong = ? AND trang_thai = 0";
+			try (PreparedStatement ps = conn.prepareStatement(sqlRoom)) {
+				ps.setInt(1, roomId);
+				if (ps.executeUpdate() != 1) {
+					conn.rollback();
+					return false;
+				}
 			}
 
 			conn.commit();
@@ -304,21 +354,61 @@ public class BookingDAO {
 		String sql = "UPDATE dat_phong SET ma_khach_hang = ?, ngay_nhan_phong = ?, ngay_tra_phong = ?, so_luong_nguoi = ?, "
 				+ "trang_thai = ?, ghi_chu = ? WHERE ma_dat_phong = ?";
 
-		try (Connection conn = DBConnection.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection conn = DBConnection.getConnection()) {
+			conn.setAutoCommit(false);
+			if (t.getMaPhong() > 0 && !phongDuSucChua(conn, t.getMaPhong(), soNguoi)) {
+				conn.rollback();
+				return 0;
+			}
 
-			ps.setInt(1, t.getIdKhachHang());
-			ps.setDate(2, t.getNgayNhanPhong());
-			ps.setDate(3, t.getNgayTraPhong());
-			ps.setInt(4, soNguoi);
-			ps.setInt(5, ttSo);
-			ps.setString(6, t.getGhiChu());
-			ps.setInt(7, t.getIdDatPhong());
+			try (PreparedStatement ps = conn.prepareStatement(sql)) {
+				ps.setInt(1, t.getIdKhachHang());
+				ps.setDate(2, t.getNgayNhanPhong());
+				ps.setDate(3, t.getNgayTraPhong());
+				ps.setInt(4, soNguoi);
+				ps.setInt(5, ttSo);
+				ps.setString(6, t.getGhiChu());
+				ps.setInt(7, t.getIdDatPhong());
+				if (ps.executeUpdate() != 1) {
+					conn.rollback();
+					return 0;
+				}
+			}
 
-			return ps.executeUpdate();
+			if (t.getMaPhong() > 0) {
+				try (PreparedStatement ps = conn.prepareStatement(
+						"DELETE FROM chi_tiet_dat_phong WHERE ma_dat_phong = ?")) {
+					ps.setInt(1, t.getIdDatPhong());
+					ps.executeUpdate();
+				}
+				themChiTietPhong(conn, t.getIdDatPhong(), t.getMaPhong(), t.getGiaMoiDem());
+			}
+			conn.commit();
+			return 1;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
+		}
+	}
+
+	private boolean phongDuSucChua(Connection conn, int roomId, int soNguoi) throws Exception {
+		String sql = "SELECT COALESCE(lp.suc_chua, 1) AS suc_chua FROM phong p "
+				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong WHERE p.ma_phong = ?";
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, roomId);
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next() && soNguoi > 0 && soNguoi <= rs.getInt("suc_chua");
+			}
+		}
+	}
+
+	private void themChiTietPhong(Connection conn, int bookingId, int roomId, double pricePerNight) throws Exception {
+		String sql = "INSERT INTO chi_tiet_dat_phong (ma_dat_phong, ma_phong, gia_moi_dem) VALUES (?, ?, ?)";
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, bookingId);
+			ps.setInt(2, roomId);
+			ps.setDouble(3, pricePerNight);
+			ps.executeUpdate();
 		}
 	}
 

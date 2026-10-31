@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.*;
+import java.awt.print.PrinterException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
@@ -169,9 +170,18 @@ public class DialogChiTietHoaDon extends JDialog {
     }
 
     private void inHoaDon() {
-        JDialog dlgIn = new JDialog(this, "In hóa đơn #" + invoice.getIdHoaDon(), true);
+        hienThiXemTruocHoaDon(this, invoice);
+    }
+
+    public static void hienThiXemTruocHoaDon(Window parent, invoices invoice) {
+        if (invoice == null) {
+            JOptionPane.showMessageDialog(parent, "Không tìm thấy hóa đơn để in.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JDialog dlgIn = new JDialog(parent, "In hóa đơn #" + invoice.getIdHoaDon(), Dialog.ModalityType.APPLICATION_MODAL);
         dlgIn.setSize(460, 520);
-        dlgIn.setLocationRelativeTo(this);
+        dlgIn.setLocationRelativeTo(parent);
         dlgIn.setLayout(new BorderLayout());
 
         JTextArea txt = new JTextArea();
@@ -179,6 +189,24 @@ public class DialogChiTietHoaDon extends JDialog {
         txt.setEditable(false);
         txt.setMargin(new Insets(15, 20, 15, 20));
 
+        txt.setText(noiDungHoaDon(invoice));
+        dlgIn.add(new JScrollPane(txt), BorderLayout.CENTER);
+
+        JPanel pB = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnIn = new JButton("In");
+        btnIn.addActionListener(e -> thucHienIn(parent, txt));
+        JButton btnClose = new JButton("Đóng");
+        btnClose.addActionListener(ev -> dlgIn.dispose());
+        pB.add(btnIn);
+        pB.add(btnClose);
+        dlgIn.add(pB, BorderLayout.SOUTH);
+
+        dlgIn.setVisible(true);
+    }
+
+    private static String noiDungHoaDon(invoices invoice) {
+        DecimalFormat df = new DecimalFormat("#,### đ");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         StringBuilder sb = new StringBuilder();
         sb.append("==============================================\n");
         sb.append("            KHÁCH SẠN HOTEL MANAGEMENT        \n");
@@ -203,17 +231,18 @@ public class DialogChiTietHoaDon extends JDialog {
         sb.append(String.format("Trạng thái     : %s\n", invoice.getTrangThaiThanhToan()));
         sb.append("==============================================\n");
         sb.append("      Xin cảm ơn Quý khách & Hẹn gặp lại!     \n");
+        return sb.toString();
+    }
 
-        txt.setText(sb.toString());
-        dlgIn.add(new JScrollPane(txt), BorderLayout.CENTER);
-
-        JPanel pB = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnClose = new JButton("Đóng");
-        btnClose.addActionListener(ev -> dlgIn.dispose());
-        pB.add(btnClose);
-        dlgIn.add(pB, BorderLayout.SOUTH);
-
-        dlgIn.setVisible(true);
+    private static void thucHienIn(Window parent, JTextArea txt) {
+        try {
+            if (!txt.print()) {
+                JOptionPane.showMessageDialog(parent, "Đã hủy in hóa đơn.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(parent, "Không thể in hóa đơn: " + ex.getMessage(), "Lỗi in hóa đơn",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private JLabel taoLabel(String text, boolean bold) {
@@ -235,4 +264,3 @@ public class DialogChiTietHoaDon extends JDialog {
         return daThanhToanXong;
     }
 }
-

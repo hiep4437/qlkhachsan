@@ -12,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import model.invoices;
 import service.InvoiceService;
 import view.DialogChiTietHoaDon;
-import view.DialogThemSuaHoaDon;
 import view.ViewHoaDon;
 
 public class InvoiceController {
@@ -27,11 +26,8 @@ public class InvoiceController {
 
 		taiDuLieu();
 
-		// Nút xem chi tiết, thêm, sửa, xóa
+		// Nút xem chi tiết hóa đơn
 		view.btnXemChiTiet.addActionListener(e -> xemChiTiet());
-		view.btnThem.addActionListener(e -> them());
-		view.btnSua.addActionListener(e -> sua());
-		view.btnXoa.addActionListener(e -> xoa());
 
 		// Tìm kiếm & Lọc
 		view.btnTimKiem.addActionListener(e -> apDungBoLoc());
@@ -198,89 +194,4 @@ public class InvoiceController {
 		}
 	}
 
-	// Lập hóa đơn bằng Modal Dialog
-	void them() {
-		try {
-			DialogThemSuaHoaDon dialog = new DialogThemSuaHoaDon(getParentWindow(), null);
-			dialog.setVisible(true);
-
-			if (dialog.isSaved()) {
-				invoices i = dialog.getInvoice();
-				if (service.them(i) > 0) {
-					JOptionPane.showMessageDialog(view, "Lập hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-					taiDuLieu();
-				} else {
-					JOptionPane.showMessageDialog(view, "Lập hóa đơn thất bại! Vui lòng kiểm tra lại mã đặt phòng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	// Sửa hóa đơn bằng Modal Dialog
-	void sua() {
-		int selectedRow = view.table.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(view, "Vui lòng chọn một hóa đơn trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-
-		try {
-			int modelRow = view.table.convertRowIndexToModel(selectedRow);
-			int maHD = (int) view.model.getValueAt(modelRow, 0);
-
-			invoices canSua = timTheoMa(maHD);
-			if (canSua == null) {
-				JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			DialogThemSuaHoaDon dialog = new DialogThemSuaHoaDon(getParentWindow(), canSua);
-			dialog.setVisible(true);
-
-			if (dialog.isSaved()) {
-				invoices capNhat = dialog.getInvoice();
-				if (service.sua(capNhat) > 0) {
-					JOptionPane.showMessageDialog(view, "Cập nhật hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-					taiDuLieu();
-				} else {
-					JOptionPane.showMessageDialog(view, "Cập nhật hóa đơn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	// Xóa hóa đơn
-	void xoa() {
-		int selectedRow = view.table.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(view, "Vui lòng chọn một hóa đơn trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-
-		int modelRow = view.table.convertRowIndexToModel(selectedRow);
-		int maHD = (int) view.model.getValueAt(modelRow, 0);
-
-		int chon = JOptionPane.showConfirmDialog(
-				view,
-				"Bạn có chắc muốn xóa hóa đơn #" + maHD + " không?",
-				"Xác nhận xóa",
-				JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE
-		);
-
-		if (chon == JOptionPane.YES_OPTION) {
-			invoices canXoa = new invoices();
-			canXoa.setIdHoaDon(maHD);
-			if (service.xoa(canXoa) > 0) {
-				JOptionPane.showMessageDialog(view, "Xóa hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-				taiDuLieu();
-			} else {
-				JOptionPane.showMessageDialog(view, "Xóa hóa đơn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
 }

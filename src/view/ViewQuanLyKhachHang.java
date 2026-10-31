@@ -40,6 +40,7 @@ public class ViewQuanLyKhachHang extends JFrame {
 
     public ViewQuanLyKhachHang() {
         setTitle("Quản lý khách sạn - Quản lý khách hàng");
+        AppWindowIcon.apply(this);
         setSize(1100, 680);
         setMinimumSize(new Dimension(950, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

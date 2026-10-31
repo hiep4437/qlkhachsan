@@ -47,6 +47,7 @@ public class ViewDatPhong extends JFrame {
 
     public ViewDatPhong() {
         setTitle("Quản lý khách sạn - Quản lý đặt phòng");
+        AppWindowIcon.apply(this);
         setSize(1180, 700);
         setMinimumSize(new Dimension(1000, 580));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -242,17 +243,11 @@ public class ViewDatPhong extends JFrame {
                 setHorizontalAlignment(CENTER);
                 setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-                if (selected) {
-                    setBackground(table.getSelectionBackground());
-                    setForeground(table.getSelectionForeground());
-                    return this;
-                }
-
-                if (tt.contains("Đã nhận") || tt.contains("CHECKED_IN")) {
+                if (tt.contains("Đang ở") || tt.contains("Đã nhận") || tt.contains("CHECKED_IN")) {
                     setText("ĐANG Ở");
                     setBackground(new Color(254, 237, 237));
                     setForeground(new Color(192, 57, 43));
-                } else if (tt.contains("Đã đặt") || tt.contains("BOOKED")) {
+                } else if (tt.contains("Chờ nhận") || tt.contains("Đã đặt") || tt.contains("BOOKED")) {
                     setText("CHỜ NHẬN PHÒNG");
                     setBackground(new Color(225, 238, 255));
                     setForeground(new Color(13, 110, 253));
@@ -260,10 +255,19 @@ public class ViewDatPhong extends JFrame {
                     setText("ĐÃ TRẢ PHÒNG");
                     setBackground(new Color(230, 235, 240));
                     setForeground(new Color(100, 110, 120));
-                } else {
+                } else if (tt.contains("Đã hủy") || tt.contains("CANCELLED")) {
                     setText("ĐÃ HỦY");
                     setBackground(new Color(248, 215, 218));
                     setForeground(new Color(132, 32, 41));
+                } else {
+                    setText(tt);
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+
+                if (selected) {
+                    setBackground(table.getSelectionBackground());
+                    setForeground(table.getSelectionForeground());
                 }
                 return this;
             }

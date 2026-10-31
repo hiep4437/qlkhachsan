@@ -29,21 +29,12 @@ public class ViewHoaDon extends JFrame {
     public JLabel lblThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton btnXemChiTiet, btnThem, btnSua, btnXoa, btnLamMoi;
+    public JButton btnXemChiTiet, btnLamMoi;
     public JButton btnQuayLai = new JButton("Quay lại");
-
-    // Khai báo field cũ để đảm bảo tương thích
-    public JTextField txtMaHD = new JTextField();
-    public JTextField txtMaDatPhong = new JTextField();
-    public JTextField txtTienPhong = new JTextField();
-    public JTextField txtPhuThu = new JTextField();
-    public JTextField txtGiamGia = new JTextField();
-    public JTextField txtTongTien = new JTextField();
-    public JComboBox<String> cboPhuongThuc = new JComboBox<>(new String[] { "Tiền mặt", "Chuyển khoản", "Thẻ" });
-    public JComboBox<String> cboTrangThai = new JComboBox<>(new String[] { "UNPAID", "PAID", "REFUNDED" });
 
     public ViewHoaDon() {
         setTitle("Quản lý khách sạn - Quản lý hóa đơn");
+        AppWindowIcon.apply(this);
         setSize(1180, 700);
         setMinimumSize(new Dimension(1000, 580));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -261,12 +252,6 @@ public class ViewHoaDon extends JFrame {
                 setHorizontalAlignment(CENTER);
                 setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-                if (selected) {
-                    setBackground(table.getSelectionBackground());
-                    setForeground(table.getSelectionForeground());
-                    return this;
-                }
-
                 if (tt.contains("PAID") || tt.contains("ĐÃ THANH TOÁN")) {
                     setText("ĐÃ THANH TOÁN");
                     setBackground(new Color(209, 231, 221));
@@ -275,10 +260,19 @@ public class ViewHoaDon extends JFrame {
                     setText("ĐÃ HOÀN TIỀN");
                     setBackground(new Color(248, 215, 218));
                     setForeground(new Color(132, 32, 41));
-                } else {
+                } else if (tt.contains("UNPAID") || tt.contains("CHƯA THANH TOÁN")) {
                     setText("CHƯA THANH TOÁN");
                     setBackground(new Color(255, 243, 205));
                     setForeground(new Color(102, 77, 3));
+                } else {
+                    setText(tt);
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+
+                if (selected) {
+                    setBackground(table.getSelectionBackground());
+                    setForeground(table.getSelectionForeground());
                 }
                 return this;
             }
@@ -310,36 +304,12 @@ public class ViewHoaDon extends JFrame {
         btnXemChiTiet.setPreferredSize(new Dimension(160, 36));
         btnXemChiTiet.setFocusPainted(false);
 
-        btnThem = new JButton("Lập hóa đơn mới");
-        btnThem.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnThem.setBackground(new Color(25, 135, 84));
-        btnThem.setForeground(Color.WHITE);
-        btnThem.setPreferredSize(new Dimension(150, 36));
-        btnThem.setFocusPainted(false);
-
-        btnSua = new JButton("Sửa hóa đơn");
-        btnSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnSua.setBackground(new Color(255, 193, 7));
-        btnSua.setForeground(new Color(33, 37, 41));
-        btnSua.setPreferredSize(new Dimension(130, 36));
-        btnSua.setFocusPainted(false);
-
-        btnXoa = new JButton("Xóa hóa đơn");
-        btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnXoa.setBackground(new Color(220, 53, 69));
-        btnXoa.setForeground(Color.WHITE);
-        btnXoa.setPreferredSize(new Dimension(120, 36));
-        btnXoa.setFocusPainted(false);
-
         btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnLamMoi.setPreferredSize(new Dimension(120, 36));
         btnLamMoi.setFocusPainted(false);
 
         pBottom.add(btnXemChiTiet);
-        pBottom.add(btnThem);
-        pBottom.add(btnSua);
-        pBottom.add(btnXoa);
         pBottom.add(btnLamMoi);
 
         pMain.add(pBottom, BorderLayout.SOUTH);

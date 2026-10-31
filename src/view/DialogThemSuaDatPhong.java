@@ -150,7 +150,8 @@ public class DialogThemSuaDatPhong extends JDialog {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof rooms) {
                     rooms rm = (rooms) value;
-                    setText("Phòng " + rm.getSoPhong() + " - " + rm.getTenLoaiPhong() + " (Tầng " + rm.getTang() + ")");
+                    setText("Phòng " + rm.getSoPhong() + " - " + rm.getTenLoaiPhong()
+                            + " (Tầng " + rm.getTang() + ", tối đa " + rm.getSucChua() + " khách)");
                 }
                 return this;
             }
@@ -190,10 +191,13 @@ public class DialogThemSuaDatPhong extends JDialog {
         pBody.add(lblSoNguoi, g);
 
         g.gridx = 1; g.weightx = 1;
-        spnSoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        rooms initialRoom = (rooms) cboPhong.getSelectedItem();
+        int initialCapacity = initialRoom != null ? Math.max(1, initialRoom.getSucChua()) : 1;
+        spnSoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, initialCapacity, 1));
         spnSoNguoi.setFont(fontInput);
         spnSoNguoi.setPreferredSize(new Dimension(200, 32));
         pBody.add(spnSoNguoi, g);
+        cboPhong.addActionListener(e -> capNhatSucChuaPhong());
 
         // 6. Trạng thái
         g.gridx = 0; g.gridy = 7; g.weightx = 0;
@@ -260,7 +264,6 @@ public class DialogThemSuaDatPhong extends JDialog {
             txtCCCD.setText(this.booking.getCccd() != null ? this.booking.getCccd() : "");
             if (this.booking.getNgayNhanPhong() != null) txtNgayNhan.setText(this.booking.getNgayNhanPhong().toString());
             if (this.booking.getNgayTraPhong() != null) txtNgayTra.setText(this.booking.getNgayTraPhong().toString());
-            spnSoNguoi.setValue(this.booking.getSoNguoi() > 0 ? this.booking.getSoNguoi() : 1);
             txtGhiChu.setText(this.booking.getGhiChu() != null ? this.booking.getGhiChu() : "");
 
             String st = this.booking.getTrangThai();
@@ -281,6 +284,9 @@ public class DialogThemSuaDatPhong extends JDialog {
                     }
                 }
             }
+            capNhatSucChuaPhong();
+            int capacity = phongDangChon() != null ? Math.max(1, phongDangChon().getSucChua()) : 1;
+            spnSoNguoi.setValue(Math.min(Math.max(1, this.booking.getSoNguoi()), capacity));
 
             // Tìm thông tin khách hàng
             if (this.booking.getIdKhachHang() > 0) {
@@ -365,6 +371,12 @@ public class DialogThemSuaDatPhong extends JDialog {
         }
 
         int soNguoi = (int) spnSoNguoi.getValue();
+        if (soNguoi > Math.max(1, phongChon.getSucChua())) {
+            JOptionPane.showMessageDialog(this,
+                    "Phòng " + phongChon.getSoPhong() + " chỉ nhận tối đa " + phongChon.getSucChua() + " khách!",
+                    "Vượt sức chứa", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         String tt = (String) cboTrangThai.getSelectedItem();
         String ghiChu = txtGhiChu.getText().trim();
 
@@ -376,6 +388,8 @@ public class DialogThemSuaDatPhong extends JDialog {
         this.booking.setTrangThai(tt);
         this.booking.setGhiChu(ghiChu);
         this.booking.setSoPhong(phongChon.getSoPhong());
+        this.booking.setMaPhong(phongChon.getMaPhong());
+        this.booking.setGiaMoiDem(phongChon.getGiaMoiDem());
         this.booking.setTang("Tầng " + phongChon.getTang());
 
         saved = true;
@@ -397,5 +411,15 @@ public class DialogThemSuaDatPhong extends JDialog {
     public float getSelectedRoomPrice() {
         return selectedRoomPrice;
     }
-}
 
+    private rooms phongDangChon() {
+        return (rooms) cboPhong.getSelectedItem();
+    }
+
+    private void capNhatSucChuaPhong() {
+        rooms phong = phongDangChon();
+        int sucChua = phong != null ? Math.max(1, phong.getSucChua()) : 1;
+        int soNguoi = (int) spnSoNguoi.getValue();
+        spnSoNguoi.setModel(new SpinnerNumberModel(Math.min(soNguoi, sucChua), 1, sucChua, 1));
+    }
+}

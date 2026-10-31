@@ -23,10 +23,6 @@ public class StatisticService {
         return dao.getTongSoLuotDat();
     }
 
-    public double[] getTyLeVaSoPhongDangO() {
-        return dao.getTyLeVaSoPhongDangO();
-    }
-
     public ArrayList<StatisticDAO.ThongKePhong> thongKeTheoPhong(String kyLoc) {
         return dao.thongKeTheoPhong(kyLoc);
     }
@@ -35,4 +31,3 @@ public class StatisticService {
         return dao.layHoaDonTheoKy(kyLoc);
     }
 }
-

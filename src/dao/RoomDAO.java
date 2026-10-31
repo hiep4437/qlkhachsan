@@ -146,7 +146,8 @@ public class RoomDAO {
 	// Xuat danh sach phong (kem ten loai phong)
 	public ArrayList<rooms> xuat() {
 		ArrayList<rooms> ds = new ArrayList<>();
-		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong "
+		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
+				+ "COALESCE(lp.suc_chua, 1) AS suc_chua "
 				+ "FROM phong p "
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "ORDER BY p.so_phong ASC";
@@ -167,6 +168,7 @@ public class RoomDAO {
 						rs.getString("mo_ta"),
 						rs.getString("ten_loai_phong")
 				);
+				t.setSucChua(rs.getInt("suc_chua"));
 				ds.add(t);
 			}
 		} catch (Exception e) {
@@ -182,7 +184,8 @@ public class RoomDAO {
 			return null;
 		}
 
-		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong "
+		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
+				+ "COALESCE(lp.suc_chua, 1) AS suc_chua "
 				+ "FROM phong p "
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "WHERE p.so_phong = ?";
@@ -194,7 +197,7 @@ public class RoomDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					int tt = rs.getInt("trang_thai");
-					return new rooms(
+					rooms room = new rooms(
 							rs.getInt("ma_phong"),
 							rs.getString("so_phong"),
 							rs.getInt("ma_loai_phong"),
@@ -204,6 +207,8 @@ public class RoomDAO {
 							rs.getString("mo_ta"),
 							rs.getString("ten_loai_phong")
 					);
+					room.setSucChua(rs.getInt("suc_chua"));
+					return room;
 				}
 			}
 		} catch (Exception e) {

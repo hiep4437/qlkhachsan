@@ -40,6 +40,11 @@ public class BookingService {
         return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight);
     }
 
+    public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId,
+            double pricePerNight, int soNguoi) {
+        return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, soNguoi);
+    }
+
     // Nhan phong (Check-in)
     public boolean nhanPhong(int bookingId) {
         return dao.nhanPhong(bookingId);

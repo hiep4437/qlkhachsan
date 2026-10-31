@@ -1,13 +1,14 @@
 package controller;
 
 import java.awt.Window;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import dao.BookingRoomDAO;
 import model.bookings;
 import service.BookingService;
 import view.DialogThemSuaDatPhong;
@@ -17,7 +18,6 @@ import view.ViewDatPhong;
 public class BookingController {
     ViewDatPhong view;
     BookingService service = new BookingService();
-    BookingRoomDAO bookingRoomDAO = new BookingRoomDAO();
 
     public BookingController(ViewDatPhong view) {
         this.view = view;
@@ -92,7 +92,7 @@ public class BookingController {
     }
 
     void apDungBoLoc() {
-        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
+        String tuKhoa = chuanHoaTuKhoa(view.txtTimKiem.getText());
         String trangThaiLoc = (String) view.cboLocTrangThai.getSelectedItem();
         String thoiGianLoc = (String) view.cboLocThoiGian.getSelectedItem();
 
@@ -100,14 +100,19 @@ public class BookingController {
 
         List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
 
-        // 1. Lọc theo từ khóa (Mã ĐP, Phòng, Khách, SĐT, CCCD)
+        // 1. Lọc theo mã đơn, phòng, khách hàng, số điện thoại và CCCD
         if (!tuKhoa.isEmpty()) {
+            String tuKhoaSo = tuKhoa.matches("[0-9\\s-]+") ? tuKhoa.replaceAll("\\D", "") : "";
             filters.add(new RowFilter<DefaultTableModel, Object>() {
                 @Override
                 public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
-                    for (int i = 0; i < entry.getValueCount(); i++) {
+                    for (int i = 0; i <= 4; i++) {
                         Object val = entry.getValue(i);
-                        if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+                        if (val != null && chuanHoaTuKhoa(val.toString()).contains(tuKhoa)) {
+                            return true;
+                        }
+                        if (!tuKhoaSo.isEmpty() && (i == 3 || i == 4) && val != null
+                                && val.toString().replaceAll("\\D", "").contains(tuKhoaSo)) {
                             return true;
                         }
                     }
@@ -160,6 +165,13 @@ public class BookingController {
         }
     }
 
+    private String chuanHoaTuKhoa(String value) {
+        if (value == null) return "";
+        String normalized = Normalizer.normalize(value.toLowerCase(Locale.ROOT), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "");
+        return normalized.replace('đ', 'd').trim();
+    }
+
     // Tìm kiếm toàn bộ đơn đặt phòng theo từ khóa (CCCD, tên khách...), tất cả trạng thái, toàn thời gian
     public void timKiemToanBo(String tuKhoa) {
         view.txtTimKiem.setText(tuKhoa != null ? tuKhoa.trim() : "");
@@ -209,10 +221,6 @@ public class BookingController {
                 bookings b = dialog.getBooking();
                 int bookingId = service.them(b);
                 if (bookingId > 0) {
-                    // Thêm phòng vào chi tiết đặt phòng
-                    if (dialog.getSelectedRoomId() > 0) {
-                        bookingRoomDAO.them(bookingId, dialog.getSelectedRoomId(), dialog.getSelectedRoomPrice());
-                    }
                     JOptionPane.showMessageDialog(view, "Đặt phòng mới thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
