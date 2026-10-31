@@ -13,6 +13,7 @@ import dao.RoomDAO;
 import model.bookings;
 import model.customers;
 import model.rooms;
+import service.BookingService;
 
 public class DialogThemSuaDatPhong extends JDialog {
 
@@ -35,6 +36,7 @@ public class DialogThemSuaDatPhong extends JDialog {
     private bookings booking;
     private CustomerDAO customerDAO = new CustomerDAO();
     private RoomDAO roomDAO = new RoomDAO();
+    private BookingService bookingService = new BookingService();
 
     private int selectedCustomerId = 0;
     private int selectedRoomId = 0;
@@ -206,9 +208,12 @@ public class DialogThemSuaDatPhong extends JDialog {
         pBody.add(lblTT, g);
 
         g.gridx = 1; g.weightx = 1;
-        cboTrangThai = new JComboBox<>(new String[] { "BOOKED", "CHECKED_IN", "CHECKED_OUT", "CANCELLED" });
+        cboTrangThai = new JComboBox<>(isEdit
+                ? new String[] { "BOOKED", "CHECKED_IN", "CHECKED_OUT", "CANCELLED" }
+                : new String[] { "BOOKED" });
         cboTrangThai.setFont(fontInput);
         cboTrangThai.setPreferredSize(new Dimension(200, 32));
+        cboTrangThai.setEnabled(isEdit);
         cboTrangThai.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -335,19 +340,6 @@ public class DialogThemSuaDatPhong extends JDialog {
             return;
         }
 
-        // Kiểm tra hoặc tạo mới khách hàng
-        customers tk = new customers();
-        tk.setSoCCCD(cccd);
-        customers found = customerDAO.timKiem(tk);
-        if (found == null) {
-            customers moi = new customers(0, hoTen, cccd, sdt, "", "");
-            customerDAO.them(moi);
-            found = customerDAO.timKiem(tk);
-        }
-        if (found != null) {
-            selectedCustomerId = found.getIdKhachHang();
-        }
-
         rooms phongChon = (rooms) cboPhong.getSelectedItem();
         if (phongChon == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -370,6 +362,22 @@ public class DialogThemSuaDatPhong extends JDialog {
             return;
         }
 
+        try {
+            if (bookingService.phongBiDatTrung(selectedRoomId, ngayNhan, ngayTra, booking.getIdDatPhong())) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Phòng " + phongChon.getSoPhong() + " đã được đặt hoặc có khách trong khoảng thời gian này.\n"
+                                + "Vui lòng chọn phòng khác hoặc điều chỉnh ngày lưu trú.",
+                        "Phòng không khả dụng",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Không thể kiểm tra tình trạng phòng: " + ex.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int soNguoi = (int) spnSoNguoi.getValue();
         if (soNguoi > Math.max(1, phongChon.getSucChua())) {
             JOptionPane.showMessageDialog(this,
@@ -377,6 +385,23 @@ public class DialogThemSuaDatPhong extends JDialog {
                     "Vượt sức chứa", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        // Kiểm tra hoặc tạo mới khách hàng sau khi xác thực phòng và ngày lưu trú.
+        customers tk = new customers();
+        tk.setSoCCCD(cccd);
+        customers found = customerDAO.timKiem(tk);
+        if (found == null) {
+            customers moi = new customers(0, hoTen, cccd, sdt, "", "");
+            customerDAO.them(moi);
+            found = customerDAO.timKiem(tk);
+        }
+        if (found == null) {
+            JOptionPane.showMessageDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng kiểm tra CCCD và thử lại.",
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        selectedCustomerId = found.getIdKhachHang();
+
         String tt = (String) cboTrangThai.getSelectedItem();
         String ghiChu = txtGhiChu.getText().trim();
 

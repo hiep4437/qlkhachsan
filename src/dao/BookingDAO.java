@@ -41,7 +41,8 @@ public class BookingDAO {
 
 		try (Connection conn = DBConnection.getConnection()) {
 			conn.setAutoCommit(false);
-			if (t.getMaPhong() > 0 && !phongDuSucChua(conn, t.getMaPhong(), soNguoi)) {
+			if (t.getMaPhong() > 0 && !phongPhuHopChoDat(conn, t.getMaPhong(), soNguoi,
+					t.getNgayNhanPhong(), t.getNgayTraPhong(), 0)) {
 				conn.rollback();
 				return 0;
 			}
@@ -90,7 +91,7 @@ public class BookingDAO {
 		try {
 			conn = DBConnection.getConnection();
 			conn.setAutoCommit(false);
-			if (soNguoi < 1 || !phongDuSucChua(conn, roomId, soNguoi)) {
+			if (soNguoi < 1 || !phongPhuHopChoDat(conn, roomId, soNguoi, checkIn, checkOut, 0)) {
 				conn.rollback();
 				return 0;
 			}
@@ -356,7 +357,8 @@ public class BookingDAO {
 
 		try (Connection conn = DBConnection.getConnection()) {
 			conn.setAutoCommit(false);
-			if (t.getMaPhong() > 0 && !phongDuSucChua(conn, t.getMaPhong(), soNguoi)) {
+			if (t.getMaPhong() > 0 && !phongPhuHopChoDat(conn, t.getMaPhong(), soNguoi,
+					t.getNgayNhanPhong(), t.getNgayTraPhong(), t.getIdDatPhong())) {
 				conn.rollback();
 				return 0;
 			}
@@ -391,13 +393,52 @@ public class BookingDAO {
 		}
 	}
 
-	private boolean phongDuSucChua(Connection conn, int roomId, int soNguoi) throws Exception {
-		String sql = "SELECT COALESCE(lp.suc_chua, 1) AS suc_chua FROM phong p "
-				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong WHERE p.ma_phong = ?";
-		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+	public boolean phongBiDatTrung(int roomId, Date ngayNhan, Date ngayTra, int maDatPhongBoQua) throws Exception {
+		if (roomId <= 0 || ngayNhan == null || ngayTra == null || !ngayTra.after(ngayNhan)) {
+			return true;
+		}
+
+		try (Connection conn = DBConnection.getConnection()) {
+			return coDonTrung(conn, roomId, ngayNhan, ngayTra, maDatPhongBoQua);
+		}
+	}
+
+	private boolean phongPhuHopChoDat(Connection conn, int roomId, int soNguoi, Date ngayNhan,
+			Date ngayTra, int maDatPhongBoQua) throws Exception {
+		if (roomId <= 0 || soNguoi <= 0 || ngayNhan == null || ngayTra == null || !ngayTra.after(ngayNhan)) {
+			return false;
+		}
+
+		String sqlPhong = "SELECT p.trang_thai, COALESCE(lp.suc_chua, 1) AS suc_chua "
+				+ "FROM phong p LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
+				+ "WHERE p.ma_phong = ? FOR UPDATE";
+		try (PreparedStatement ps = conn.prepareStatement(sqlPhong)) {
 			ps.setInt(1, roomId);
 			try (ResultSet rs = ps.executeQuery()) {
-				return rs.next() && soNguoi > 0 && soNguoi <= rs.getInt("suc_chua");
+				if (!rs.next() || soNguoi > rs.getInt("suc_chua")
+						|| rs.getInt("trang_thai") == 2 || rs.getInt("trang_thai") == 3) {
+					return false;
+				}
+			}
+		}
+
+		return !coDonTrung(conn, roomId, ngayNhan, ngayTra, maDatPhongBoQua);
+	}
+
+	private boolean coDonTrung(Connection conn, int roomId, Date ngayNhan, Date ngayTra,
+			int maDatPhongBoQua) throws Exception {
+		String sql = "SELECT 1 FROM chi_tiet_dat_phong br "
+				+ "JOIN dat_phong b ON b.ma_dat_phong = br.ma_dat_phong "
+				+ "WHERE br.ma_phong = ? AND b.trang_thai IN (0, 1) "
+				+ "AND b.ngay_nhan_phong < ? AND b.ngay_tra_phong > ? "
+				+ "AND b.ma_dat_phong <> ? LIMIT 1";
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, roomId);
+			ps.setDate(2, ngayTra);
+			ps.setDate(3, ngayNhan);
+			ps.setInt(4, maDatPhongBoQua);
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next();
 			}
 		}
 	}

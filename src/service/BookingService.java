@@ -12,6 +12,7 @@ public class BookingService {
     // Them dat phong
     public int them(bookings t) {
         if (t.getIdKhachHang() <= 0
+                || t.getMaPhong() <= 0
                 || t.getNgayNhanPhong() == null
                 || t.getNgayTraPhong() == null) {
             System.out.println("Thong tin dat phong khong hop le!");
@@ -23,12 +24,8 @@ public class BookingService {
             return 0;
         }
 
-        if (t.getTrangThai() == null
-                || !(t.getTrangThai().equals("BOOKED")
-                || t.getTrangThai().equals("CHECKED_IN")
-                || t.getTrangThai().equals("CHECKED_OUT")
-                || t.getTrangThai().equals("CANCELLED"))) {
-            System.out.println("Trang thai dat phong khong hop le!");
+        if (!"BOOKED".equals(t.getTrangThai())) {
+            System.out.println("Don dat phong moi phai bat dau o trang thai BOOKED!");
             return 0;
         }
 
@@ -68,6 +65,7 @@ public class BookingService {
         }
 
         if (t.getIdKhachHang() <= 0
+                || t.getMaPhong() <= 0
                 || t.getNgayNhanPhong() == null
                 || t.getNgayTraPhong() == null
                 || !t.getNgayTraPhong().after(t.getNgayNhanPhong())) {
@@ -76,6 +74,10 @@ public class BookingService {
         }
 
         return dao.sua(t);
+    }
+
+    public boolean phongBiDatTrung(int roomId, Date ngayNhan, Date ngayTra, int maDatPhongBoQua) throws Exception {
+        return dao.phongBiDatTrung(roomId, ngayNhan, ngayTra, maDatPhongBoQua);
     }
 
     // Xoa dat phong

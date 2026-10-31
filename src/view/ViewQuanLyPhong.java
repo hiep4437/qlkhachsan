@@ -29,7 +29,8 @@ public class ViewQuanLyPhong extends JFrame {
     public JLabel lblThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton btnThem, btnSua, btnXoa, btnLamMoi, btnQuayLai;
+    public JButton btnThem, btnSua, btnXoa, btnLamMoi;
+    public JButton btnQuayLai = new JButton("Quay lại");
 
     // Khai báo các field cũ để đảm bảo tương thích mã nguồn
     public JTextField txtMaPhong = new JTextField();

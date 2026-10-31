@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import dao.RoomDAO;
 import dao.RoomTypeDAO;
 import model.rooms;
 import model.room_types;
@@ -149,8 +150,26 @@ public class RoomController {
 
             if (dialog.isSaved()) {
                 rooms phongMoi = dialog.getRoom();
+                boolean canTaoDonSauKhiThem = RoomDAO.chuyenTrangThaiSangSo(phongMoi.getTrangThai()) == 1;
+                if (canTaoDonSauKhiThem) {
+                    int chon = JOptionPane.showConfirmDialog(
+                            view,
+                            "Không thể thêm phòng ở trạng thái CÓ KHÁCH khi chưa có đơn lưu trú.\n"
+                                    + "Bạn có muốn lưu phòng ở trạng thái TRỐNG rồi tạo đơn và Check-in trong tab Quản lý đặt phòng không?",
+                            "Cần tạo đơn lưu trú",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (chon != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                    phongMoi.setTrangThai("AVAILABLE");
+                }
+
                 if (service.them(phongMoi) > 0) {
-                    JOptionPane.showMessageDialog(view, "Thêm phòng mới thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    String thongBao = canTaoDonSauKhiThem
+                            ? "Đã thêm phòng ở trạng thái TRỐNG. Hãy tạo đơn và Check-in trong tab Quản lý đặt phòng để ghi nhận khách."
+                            : "Thêm phòng mới thành công!";
+                    JOptionPane.showMessageDialog(view, thongBao, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
                 } else {
                     JOptionPane.showMessageDialog(view, "Thêm phòng thất bại! Có thể số phòng đã tồn tại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -179,26 +198,38 @@ public class RoomController {
                 return;
             }
 
-            // Kiểm tra trạng thái: phòng có khách không được sửa, phải check-out trước
-            String tt = phongCanSua.getTrangThai();
-            if ("OCCUPIED".equalsIgnoreCase(tt) || "CÓ KHÁCH".equalsIgnoreCase(tt) || "1".equals(tt)) {
-                JOptionPane.showMessageDialog(
-                    view,
-                    "Phòng " + phongCanSua.getSoPhong() + " đang có khách ở, không thể chỉnh sửa!\nVui lòng làm thủ tục trả phòng (Check-out) trước khi sửa.",
-                    "Cảnh báo",
-                    JOptionPane.WARNING_MESSAGE
-                );
-                return;
-            }
-
             ArrayList<room_types> dsLoai = roomTypeDAO.xuat();
+            String trangThaiTruocKhiSua = phongCanSua.getTrangThai();
             DialogThemSuaPhong dialog = new DialogThemSuaPhong(getParentWindow(), phongCanSua, dsLoai);
             dialog.setVisible(true);
 
             if (dialog.isSaved()) {
                 rooms phongCapNhat = dialog.getRoom();
+                String huongDanTrangThai = null;
+                int trangThaiCu = RoomDAO.chuyenTrangThaiSangSo(trangThaiTruocKhiSua);
+                int trangThaiMoi = RoomDAO.chuyenTrangThaiSangSo(phongCapNhat.getTrangThai());
+
+                if (trangThaiCu != trangThaiMoi && (trangThaiCu == 1 || trangThaiMoi == 1)) {
+                    huongDanTrangThai = trangThaiMoi == 1
+                            ? "Để ghi nhận khách lưu trú, hãy tạo đơn trong tab Quản lý đặt phòng rồi nhấn Nhận phòng (Check-in)."
+                            : "Phòng đang có khách. Hãy dùng Trả phòng & Thanh toán trong tab Quản lý đặt phòng để cập nhật trạng thái.";
+                    int chon = JOptionPane.showConfirmDialog(
+                            view,
+                            huongDanTrangThai + "\n\nBạn có muốn lưu các thông tin phòng khác và giữ nguyên trạng thái hiện tại không?",
+                            "Cần thao tác qua quản lý đặt phòng",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+                    if (chon != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+                    phongCapNhat.setTrangThai(trangThaiTruocKhiSua);
+                }
+
                 if (service.sua(phongCapNhat) > 0) {
-                    JOptionPane.showMessageDialog(view, "Cập nhật phòng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    String thongBao = huongDanTrangThai == null
+                            ? "Cập nhật phòng thành công!"
+                            : "Đã cập nhật thông tin phòng; trạng thái được giữ nguyên.\n" + huongDanTrangThai;
+                    JOptionPane.showMessageDialog(view, thongBao, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
                 } else {
                     JOptionPane.showMessageDialog(view, "Cập nhật phòng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -123,14 +123,21 @@ public class BookingController {
 
         // 2. Lọc theo trạng thái
         if (trangThaiLoc != null && !trangThaiLoc.equals("Tất cả trạng thái")) {
-            String regex = "";
-            if (trangThaiLoc.contains("Đang ở")) regex = "Đang ở|ĐÃ NHẬN PHÒNG|CHECKED_IN";
-            else if (trangThaiLoc.contains("Chờ")) regex = "Chờ nhận|ĐÃ ĐẶT|BOOKED";
-            else if (trangThaiLoc.contains("Đã trả")) regex = "ĐÃ TRẢ PHÒNG|CHECKED_OUT";
-            else if (trangThaiLoc.contains("Đã hủy")) regex = "ĐÃ HỦY|CANCELLED";
+            String trangThaiCanLoc = null;
+            if (trangThaiLoc.startsWith("Đang ở")) trangThaiCanLoc = "Đang ở";
+            else if (trangThaiLoc.startsWith("Chờ nhận")) trangThaiCanLoc = "Chờ nhận phòng";
+            else if (trangThaiLoc.startsWith("Đã trả")) trangThaiCanLoc = "Đã trả phòng";
+            else if (trangThaiLoc.startsWith("Đã hủy")) trangThaiCanLoc = "Đã hủy";
 
-            if (!regex.isEmpty()) {
-                filters.add(RowFilter.regexFilter("(?i)" + regex, 8));
+            if (trangThaiCanLoc != null) {
+                String trangThaiMucTieu = trangThaiCanLoc;
+                filters.add(new RowFilter<DefaultTableModel, Object>() {
+                    @Override
+                    public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
+                        Object value = entry.getValue(8);
+                        return value != null && trangThaiMucTieu.equalsIgnoreCase(value.toString().trim());
+                    }
+                });
             }
         }
 
@@ -224,6 +231,11 @@ public class BookingController {
                     JOptionPane.showMessageDialog(view, "Đặt phòng mới thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
+                } else if (service.phongBiDatTrung(b.getMaPhong(), b.getNgayNhanPhong(),
+                        b.getNgayTraPhong(), b.getIdDatPhong())) {
+                    JOptionPane.showMessageDialog(view,
+                            "Phòng đã được đặt trong khoảng thời gian này. Vui lòng chọn phòng khác hoặc điều chỉnh ngày lưu trú.",
+                            "Phòng không khả dụng", JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(view, "Đặt phòng thất bại! Vui lòng thử lại.", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
@@ -254,6 +266,16 @@ public class BookingController {
                 return;
             }
 
+            String trangThai = hienThiTrangThai(canSua.getTrangThai());
+            if ("Đã hủy".equals(trangThai) || "Đã trả phòng".equals(trangThai)) {
+                JOptionPane.showMessageDialog(
+                        view,
+                        "Không thể sửa đơn đặt phòng đã " + ("Đã hủy".equals(trangThai) ? "hủy." : "trả phòng."),
+                        "Không thể sửa đơn",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             DialogThemSuaDatPhong dialog = new DialogThemSuaDatPhong(getParentWindow(), canSua);
             dialog.setVisible(true);
 
@@ -263,6 +285,11 @@ public class BookingController {
                     JOptionPane.showMessageDialog(view, "Cập nhật đơn đặt phòng thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
+                } else if (service.phongBiDatTrung(capNhat.getMaPhong(), capNhat.getNgayNhanPhong(),
+                        capNhat.getNgayTraPhong(), capNhat.getIdDatPhong())) {
+                    JOptionPane.showMessageDialog(view,
+                            "Phòng đã được đặt trong khoảng thời gian này. Vui lòng chọn phòng khác hoặc điều chỉnh ngày lưu trú.",
+                            "Phòng không khả dụng", JOptionPane.WARNING_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(view, "Cập nhật đơn đặt phòng thất bại!", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
