@@ -1,33 +1,19 @@
 package service;
 
 import java.util.ArrayList;
-import dao.StatisticDAO;
+import java.sql.SQLException;
+import java.sql.Date;
+import dao.ThongKeDAO;
 
 public class StatisticService {
 
-    private StatisticDAO dao = new StatisticDAO();
+    private ThongKeDAO dao = new ThongKeDAO();
 
-    public double getTongDoanhThu() {
-        return dao.getTongDoanhThu();
+    public ArrayList<ThongKeDAO.ThongKePhong> thongKeTheoKhoang(Date tuNgay, Date denNgay) throws SQLException {
+        return dao.thongKeTheoKhoang(tuNgay, denNgay);
     }
 
-    public double getDoanhThuHomNay() {
-        return dao.getDoanhThuHomNay();
-    }
-
-    public double getDoanhThuThangNay() {
-        return dao.getDoanhThuThangNay();
-    }
-
-    public int getTongSoLuotDat() {
-        return dao.getTongSoLuotDat();
-    }
-
-    public ArrayList<StatisticDAO.ThongKePhong> thongKeTheoPhong(String kyLoc) {
-        return dao.thongKeTheoPhong(kyLoc);
-    }
-
-    public ArrayList<StatisticDAO.ChiTietHoaDonBaoCao> layHoaDonTheoKy(String kyLoc) {
-        return dao.layHoaDonTheoKy(kyLoc);
+    public ArrayList<ThongKeDAO.ChiTietHoaDonBaoCao> layHoaDonTheoKhoang(Date tuNgay, Date denNgay) throws SQLException {
+        return dao.layHoaDonTheoKhoang(tuNgay, denNgay);
     }
 }

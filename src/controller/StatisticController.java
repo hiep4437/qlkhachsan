@@ -3,15 +3,18 @@ package controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.sql.Date;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import dao.StatisticDAO;
+import dao.ThongKeDAO;
 import service.StatisticService;
-import view.ViewBaoCaoThongKe;
+import view.view.ViewBaoCaoThongKe;
 
 public class StatisticController {
 
@@ -26,16 +29,7 @@ public class StatisticController {
         caiDatRenderers();
         taiDuLieu();
 
-        // Sự kiện lọc
-        view.btnLoc.addActionListener(e -> taiDuLieuTheoKy());
-        view.cboKyBaoCao.addActionListener(e -> taiDuLieuTheoKy());
-
-        // Nút làm mới 5s countdown
-        view.btnLamMoi.addActionListener(e -> {
-            view.batDauDemNguocLamMoi(() -> {
-                taiDuLieu();
-            });
-        });
+        view.btnLoc.addActionListener(e -> taiDuLieu());
     }
 
     private void caiDatRenderers() {
@@ -111,62 +105,81 @@ public class StatisticController {
     }
 
     public void taiDuLieu() {
-        // 1. Cập nhật các Cards KPI
-        double tongDoanhThu = service.getTongDoanhThu();
-        double doanhThuThang = service.getDoanhThuThangNay();
-        double doanhThuNgay = service.getDoanhThuHomNay();
-
-        view.lblValTongDoanhThu.setText(df.format(tongDoanhThu));
-        view.lblValDoanhThuThang.setText(df.format(doanhThuThang));
-        view.lblValDoanhThuNgay.setText(df.format(doanhThuNgay));
-
-        // 2. Cập nhật dữ liệu bảng theo kỳ
-        taiDuLieuTheoKy();
-    }
-
-    public void taiDuLieuTheoKy() {
-        String ky = (String) view.cboKyBaoCao.getSelectedItem();
-        if (ky == null) ky = "Tháng này";
-
-        // Tải danh sách hóa đơn theo kỳ
-        ArrayList<StatisticDAO.ChiTietHoaDonBaoCao> dsHD = service.layHoaDonTheoKy(ky);
-        view.modelHoaDon.setRowCount(0);
-        double tongTienKy = 0;
-
-        for (StatisticDAO.ChiTietHoaDonBaoCao h : dsHD) {
-            tongTienKy += h.tongTien;
-            view.modelHoaDon.addRow(new Object[] {
-                h.maHoaDon,
-                h.ngayLap,
-                h.soPhong,
-                h.hoTen,
-                h.sdt,
-                df.format(h.tienPhong),
-                df.format(h.phuThu),
-                df.format(h.giamGia),
-                df.format(h.tongTien),
-                h.phuongThuc
-            });
+        if (view.getDenNgay().isBefore(view.getTuNgay())) {
+            JOptionPane.showMessageDialog(
+                    view,
+                    "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.",
+                    "Khoảng ngày không hợp lệ",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
         }
 
-        view.lblThongKeKy.setText("Tổng thực thu trong kỳ (" + ky + "): " + df.format(tongTienKy));
+        Date tuNgay = Date.valueOf(view.getTuNgay());
+        Date denNgay = Date.valueOf(view.getDenNgay());
+        try {
+            ArrayList<ThongKeDAO.ChiTietHoaDonBaoCao> dsHD = service.layHoaDonTheoKhoang(tuNgay, denNgay);
+            ArrayList<ThongKeDAO.ThongKePhong> dsPhong = service.thongKeTheoKhoang(tuNgay, denNgay);
+            double tongDoanhThuKy = 0;
 
-        // Tải thống kê doanh thu theo phòng
-        ArrayList<StatisticDAO.ThongKePhong> dsPhong = service.thongKeTheoPhong(ky);
-        view.modelPhong.setRowCount(0);
+            for (ThongKeDAO.ChiTietHoaDonBaoCao h : dsHD) {
+                tongDoanhThuKy += h.tongTien;
+            }
 
-        for (StatisticDAO.ThongKePhong p : dsPhong) {
-            double tyTrong = (tongTienKy > 0) ? (p.tongDoanhThu / tongTienKy * 100) : 0;
-            String tangStr = p.tang > 0 ? "Tầng " + p.tang : "---";
+            int tongLuotThue = 0;
+            for (ThongKeDAO.ThongKePhong phong : dsPhong) {
+                tongLuotThue += phong.soLuotThue;
+            }
 
-            view.modelPhong.addRow(new Object[] {
-                "P." + p.soPhong,
-                p.tenLoaiPhong,
-                tangStr,
-                p.soLuotThue + " lượt",
-                df.format(p.tongDoanhThu),
-                dfTyLe.format(tyTrong)
-            });
+            view.lblValTongDoanhThu.setText(df.format(tongDoanhThuKy));
+            view.lblValDoanhThuThang.setText(Integer.toString(dsHD.size()));
+            view.lblValDoanhThuNgay.setText(Integer.toString(tongLuotThue));
+            String khoangNgay = view.getTuNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    + " – " + view.getDenNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            view.lblThongKeKy.setText("Thực thu " + khoangNgay + ": " + df.format(tongDoanhThuKy));
+
+            view.modelHoaDon.setRowCount(0);
+            for (ThongKeDAO.ChiTietHoaDonBaoCao h : dsHD) {
+                view.modelHoaDon.addRow(new Object[] {
+                    h.maHoaDon,
+                    h.ngayLap,
+                    h.soPhong,
+                    h.hoTen,
+                    h.sdt,
+                    df.format(h.tienPhong),
+                    df.format(h.phuThu),
+                    df.format(h.giamGia),
+                    df.format(h.tongTien),
+                    h.phuongThuc
+                });
+            }
+
+            view.modelPhong.setRowCount(0);
+            ArrayList<String> tenPhongBieuDo = new ArrayList<>();
+            ArrayList<String> chiTietBieuDo = new ArrayList<>();
+            ArrayList<Double> doanhThuBieuDo = new ArrayList<>();
+            for (ThongKeDAO.ThongKePhong p : dsPhong) {
+                double tyTrong = (tongDoanhThuKy > 0) ? (p.tongDoanhThu / tongDoanhThuKy * 100) : 0;
+                String tangStr = p.tang > 0 ? "Tầng " + p.tang : "---";
+                tenPhongBieuDo.add("Phòng " + p.soPhong);
+                chiTietBieuDo.add(p.soLuotThue + " lượt thuê · " + p.tenLoaiPhong);
+                doanhThuBieuDo.add(p.tongDoanhThu);
+
+                view.modelPhong.addRow(new Object[] {
+                    "P." + p.soPhong,
+                    p.tenLoaiPhong,
+                    tangStr,
+                    p.soLuotThue + " lượt",
+                    df.format(p.tongDoanhThu),
+                    dfTyLe.format(tyTrong)
+                });
+            }
+            view.capNhatBieuDoPhong(tenPhongBieuDo, chiTietBieuDo, doanhThuBieuDo);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    view,
+                    "Không thể xem thống kê: " + e.getMessage(),
+                    "Lỗi tải thống kê",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }

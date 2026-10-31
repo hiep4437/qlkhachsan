@@ -1,10 +1,10 @@
 package controller;
 
-import dao.DBConnection;
-import model.users;
-import service.UserService;
-import view.ViewDangNhap;
-import view.ViewTrangChu;
+import dao.KetNoiCSDL;
+import model.NguoiDung;
+import service.NguoiDungService;
+import view.view.ViewDangNhap;
+import view.view.ViewTrangChu;
 
 import java.sql.Connection;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ import javax.swing.*;
 
 public class LoginController {
     ViewDangNhap view;
-    UserService service = new UserService();
+    NguoiDungService service = new NguoiDungService();
 
     public LoginController(ViewDangNhap view) {
         this.view = view;
@@ -51,11 +51,11 @@ public class LoginController {
         }
 
         // Kiem tra ket noi CSDL truoc
-        Connection conn = DBConnection.getConnection();
+        Connection conn = KetNoiCSDL.getConnection();
         if (conn == null) {
             int luaChon = JOptionPane.showConfirmDialog(
                     view,
-                    "Không thể kết nối đến máy chủ CSDL MySQL (" + DBConnection.getHost() + ":" + DBConnection.getPort() + ").\n"
+                    "Không thể kết nối đến máy chủ CSDL MySQL (" + KetNoiCSDL.getHost() + ":" + KetNoiCSDL.getPort() + ").\n"
                     + "Bạn có muốn mở hộp thoại Cấu hình máy chủ để kiểm tra/thay đổi thông tin kết nối không?",
                     "Lỗi kết nối CSDL",
                     JOptionPane.YES_NO_OPTION,
@@ -66,9 +66,9 @@ public class LoginController {
             }
             return;
         }
-        DBConnection.closeConnection(conn);
+        KetNoiCSDL.closeConnection(conn);
 
-        users userDangNhap = service.kiemTraDangNhap(ten, matKhau);
+        NguoiDung userDangNhap = service.kiemTraDangNhap(ten, matKhau);
 
         if (userDangNhap != null) {
             JOptionPane.showMessageDialog(view, "Đăng nhập thành công!\nXin chào: " + userDangNhap.getHoTen() + " (" + userDangNhap.getVaiTro() + ")", "Thông báo", JOptionPane.INFORMATION_MESSAGE);

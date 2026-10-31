@@ -1,7 +1,7 @@
 
 package main;
 
-import view.ViewDangNhap;
+import view.view.ViewDangNhap;
 import controller.LoginController;
 
 public class Main {

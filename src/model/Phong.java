@@ -1,0 +1,105 @@
+package model;
+
+public class Phong {
+	private int maPhong;
+	private String soPhong;
+	private int maLoaiPhong;
+	private int tang;
+	private float giaMoiDem;
+	private String trangThai;
+	private String moTa;
+	private String tenLoaiPhong;
+	private int sucChua = 1;
+
+	public int getMaPhong() {
+		return maPhong;
+	}
+	public void setMaPhong(int maPhong) {
+		this.maPhong = maPhong;
+	}
+	public String getSoPhong() {
+		return soPhong;
+	}
+	public void setSoPhong(String soPhong) {
+		this.soPhong = soPhong;
+	}
+	public int getMaLoaiPhong() {
+		return maLoaiPhong;
+	}
+	public void setMaLoaiPhong(int maLoaiPhong) {
+		this.maLoaiPhong = maLoaiPhong;
+	}
+	public int getTang() {
+		return tang;
+	}
+	public void setTang(int tang) {
+		this.tang = tang;
+	}
+	public float getGiaMoiDem() {
+		return giaMoiDem;
+	}
+	public void setGiaMoiDem(float giaMoiDem) {
+		this.giaMoiDem = giaMoiDem;
+	}
+	public String getTrangThai() {
+		return trangThai;
+	}
+	public void setTrangThai(String trangThai) {
+		this.trangThai = trangThai;
+	}
+	public String getMoTa() {
+		return moTa;
+	}
+	public void setMoTa(String moTa) {
+		this.moTa = moTa;
+	}
+	public String getTenLoaiPhong() {
+		return tenLoaiPhong;
+	}
+	public void setTenLoaiPhong(String tenLoaiPhong) {
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+	public int getSucChua() {
+		return sucChua;
+	}
+	public void setSucChua(int sucChua) {
+		this.sucChua = sucChua;
+	}
+
+	public Phong(int maPhong, String soPhong, int maLoaiPhong, float giaMoiDem, String trangThai, String moTa) {
+		super();
+		this.maPhong = maPhong;
+		this.soPhong = soPhong;
+		this.maLoaiPhong = maLoaiPhong;
+		this.giaMoiDem = giaMoiDem;
+		this.trangThai = trangThai;
+		this.moTa = moTa;
+	}
+
+	public Phong(int maPhong, String soPhong, int maLoaiPhong, float giaMoiDem, String trangThai, String moTa, String tenLoaiPhong) {
+		super();
+		this.maPhong = maPhong;
+		this.soPhong = soPhong;
+		this.maLoaiPhong = maLoaiPhong;
+		this.giaMoiDem = giaMoiDem;
+		this.trangThai = trangThai;
+		this.moTa = moTa;
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+
+	public Phong(int maPhong, String soPhong, int maLoaiPhong, int tang, float giaMoiDem, String trangThai, String moTa, String tenLoaiPhong) {
+		super();
+		this.maPhong = maPhong;
+		this.soPhong = soPhong;
+		this.maLoaiPhong = maLoaiPhong;
+		this.tang = tang;
+		this.giaMoiDem = giaMoiDem;
+		this.trangThai = trangThai;
+		this.moTa = moTa;
+		this.tenLoaiPhong = tenLoaiPhong;
+	}
+
+	public Phong() {
+		super();
+	}
+}
