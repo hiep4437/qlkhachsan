@@ -97,6 +97,7 @@ public class DialogThemSuaDatPhong extends JDialog {
         txtCCCD.setFont(fontInput);
         txtCCCD.setPreferredSize(new Dimension(160, 32));
         btnKiemTraCCCD = new JButton("Tìm");
+        view.view.UIStyle.setButtonIcon(btnKiemTraCCCD, "timkiem.png");
         btnKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnKiemTraCCCD.setFocusPainted(false);
         pCCCD.add(txtCCCD, BorderLayout.CENTER);
@@ -318,6 +319,7 @@ public class DialogThemSuaDatPhong extends JDialog {
         btnHuy.addActionListener(e -> dispose());
 
         btnLuu = new JButton(isEdit ? "Cập nhật" : "Đặt phòng");
+        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
         btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLuu.setBackground(new Color(13, 110, 253));
         btnLuu.setForeground(Color.WHITE);

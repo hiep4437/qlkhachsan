@@ -2,6 +2,9 @@ package view.view;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 
@@ -122,6 +125,82 @@ public class UIStyle {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setMargin(new Insets(8, 16, 8, 16));
         return btn;
+    }
+
+    public static void setButtonIcon(JButton button, String iconFileName) {
+        Icon icon = createIcon(iconFileName, 24, null);
+        if (icon != null) {
+            button.setIcon(icon);
+            button.setIconTextGap(6);
+            button.setMargin(new Insets(2, 4, 2, 4));
+        }
+    }
+
+    public static Icon createTintedIcon(String iconFileName, int size, Color tint) {
+        return createIcon(iconFileName, size, tint);
+    }
+
+    private static Icon createIcon(String iconFileName, int size, Color tint) {
+        String resourcePath = "/img/" + iconFileName;
+        java.net.URL iconResource = UIStyle.class.getResource(resourcePath);
+        if (iconResource == null) {
+            System.err.println("Không tìm thấy icon nút: " + resourcePath);
+            return null;
+        }
+
+        try {
+            BufferedImage image = ImageIO.read(iconResource);
+            if (image == null) {
+                System.err.println("Không đọc được ảnh icon: " + resourcePath);
+                return null;
+            }
+            if (tint != null) {
+                BufferedImage tintedImage = new BufferedImage(
+                        image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                for (int y = 0; y < image.getHeight(); y++) {
+                    for (int x = 0; x < image.getWidth(); x++) {
+                        int alpha = (image.getRGB(x, y) >>> 24) & 0xFF;
+                        tintedImage.setRGB(x, y, (alpha << 24) | (tint.getRGB() & 0x00FFFFFF));
+                    }
+                }
+                image = tintedImage;
+            }
+            return new ScaledIcon(image, size);
+        } catch (IOException e) {
+            System.err.println("Không thể đọc icon " + resourcePath + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+    private static class ScaledIcon implements Icon {
+        private final BufferedImage image;
+        private final int size;
+
+        private ScaledIcon(BufferedImage image, int size) {
+            this.image = image;
+            this.size = size;
+        }
+
+        @Override
+        public void paintIcon(Component component, Graphics graphics, int x, int y) {
+            Graphics2D graphics2D = (Graphics2D) graphics.create();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_QUALITY);
+            graphics2D.drawImage(image, x, y, size, size, null);
+            graphics2D.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
+        }
     }
 
     // style input text nhin phang va co padding

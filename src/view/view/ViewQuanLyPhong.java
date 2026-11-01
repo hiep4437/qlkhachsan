@@ -31,6 +31,7 @@ public class ViewQuanLyPhong extends JFrame {
     // Các nút chức năng ở bottom
     public JButton btnThem, btnSua, btnXoa, btnLamMoi;
     public JButton btnQuayLai = new JButton("Quay lại");
+    private final boolean coQuyenQuanLyPhong;
 
     // Khai báo các field cũ để đảm bảo tương thích mã nguồn
     public JTextField txtMaPhong = new JTextField();
@@ -41,6 +42,11 @@ public class ViewQuanLyPhong extends JFrame {
     public JComboBox<String> cboTrangThai = new JComboBox<>(new String[] { "", "TRỐNG", "CÓ KHÁCH", "ĐANG DỌN", "BẢO TRÌ" });
 
     public ViewQuanLyPhong() {
+        this(true);
+    }
+
+    public ViewQuanLyPhong(boolean coQuyenQuanLyPhong) {
+        this.coQuyenQuanLyPhong = coQuyenQuanLyPhong;
         setTitle("Quản lý khách sạn - Quản lý phòng");
         AppWindowIcon.apply(this);
         setSize(1100, 680);
@@ -88,6 +94,7 @@ public class ViewQuanLyPhong extends JFrame {
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Số phòng, loại phòng, tầng...");
 
         btnTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
         btnTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnTimKiem.setPreferredSize(new Dimension(110, 34));
         btnTimKiem.setFocusPainted(false);
@@ -263,27 +270,33 @@ public class ViewQuanLyPhong extends JFrame {
         pLeftButtons.setOpaque(false);
 
         btnThem = new JButton("Thêm phòng");
+        UIStyle.setButtonIcon(btnThem, "them.png");
         btnThem.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnThem.setBackground(new Color(13, 110, 253));
-        btnThem.setForeground(Color.WHITE);
+        btnThem.setForeground(Color.BLACK);
         btnThem.setPreferredSize(new Dimension(140, 36));
         btnThem.setFocusPainted(false);
+        btnThem.setVisible(coQuyenQuanLyPhong);
 
         btnSua = new JButton("Sửa phòng");
+        UIStyle.setButtonIcon(btnSua, "sua.png");
         btnSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnSua.setBackground(new Color(255, 193, 7));
-        btnSua.setForeground(new Color(33, 37, 41));
+        btnSua.setForeground(Color.BLACK);
         btnSua.setPreferredSize(new Dimension(130, 36));
         btnSua.setFocusPainted(false);
 
         btnXoa = new JButton("Xóa phòng");
+        UIStyle.setButtonIcon(btnXoa, "xoa.png");
         btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnXoa.setBackground(new Color(220, 53, 69));
-        btnXoa.setForeground(Color.WHITE);
+        btnXoa.setForeground(Color.BLACK);
         btnXoa.setPreferredSize(new Dimension(130, 36));
         btnXoa.setFocusPainted(false);
+        btnXoa.setVisible(coQuyenQuanLyPhong);
 
         btnLamMoi = new JButton("Làm mới");
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnLamMoi.setPreferredSize(new Dimension(140, 36));
         btnLamMoi.setFocusPainted(false);
@@ -302,6 +315,10 @@ public class ViewQuanLyPhong extends JFrame {
             new ViewTrangChu().setVisible(true);
             dispose();
         });
+    }
+
+    public boolean coQuyenQuanLyPhong() {
+        return coQuyenQuanLyPhong;
     }
 
     public void lamMoi() {

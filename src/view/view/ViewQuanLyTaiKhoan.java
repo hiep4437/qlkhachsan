@@ -108,6 +108,7 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Tên đăng nhập, họ tên...");
 
         btnTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
         btnTimKiem.setFont(fInput);
         btnTimKiem.setPreferredSize(new Dimension(110, 34));
         btnTimKiem.setFocusPainted(false);
@@ -129,6 +130,7 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         cboLocTrangThai.setPreferredSize(new Dimension(165, 34));
 
         btnLamMoiTim = new JButton("Xóa lọc");
+        UIStyle.setButtonIcon(btnLamMoiTim, "load.png");
         btnLamMoiTim.setFont(fInput);
         btnLamMoiTim.setPreferredSize(new Dimension(90, 34));
         btnLamMoiTim.setFocusPainted(false);
@@ -278,12 +280,16 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         JPanel pBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         pBottom.setOpaque(false);
 
-        btnThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.WHITE, 165);
-        btnSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7),  new Color(33, 37, 41), 150);
-        btnXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.WHITE, 150);
+        btnThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.BLACK, 165);
+        UIStyle.setButtonIcon(btnThem, "them.png");
+        btnSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7), Color.BLACK, 150);
+        UIStyle.setButtonIcon(btnSua, "sua.png");
+        btnXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.BLACK, 150);
+        UIStyle.setButtonIcon(btnXoa, "xoa.png");
         btnKhoaMoKhoa    = makeBtn("Khóa / Mở khóa", new Color(108, 117, 125), Color.WHITE, 155);
         btnDatLaiMatKhau = makeBtn("Đặt lại mật khẩu", new Color(52, 58, 64),  Color.WHITE, 165);
         btnLamMoi        = makeBtn("Làm mới", null, null, 130);
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         pBottom.add(btnThem);

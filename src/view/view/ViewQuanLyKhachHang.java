@@ -86,6 +86,7 @@ public class ViewQuanLyKhachHang extends JFrame {
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Họ tên, CCCD, số điện thoại, địa chỉ...");
 
         btnTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
         btnTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnTimKiem.setPreferredSize(new Dimension(110, 34));
         btnTimKiem.setFocusPainted(false);
@@ -221,35 +222,40 @@ public class ViewQuanLyKhachHang extends JFrame {
         pBottom.setOpaque(false);
 
         btnThem = new JButton("Thêm khách hàng");
-        btnThem.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        UIStyle.setButtonIcon(btnThem, "them.png");
+        btnThem.setFont(UIStyle.FONT_BOLD);
         btnThem.setBackground(new Color(13, 110, 253));
-        btnThem.setForeground(Color.WHITE);
+        btnThem.setForeground(Color.BLACK);
         btnThem.setPreferredSize(new Dimension(160, 36));
         btnThem.setFocusPainted(false);
 
         btnSua = new JButton("Sửa thông tin");
-        btnSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        UIStyle.setButtonIcon(btnSua, "sua.png");
+        btnSua.setFont(UIStyle.FONT_BOLD);
         btnSua.setBackground(new Color(255, 193, 7));
-        btnSua.setForeground(new Color(33, 37, 41));
+        btnSua.setForeground(Color.BLACK);
         btnSua.setPreferredSize(new Dimension(130, 36));
         btnSua.setFocusPainted(false);
 
         btnLichSu = new JButton("Lịch sử thuê phòng");
-        btnLichSu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnLichSu.setFont(UIStyle.FONT_BOLD);
         btnLichSu.setBackground(new Color(25, 135, 84));
-        btnLichSu.setForeground(Color.WHITE);
+        btnLichSu.setForeground(Color.BLACK);
         btnLichSu.setPreferredSize(new Dimension(170, 36));
         btnLichSu.setFocusPainted(false);
 
         btnXoa = new JButton("Xóa khách hàng");
-        btnXoa.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        UIStyle.setButtonIcon(btnXoa, "xoa.png");
+        btnXoa.setFont(UIStyle.FONT_BOLD);
         btnXoa.setBackground(new Color(220, 53, 69));
-        btnXoa.setForeground(Color.WHITE);
+        btnXoa.setForeground(Color.BLACK);
         btnXoa.setPreferredSize(new Dimension(140, 36));
         btnXoa.setFocusPainted(false);
 
         btnLamMoi = new JButton("Làm mới");
-        btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
+        btnLamMoi.setFont(UIStyle.FONT_BOLD);
+        btnLamMoi.setForeground(Color.BLACK);
         btnLamMoi.setPreferredSize(new Dimension(120, 36));
         btnLamMoi.setFocusPainted(false);
 

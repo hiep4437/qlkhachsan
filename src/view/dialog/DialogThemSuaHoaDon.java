@@ -211,6 +211,7 @@ public class DialogThemSuaHoaDon extends JDialog {
         btnHuy.addActionListener(e -> dispose());
 
         btnLuu = new JButton(isEdit ? "Cập nhật" : "Lưu hóa đơn");
+        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
         btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLuu.setBackground(new Color(13, 110, 253));
         btnLuu.setForeground(Color.WHITE);
@@ -278,4 +279,3 @@ public class DialogThemSuaHoaDon extends JDialog {
         return invoice;
     }
 }
-

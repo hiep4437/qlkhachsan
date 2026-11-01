@@ -143,6 +143,7 @@ public class DialogThemSuaKhachHang extends JDialog {
         btnHuy.addActionListener(e -> dispose());
 
         btnLuu = new JButton(isEdit ? "Cập nhật" : "Thêm mới");
+        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
         btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLuu.setBackground(new Color(13, 110, 253));
         btnLuu.setForeground(Color.WHITE);
@@ -198,4 +199,3 @@ public class DialogThemSuaKhachHang extends JDialog {
         return customer;
     }
 }
-

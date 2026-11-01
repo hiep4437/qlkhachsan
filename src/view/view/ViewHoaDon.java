@@ -80,6 +80,7 @@ public class ViewHoaDon extends JFrame {
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Số phòng, tên khách, SĐT, mã HĐ...");
 
         btnTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
         btnTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnTimKiem.setPreferredSize(new Dimension(100, 34));
         btnTimKiem.setFocusPainted(false);
@@ -305,6 +306,7 @@ public class ViewHoaDon extends JFrame {
         btnXemChiTiet.setFocusPainted(false);
 
         btnLamMoi = new JButton("Làm mới");
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnLamMoi.setPreferredSize(new Dimension(120, 36));
         btnLamMoi.setFocusPainted(false);

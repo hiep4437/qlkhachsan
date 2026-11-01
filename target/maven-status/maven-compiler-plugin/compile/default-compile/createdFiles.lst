@@ -104,3 +104,4 @@ view\view\UIStyle$1.class
 view\dialog\DialogTraPhongThanhToan$1.class
 dao\KhachHangDAO.class
 controller\StatisticController$3.class
+view\view\UIStyle$ScaledIcon.class

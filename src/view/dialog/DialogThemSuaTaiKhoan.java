@@ -176,6 +176,7 @@ public class DialogThemSuaTaiKhoan extends JDialog {
         btnHuy.addActionListener(e -> dispose());
 
         btnLuu = new JButton(isEdit ? "Cập nhật" : "Tạo tài khoản");
+        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
         btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnLuu.setBackground(new Color(13, 110, 253));
         btnLuu.setForeground(Color.WHITE);
@@ -239,4 +240,3 @@ public class DialogThemSuaTaiKhoan extends JDialog {
     public boolean isSaved()   { return saved; }
     public NguoiDung   getUser()   { return user;  }
 }
-

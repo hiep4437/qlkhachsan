@@ -93,6 +93,7 @@ public class ViewDatPhong extends JFrame {
         txtTimKiem.putClientProperty("JTextField.placeholderText", "Tên khách, SĐT, số phòng, CCCD...");
 
         btnTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
         btnTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnTimKiem.setPreferredSize(new Dimension(100, 34));
         btnTimKiem.setFocusPainted(false);
@@ -317,20 +318,23 @@ public class ViewDatPhong extends JFrame {
         btnCheckOut.setFocusPainted(false);
 
         btnSua = new JButton("Sửa đơn");
+        UIStyle.setButtonIcon(btnSua, "sua.png");
         btnSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnSua.setBackground(new Color(255, 193, 7));
-        btnSua.setForeground(new Color(33, 37, 41));
+        btnSua.setForeground(Color.BLACK);
         btnSua.setPreferredSize(new Dimension(100, 36));
         btnSua.setFocusPainted(false);
 
         btnHuyDat = new JButton("Hủy đặt");
+        UIStyle.setButtonIcon(btnHuyDat, "xoa.png");
         btnHuyDat.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnHuyDat.setBackground(new Color(108, 117, 125));
-        btnHuyDat.setForeground(Color.WHITE);
+        btnHuyDat.setForeground(Color.BLACK);
         btnHuyDat.setPreferredSize(new Dimension(100, 36));
         btnHuyDat.setFocusPainted(false);
 
         btnLamMoi = new JButton("Làm mới");
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnLamMoi.setPreferredSize(new Dimension(120, 36));
         btnLamMoi.setFocusPainted(false);

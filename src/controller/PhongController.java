@@ -140,6 +140,10 @@ public class PhongController {
 
     // Thêm phòng bằng Modal Dialog
     void them() {
+        if (!view.coQuyenQuanLyPhong()) {
+            JOptionPane.showMessageDialog(view, "Nhân viên không có quyền thêm phòng.", "Không đủ quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
             ArrayList<LoaiPhong> dsLoai = roomTypeDAO.xuat();
             DialogThemSuaPhong dialog = new DialogThemSuaPhong(getParentWindow(), null, dsLoai);
@@ -239,6 +243,10 @@ public class PhongController {
 
     // Xóa phòng
     void xoa() {
+        if (!view.coQuyenQuanLyPhong()) {
+            JOptionPane.showMessageDialog(view, "Nhân viên không có quyền xóa phòng.", "Không đủ quyền", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int selectedRow = view.table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(view, "Vui lòng chọn một phòng trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);

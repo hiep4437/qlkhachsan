@@ -115,6 +115,8 @@ public class ViewTrangChu extends JFrame {
         btnUserMenu = new JButton();
         capNhatNutUserMenu();
         btnUserMenu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnUserMenu.setIcon(UIStyle.createTintedIcon("user.256.png", 18, Color.WHITE));
+        btnUserMenu.setIconTextGap(8);
         btnUserMenu.setForeground(Color.WHITE);
         btnUserMenu.setBackground(new Color(36, 64, 132));
         btnUserMenu.setFocusPainted(false);
@@ -126,6 +128,8 @@ public class ViewTrangChu extends JFrame {
 
         JButton btnDangXuat = new JButton("Đăng xuất");
         btnDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnDangXuat.setIcon(UIStyle.createTintedIcon("logout.png", 18, Color.WHITE));
+        btnDangXuat.setIconTextGap(8);
         btnDangXuat.setBackground(new Color(192, 57, 43));
         btnDangXuat.setForeground(Color.WHITE);
         btnDangXuat.setFocusPainted(false);
@@ -150,7 +154,7 @@ public class ViewTrangChu extends JFrame {
 
         // Tab 1: Quản lý phòng
         try {
-            ViewQuanLyPhong vPhong = new ViewQuanLyPhong();
+            ViewQuanLyPhong vPhong = new ViewQuanLyPhong(currentUser.isAdmin());
             new PhongController(vPhong);
             tabbedPane.addTab("Quản lý phòng", vPhong.getContentPane());
         } catch (Exception ex) {
@@ -270,11 +274,13 @@ public class ViewTrangChu extends JFrame {
         filterPanel.add(txtTimPhong);
 
         JButton btnTim = new JButton("Tìm");
+        UIStyle.setButtonIcon(btnTim, "timkiem.png");
         btnTim.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnTim.addActionListener(e -> taiDuLieuSoDoPhong());
         filterPanel.add(btnTim);
 
         JButton btnLamMoi = new JButton("Làm mới");
+        UIStyle.setButtonIcon(btnLamMoi, "load.png");
         btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnLamMoi.setBackground(new Color(41, 128, 185));
         btnLamMoi.setForeground(Color.WHITE);
@@ -677,6 +683,7 @@ public class ViewTrangChu extends JFrame {
 
         JTextField txtCCCD = new JTextField(12);
         JButton btnKiemTraCCCD = new JButton("Tìm khách");
+        UIStyle.setButtonIcon(btnKiemTraCCCD, "timkiem.png");
         JTextField txtHoTen = new JTextField(15);
         JTextField txtSDT = new JTextField(15);
         JTextField txtDiaChi = new JTextField(15);
