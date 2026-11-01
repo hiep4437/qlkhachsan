@@ -14,6 +14,8 @@ import model.DatPhong;
 import model.KhachHang;
 import model.Phong;
 import service.DatPhongService;
+import view.view.DatePickerCalendar;
+import view.view.DatePickerField;
 
 public class DialogThemSuaDatPhong extends JDialog {
 
@@ -23,8 +25,8 @@ public class DialogThemSuaDatPhong extends JDialog {
     private JButton btnKiemTraCCCD;
 
     private JComboBox<Phong> cboPhong;
-    private JTextField txtNgayNhan;
-    private JTextField txtNgayTra;
+    private DatePickerField txtNgayNhan;
+    private DatePickerField txtNgayTra;
     private JSpinner spnSoNguoi;
     private JComboBox<String> cboTrangThai;
     private JTextField txtGhiChu;
@@ -166,24 +168,22 @@ public class DialogThemSuaDatPhong extends JDialog {
         LocalDate ngayMai = homNay.plusDays(1);
 
         g.gridx = 0; g.gridy = 4; g.weightx = 0;
-        JLabel lblNhan = new JLabel("Ngày nhận (YYYY-MM-DD):");
+        JLabel lblNhan = new JLabel("Ngày nhận:");
         lblNhan.setFont(fontLabel);
         pBody.add(lblNhan, g);
 
         g.gridx = 1; g.weightx = 1;
-        txtNgayNhan = new JTextField(homNay.toString());
-        txtNgayNhan.setFont(fontInput);
+        txtNgayNhan = new DatePickerField(homNay, homNay);
         txtNgayNhan.setPreferredSize(new Dimension(200, 32));
         pBody.add(txtNgayNhan, g);
 
         g.gridx = 0; g.gridy = 5; g.weightx = 0;
-        JLabel lblTra = new JLabel("Ngày trả (YYYY-MM-DD):");
+        JLabel lblTra = new JLabel("Ngày trả:");
         lblTra.setFont(fontLabel);
         pBody.add(lblTra, g);
 
         g.gridx = 1; g.weightx = 1;
-        txtNgayTra = new JTextField(ngayMai.toString());
-        txtNgayTra.setFont(fontInput);
+        txtNgayTra = new DatePickerField(ngayMai, ngayMai);
         txtNgayTra.setPreferredSize(new Dimension(200, 32));
         pBody.add(txtNgayTra, g);
 
@@ -268,8 +268,12 @@ public class DialogThemSuaDatPhong extends JDialog {
         // Điền dữ liệu nếu là sửa
         if (isEdit) {
             txtCCCD.setText(this.booking.getCccd() != null ? this.booking.getCccd() : "");
-            if (this.booking.getNgayNhanPhong() != null) txtNgayNhan.setText(this.booking.getNgayNhanPhong().toString());
-            if (this.booking.getNgayTraPhong() != null) txtNgayTra.setText(this.booking.getNgayTraPhong().toString());
+            if (this.booking.getNgayNhanPhong() != null) {
+                txtNgayNhan.setDate(this.booking.getNgayNhanPhong().toLocalDate());
+            }
+            if (this.booking.getNgayTraPhong() != null) {
+                txtNgayTra.setDate(this.booking.getNgayTraPhong().toLocalDate());
+            }
             txtGhiChu.setText(this.booking.getGhiChu() != null ? this.booking.getGhiChu() : "");
 
             String st = this.booking.getTrangThai();
@@ -306,6 +310,15 @@ public class DialogThemSuaDatPhong extends JDialog {
                 }
             }
         }
+
+        txtNgayTra.setMinimumDate(txtNgayNhan.getDate().plusDays(1));
+        txtNgayNhan.addDateChangeListener(event -> {
+            LocalDate earliestCheckout = txtNgayNhan.getDate().plusDays(1);
+            txtNgayTra.setMinimumDate(earliestCheckout);
+            if (txtNgayTra.getDate().isBefore(earliestCheckout)) {
+                txtNgayTra.setDate(earliestCheckout);
+            }
+        });
 
         // Footer buttons
         JPanel pFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
@@ -353,14 +366,19 @@ public class DialogThemSuaDatPhong extends JDialog {
         Date ngayNhan;
         Date ngayTra;
         try {
-            ngayNhan = Date.valueOf(txtNgayNhan.getText().trim());
-            ngayTra = Date.valueOf(txtNgayTra.getText().trim());
+            ngayNhan = Date.valueOf(txtNgayNhan.getDate());
+            ngayTra = Date.valueOf(txtNgayTra.getDate());
+            if (ngayNhan.toLocalDate().isBefore(LocalDate.now())) {
+                JOptionPane.showMessageDialog(this, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             if (!ngayTra.after(ngayNhan)) {
                 JOptionPane.showMessageDialog(this, "Ngày trả phòng phải sau ngày nhận phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Ngày nhận/trả phải đúng định dạng YYYY-MM-DD (Ví dụ: 2026-10-28)!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận và ngày trả hợp lệ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

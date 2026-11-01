@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import dao.DatPhongDAO;
 import model.DatPhong;
@@ -14,7 +15,8 @@ public class DatPhongService {
         if (t.getIdKhachHang() <= 0
                 || t.getMaPhong() <= 0
                 || t.getNgayNhanPhong() == null
-                || t.getNgayTraPhong() == null) {
+                || t.getNgayTraPhong() == null
+                || t.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())) {
             System.out.println("Thong tin dat phong khong hop le!");
             return 0;
         }
@@ -34,11 +36,16 @@ public class DatPhongService {
 
     // Dat phong nhanh kem phong va tao hoa don
     public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId, double pricePerNight) {
-        return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight);
+        return datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, 1);
     }
 
     public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId,
             double pricePerNight, int soNguoi) {
+        if (checkIn == null || checkIn.toLocalDate().isBefore(LocalDate.now())
+                || checkOut == null || !checkOut.after(checkIn)) {
+            System.out.println("Ngay nhan phong phai tu hom nay tro di va ngay tra phai sau ngay nhan!");
+            return 0;
+        }
         return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, soNguoi);
     }
 
@@ -68,6 +75,7 @@ public class DatPhongService {
                 || t.getMaPhong() <= 0
                 || t.getNgayNhanPhong() == null
                 || t.getNgayTraPhong() == null
+                || t.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())
                 || !t.getNgayTraPhong().after(t.getNgayNhanPhong())) {
             System.out.println("Thong tin dat phong khong hop le!");
             return 0;

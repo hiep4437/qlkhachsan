@@ -49,6 +49,7 @@ dao\ThongKeDAO.class
 view\view\ViewHoaDon$1.class
 view\view\AppWindowIcon.class
 view\view\ViewBaoCaoThongKe$3.class
+view\view\DatePickerCalendar.class
 controller\LoginController$1.class
 view\view\ViewQuanLyPhong$4.class
 view\view\UIStyle$RoundedBorder.class
@@ -84,6 +85,7 @@ controller\PhongController.class
 service\DatPhongService.class
 view\view\ViewDatPhong$3.class
 controller\StatisticController$2.class
+view\view\DatePickerField.class
 view\view\ViewBaoCaoThongKe$1.class
 view\view\ViewBaoCaoThongKe$DongBieuDo.class
 controller\KhachHangController$2.class

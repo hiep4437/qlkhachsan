@@ -690,8 +690,8 @@ public class ViewTrangChu extends JFrame {
 
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
-        JTextField txtNgayNhan = new JTextField(today.toString(), 10);
-        JTextField txtNgayTra = new JTextField(tomorrow.toString(), 10);
+        DatePickerField txtNgayNhan = new DatePickerField(today, today);
+        DatePickerField txtNgayTra = new DatePickerField(tomorrow, tomorrow);
         JTextField txtGhiChu = new JTextField("Khách đặt trực tiếp", 15);
         int sucChua = Math.max(1, r.getSucChua());
         JSpinner spnSoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChua, 1));
@@ -738,7 +738,7 @@ public class ViewTrangChu extends JFrame {
         // Hàng 4: Ngày nhận
         g.gridx = 0;
         g.gridy = 4;
-        pForm.add(new JLabel("Ngày nhận (YYYY-MM-DD):"), g);
+        pForm.add(new JLabel("Ngày nhận:"), g);
         g.gridx = 1;
         g.gridy = 4;
         pForm.add(txtNgayNhan, g);
@@ -746,10 +746,18 @@ public class ViewTrangChu extends JFrame {
         // Hàng 5: Ngày trả
         g.gridx = 0;
         g.gridy = 5;
-        pForm.add(new JLabel("Ngày trả (YYYY-MM-DD):"), g);
+        pForm.add(new JLabel("Ngày trả:"), g);
         g.gridx = 1;
         g.gridy = 5;
         pForm.add(txtNgayTra, g);
+
+        txtNgayNhan.addDateChangeListener(ev -> {
+            LocalDate earliestCheckout = txtNgayNhan.getDate().plusDays(1);
+            txtNgayTra.setMinimumDate(earliestCheckout);
+            if (txtNgayTra.getDate().isBefore(earliestCheckout)) {
+                txtNgayTra.setDate(earliestCheckout);
+            }
+        });
 
         // Hàng 6: Tạm tính
         g.gridx = 0;
@@ -777,18 +785,11 @@ public class ViewTrangChu extends JFrame {
 
         // Tính lại số tiền khi đổi ngày
         Runnable tinhTien = () -> {
-            try {
-                Date d1 = Date.valueOf(txtNgayNhan.getText().trim());
-                Date d2 = Date.valueOf(txtNgayTra.getText().trim());
-                long dem = ChronoUnit.DAYS.between(d1.toLocalDate(), d2.toLocalDate());
-                if (dem <= 0)
-                    dem = 1;
-                lblTamTinh.setText(currencyFormat.format(dem * r.getGiaMoiDem()) + " (" + dem + " đêm)");
-            } catch (Exception ignored) {
-            }
+            long dem = ChronoUnit.DAYS.between(txtNgayNhan.getDate(), txtNgayTra.getDate());
+            lblTamTinh.setText(currencyFormat.format(dem * r.getGiaMoiDem()) + " (" + dem + " đêm)");
         };
-        txtNgayNhan.addActionListener(ev -> tinhTien.run());
-        txtNgayTra.addActionListener(ev -> tinhTien.run());
+        txtNgayNhan.addDateChangeListener(ev -> tinhTien.run());
+        txtNgayTra.addDateChangeListener(ev -> tinhTien.run());
 
         // Tìm khách theo CCCD
         btnKiemTraCCCD.addActionListener(ev -> {
@@ -839,15 +840,20 @@ public class ViewTrangChu extends JFrame {
             Date dNhan;
             Date dTra;
             try {
-                dNhan = Date.valueOf(txtNgayNhan.getText().trim());
-                dTra = Date.valueOf(txtNgayTra.getText().trim());
+                dNhan = Date.valueOf(txtNgayNhan.getDate());
+                dTra = Date.valueOf(txtNgayTra.getDate());
+                if (dNhan.toLocalDate().isBefore(LocalDate.now())) {
+                    JOptionPane.showMessageDialog(dlg, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ",
+                            JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
                 if (!dTra.after(dNhan)) {
                     JOptionPane.showMessageDialog(dlg, "Ngày trả phòng phải sau ngày nhận phòng!", "Lỗi ngày tháng",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dlg, "Định dạng ngày không hợp lệ (YYYY-MM-DD)!", "Lỗi ngày tháng",
+                JOptionPane.showMessageDialog(dlg, "Vui lòng chọn ngày nhận và ngày trả hợp lệ!", "Lỗi ngày tháng",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
