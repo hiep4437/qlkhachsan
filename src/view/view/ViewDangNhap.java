@@ -34,7 +34,7 @@ public class ViewDangNhap extends JFrame {
         lblLogo.setForeground(new Color(26, 82, 118));
         lblLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel lblSub = new JLabel("Đăng nhập để vào hệ thống vận hành");
+        JLabel lblSub = new JLabel("Đăng nhập");
         lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblSub.setForeground(Color.GRAY);
         lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
