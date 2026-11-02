@@ -38,6 +38,10 @@
                     <exclude>**/*.java</exclude>
                 </excludes>
             </resource>
+            <resource>
+                <directory>img</directory>
+                <targetPath>img</targetPath>
+            </resource>
         </resources>
 
         <plugins>
