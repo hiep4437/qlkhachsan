@@ -34,30 +34,30 @@ import java.time.format.DateTimeFormatter;
 
 public class ViewBaoCaoThongKe extends JFrame {
 
-    private static final Color COLOR_TEXT = new Color(30, 41, 59);
-    private static final Color COLOR_MUTED = new Color(100, 116, 139);
-    private static final Color COLOR_GREEN = new Color(16, 185, 129);
-    private static final Color COLOR_AMBER = new Color(245, 158, 11);
+    private static final Color MAU_VANBAN = new Color(30, 41, 59);
+    private static final Color MAU_MUTED = new Color(100, 116, 139);
+    private static final Color MAU_GREEN = new Color(16, 185, 129);
+    private static final Color MAU_HOPHACH = new Color(245, 158, 11);
 
-    public JLabel lblValTongDoanhThu;
-    public JLabel lblValDoanhThuThang;
-    public JLabel lblValDoanhThuNgay;
-    public JComboBox<String> cboKyBaoCao;
-    public JTextField txtTuNgay;
-    public JTextField txtDenNgay;
-    public JButton btnChonTuNgay;
-    public JButton btnChonDenNgay;
-    public JButton btnLoc;
-    public JLabel lblThongKeKy;
-    public JTable tblPhong;
-    public DefaultTableModel modelPhong;
-    public JTable tblHoaDon;
-    public DefaultTableModel modelHoaDon;
+    public JLabel nhanGiaTriChungDoanhThu;
+    public JLabel nhanGiaTriDoanhThuThang;
+    public JLabel nhanGiaTriDoanhThuNgay;
+    public JComboBox<String> hopChonKyBaoCao;
+    public JTextField oNhapTuNgay;
+    public JTextField oNhapDenNgay;
+    public JButton nutChonTuNgay;
+    public JButton nutChonDenNgay;
+    public JButton nutLoc;
+    public JLabel nhanThongKeKy;
+    public JTable bangPhong;
+    public DefaultTableModel moHinhPhong;
+    public JTable bangHoaDon;
+    public DefaultTableModel moHinhHoaDon;
 
-    private final BieuDoDoanhThuPhong bieuDoDoanhThuPhong = new BieuDoDoanhThuPhong();
+    private final BieuDoDoanhThuPhong bieuThucHienDoanhThuPhong = new BieuDoDoanhThuPhong();
     private LocalDate tuNgay = LocalDate.now().withDayOfMonth(1);
     private LocalDate denNgay = LocalDate.now();
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter NGAY_DINHDANG = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public ViewBaoCaoThongKe() {
         setTitle("Báo cáo doanh thu");
@@ -67,127 +67,127 @@ public class ViewBaoCaoThongKe extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel main = new JPanel(new BorderLayout(0, 16));
-        main.setBackground(UIStyle.COLOR_APP_BG);
-        main.setBorder(new EmptyBorder(22, 24, 22, 24));
+        JPanel chinh = new JPanel(new BorderLayout(0, 16));
+        chinh.setBackground(UIStyle.MAU_APP_MAUNEN);
+        chinh.setBorder(new EmptyBorder(22, 24, 22, 24));
 
-        JPanel top = new JPanel();
-        top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(taoTieuDe());
-        top.add(Box.createVerticalStrut(18));
-        top.add(taoCardsDoanhThu());
-        top.add(Box.createVerticalStrut(16));
-        top.add(taoBoLoc());
+        JPanel tren = new JPanel();
+        tren.setOpaque(false);
+        tren.setLayout(new BoxLayout(tren, BoxLayout.Y_AXIS));
+        tren.add(taoTieuDe());
+        tren.add(Box.createVerticalStrut(18));
+        tren.add(taoCardsDoanhThu());
+        tren.add(Box.createVerticalStrut(16));
+        tren.add(taoBoLoc());
 
-        main.add(top, BorderLayout.NORTH);
-        main.add(taoNoiDungBaoCao(), BorderLayout.CENTER);
-        setContentPane(main);
+        chinh.add(tren, BorderLayout.NORTH);
+        chinh.add(taoNoiDungBaoCao(), BorderLayout.CENTER);
+        setContentPane(chinh);
     }
 
     private JPanel taoTieuDe() {
-        JPanel panel = new JPanel(new BorderLayout(12, 0));
-        panel.setOpaque(false);
+        JPanel khung = new JPanel(new BorderLayout(12, 0));
+        khung.setOpaque(false);
 
-        JPanel titles = new JPanel();
-        titles.setOpaque(false);
-        titles.setLayout(new BoxLayout(titles, BoxLayout.Y_AXIS));
+        JPanel cacTieuDe = new JPanel();
+        cacTieuDe.setOpaque(false);
+        cacTieuDe.setLayout(new BoxLayout(cacTieuDe, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel("Báo cáo doanh thu");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 25));
-        title.setForeground(COLOR_TEXT);
+        JLabel deMuc = new JLabel("Báo cáo doanh thu");
+        deMuc.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        deMuc.setForeground(MAU_VANBAN);
 
-        JLabel subtitle = new JLabel("Tổng quan doanh thu và hiệu quả kinh doanh của khách sạn");
-        subtitle.setFont(UIStyle.FONT_REGULAR);
-        subtitle.setForeground(COLOR_MUTED);
+        JLabel phuDe = new JLabel("Tổng quan doanh thu và hiệu quả kinh doanh của khách sạn");
+        phuDe.setFont(UIStyle.PHONGCHU_THUONG);
+        phuDe.setForeground(MAU_MUTED);
 
-        titles.add(title);
-        titles.add(Box.createVerticalStrut(4));
-        titles.add(subtitle);
+        cacTieuDe.add(deMuc);
+        cacTieuDe.add(Box.createVerticalStrut(4));
+        cacTieuDe.add(phuDe);
 
-        JLabel badge = new JLabel("THỐNG KÊ TÀI CHÍNH");
-        badge.setFont(UIStyle.FONT_SMALL_BOLD);
-        badge.setForeground(UIStyle.COLOR_PRIMARY);
-        badge.setBackground(new Color(239, 246, 255));
-        badge.setOpaque(true);
-        badge.setBorder(new EmptyBorder(8, 12, 8, 12));
+        JLabel huyHieu = new JLabel("THỐNG KÊ TÀI CHÍNH");
+        huyHieu.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+        huyHieu.setForeground(UIStyle.MAU_CHINH);
+        huyHieu.setBackground(new Color(239, 246, 255));
+        huyHieu.setOpaque(true);
+        huyHieu.setBorder(new EmptyBorder(8, 12, 8, 12));
 
-        panel.add(titles, BorderLayout.WEST);
-        panel.add(badge, BorderLayout.EAST);
-        return panel;
+        khung.add(cacTieuDe, BorderLayout.WEST);
+        khung.add(huyHieu, BorderLayout.EAST);
+        return khung;
     }
 
     private JPanel taoCardsDoanhThu() {
-        JPanel cards = new JPanel(new java.awt.GridLayout(1, 3, 14, 0));
-        cards.setOpaque(false);
+        JPanel cacThe = new JPanel(new java.awt.GridLayout(1, 3, 14, 0));
+        cacThe.setOpaque(false);
 
-        lblValTongDoanhThu = new JLabel("0 đ");
-        lblValDoanhThuThang = new JLabel("0 đ");
-        lblValDoanhThuNgay = new JLabel("0 đ");
+        nhanGiaTriChungDoanhThu = new JLabel("0 đ");
+        nhanGiaTriDoanhThuThang = new JLabel("0 đ");
+        nhanGiaTriDoanhThuNgay = new JLabel("0 đ");
 
-        cards.add(taoCardDoanhThu(
+        cacThe.add(taoCardDoanhThu(
                 "DOANH THU KỲ", "Tổng tiền đã thu trong khoảng chọn",
-                lblValTongDoanhThu, UIStyle.COLOR_PRIMARY));
-        cards.add(taoCardDoanhThu(
+                nhanGiaTriChungDoanhThu, UIStyle.MAU_CHINH));
+        cacThe.add(taoCardDoanhThu(
                 "HÓA ĐƠN ĐÃ THU", "Số hóa đơn thanh toán trong kỳ",
-                lblValDoanhThuThang, COLOR_GREEN));
-        cards.add(taoCardDoanhThu(
+                nhanGiaTriDoanhThuThang, MAU_GREEN));
+        cacThe.add(taoCardDoanhThu(
                 "LƯỢT THUÊ PHÒNG", "Số lượt thuê có phát sinh doanh thu",
-                lblValDoanhThuNgay, COLOR_AMBER));
-        return cards;
+                nhanGiaTriDoanhThuNgay, MAU_HOPHACH));
+        return cacThe;
     }
 
-    private JPanel taoCardDoanhThu(String title, String subtitle, JLabel value, Color accent) {
-        JPanel card = new JPanel(new BorderLayout(12, 0));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIStyle.COLOR_BORDER),
+    private JPanel taoCardDoanhThu(String deMuc, String phuDe, JLabel giaTri, Color diemNhan) {
+        JPanel the = new JPanel(new BorderLayout(12, 0));
+        the.setBackground(Color.WHITE);
+        the.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIStyle.MAU_VIEN),
                 new EmptyBorder(16, 16, 16, 16)));
 
-        JPanel accentBar = new JPanel();
-        accentBar.setBackground(accent);
-        accentBar.setPreferredSize(new Dimension(4, 56));
-        card.add(accentBar, BorderLayout.WEST);
+        JPanel thanhDiemNhan = new JPanel();
+        thanhDiemNhan.setBackground(diemNhan);
+        thanhDiemNhan.setPreferredSize(new Dimension(4, 56));
+        the.add(thanhDiemNhan, BorderLayout.WEST);
 
-        JPanel details = new JPanel();
-        details.setOpaque(false);
-        details.setLayout(new BoxLayout(details, BoxLayout.Y_AXIS));
+        JPanel chiTiet = new JPanel();
+        chiTiet.setOpaque(false);
+        chiTiet.setLayout(new BoxLayout(chiTiet, BoxLayout.Y_AXIS));
 
-        JLabel heading = new JLabel(title);
-        heading.setFont(UIStyle.FONT_SMALL_BOLD);
-        heading.setForeground(COLOR_MUTED);
+        JLabel tieuDe = new JLabel(deMuc);
+        tieuDe.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+        tieuDe.setForeground(MAU_MUTED);
 
-        value.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        value.setForeground(COLOR_TEXT);
+        giaTri.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        giaTri.setForeground(MAU_VANBAN);
 
-        JLabel description = new JLabel(subtitle);
-        description.setFont(UIStyle.FONT_SMALL);
-        description.setForeground(COLOR_MUTED);
+        JLabel moTa = new JLabel(phuDe);
+        moTa.setFont(UIStyle.PHONGCHU_SMALL);
+        moTa.setForeground(MAU_MUTED);
 
-        details.add(heading);
-        details.add(Box.createVerticalStrut(7));
-        details.add(value);
-        details.add(Box.createVerticalStrut(5));
-        details.add(description);
-        card.add(details, BorderLayout.CENTER);
-        return card;
+        chiTiet.add(tieuDe);
+        chiTiet.add(Box.createVerticalStrut(7));
+        chiTiet.add(giaTri);
+        chiTiet.add(Box.createVerticalStrut(5));
+        chiTiet.add(moTa);
+        the.add(chiTiet, BorderLayout.CENTER);
+        return the;
     }
 
     private JPanel taoBoLoc() {
-        JPanel panel = new JPanel(new BorderLayout(16, 0));
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIStyle.COLOR_BORDER),
+        JPanel khung = new JPanel(new BorderLayout(16, 0));
+        khung.setBackground(Color.WHITE);
+        khung.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIStyle.MAU_VIEN),
                 new EmptyBorder(12, 16, 12, 16)));
 
-        JPanel controls = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 0));
-        controls.setOpaque(false);
+        JPanel dieuKhien = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 0));
+        dieuKhien.setOpaque(false);
 
-        JLabel presetLabel = new JLabel("Kỳ nhanh");
-        presetLabel.setFont(UIStyle.FONT_BOLD);
-        presetLabel.setForeground(COLOR_TEXT);
+        JLabel luaChonSanNhan = new JLabel("Kỳ nhanh");
+        luaChonSanNhan.setFont(UIStyle.PHONGCHU_IN_DAM);
+        luaChonSanNhan.setForeground(MAU_VANBAN);
 
-        cboKyBaoCao = new JComboBox<>(new String[] {
+        hopChonKyBaoCao = new JComboBox<>(new String[] {
             "Tháng này",
             "Hôm nay",
             "7 ngày gần đây",
@@ -197,282 +197,282 @@ public class ViewBaoCaoThongKe extends JFrame {
             "Toàn bộ thời gian",
             "Tùy chỉnh"
         });
-        cboKyBaoCao.setFont(UIStyle.FONT_REGULAR);
-        cboKyBaoCao.setPreferredSize(new Dimension(150, 36));
-        cboKyBaoCao.addActionListener(event -> capNhatTheoKyNhanh());
+        hopChonKyBaoCao.setFont(UIStyle.PHONGCHU_THUONG);
+        hopChonKyBaoCao.setPreferredSize(new Dimension(150, 36));
+        hopChonKyBaoCao.addActionListener(suKien -> capNhatTheoKyNhanh());
 
-        JLabel tuNgayLabel = new JLabel("Từ ngày");
-        tuNgayLabel.setFont(UIStyle.FONT_BOLD);
-        tuNgayLabel.setForeground(COLOR_TEXT);
-        txtTuNgay = taoONgay(tuNgay);
-        btnChonTuNgay = taoNutLich();
-        btnChonTuNgay.addActionListener(event -> DatePickerCalendar.show(btnChonTuNgay, tuNgay, null, date -> {
-            tuNgay = date;
+        JLabel tuNgayNhan = new JLabel("Từ ngày");
+        tuNgayNhan.setFont(UIStyle.PHONGCHU_IN_DAM);
+        tuNgayNhan.setForeground(MAU_VANBAN);
+        oNhapTuNgay = taoONgay(tuNgay);
+        nutChonTuNgay = taoNutLich();
+        nutChonTuNgay.addActionListener(suKien -> DatePickerCalendar.show(nutChonTuNgay, tuNgay, null, ngay -> {
+            tuNgay = ngay;
             capNhatONgay();
             datKyTuyChinh();
         }));
 
-        JLabel denNgayLabel = new JLabel("Đến ngày");
-        denNgayLabel.setFont(UIStyle.FONT_BOLD);
-        denNgayLabel.setForeground(COLOR_TEXT);
-        txtDenNgay = taoONgay(denNgay);
-        btnChonDenNgay = taoNutLich();
-        btnChonDenNgay.addActionListener(event -> DatePickerCalendar.show(btnChonDenNgay, denNgay, null, date -> {
-            denNgay = date;
+        JLabel denNgayNhan = new JLabel("Đến ngày");
+        denNgayNhan.setFont(UIStyle.PHONGCHU_IN_DAM);
+        denNgayNhan.setForeground(MAU_VANBAN);
+        oNhapDenNgay = taoONgay(denNgay);
+        nutChonDenNgay = taoNutLich();
+        nutChonDenNgay.addActionListener(suKien -> DatePickerCalendar.show(nutChonDenNgay, denNgay, null, ngay -> {
+            denNgay = ngay;
             capNhatONgay();
             datKyTuyChinh();
         }));
 
-        btnLoc = UIStyle.createButton("Xem thống kê", UIStyle.COLOR_PRIMARY, Color.WHITE);
-        btnLoc.setPreferredSize(new Dimension(136, 38));
-        btnLoc.setMaximumSize(new Dimension(136, 38));
+        nutLoc = UIStyle.createButton("Xem thống kê", UIStyle.MAU_CHINH, Color.WHITE);
+        nutLoc.setPreferredSize(new Dimension(136, 38));
+        nutLoc.setMaximumSize(new Dimension(136, 38));
 
-        controls.add(presetLabel);
-        controls.add(cboKyBaoCao);
-        controls.add(tuNgayLabel);
-        controls.add(txtTuNgay);
-        controls.add(btnChonTuNgay);
-        controls.add(denNgayLabel);
-        controls.add(txtDenNgay);
-        controls.add(btnChonDenNgay);
-        controls.add(btnLoc);
+        dieuKhien.add(luaChonSanNhan);
+        dieuKhien.add(hopChonKyBaoCao);
+        dieuKhien.add(tuNgayNhan);
+        dieuKhien.add(oNhapTuNgay);
+        dieuKhien.add(nutChonTuNgay);
+        dieuKhien.add(denNgayNhan);
+        dieuKhien.add(oNhapDenNgay);
+        dieuKhien.add(nutChonDenNgay);
+        dieuKhien.add(nutLoc);
 
-        lblThongKeKy = new JLabel("Thực thu trong kỳ: 0 đ");
-        lblThongKeKy.setFont(UIStyle.FONT_BOLD);
-        lblThongKeKy.setForeground(UIStyle.COLOR_PRIMARY);
-        lblThongKeKy.setHorizontalAlignment(SwingConstants.RIGHT);
+        nhanThongKeKy = new JLabel("Thực thu trong kỳ: 0 đ");
+        nhanThongKeKy.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nhanThongKeKy.setForeground(UIStyle.MAU_CHINH);
+        nhanThongKeKy.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        JPanel content = new JPanel();
-        content.setOpaque(false);
-        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.add(controls);
-        content.add(Box.createVerticalStrut(8));
-        content.add(lblThongKeKy);
-        panel.add(content, BorderLayout.CENTER);
-        return panel;
+        JPanel noiDung = new JPanel();
+        noiDung.setOpaque(false);
+        noiDung.setLayout(new BoxLayout(noiDung, BoxLayout.Y_AXIS));
+        noiDung.add(dieuKhien);
+        noiDung.add(Box.createVerticalStrut(8));
+        noiDung.add(nhanThongKeKy);
+        khung.add(noiDung, BorderLayout.CENTER);
+        return khung;
     }
 
-    private JTextField taoONgay(LocalDate date) {
-        JTextField field = new JTextField(date.format(DATE_FORMATTER));
-        field.setFont(UIStyle.FONT_REGULAR);
-        field.setEditable(false);
-        field.setFocusable(false);
-        field.setHorizontalAlignment(SwingConstants.CENTER);
-        field.setPreferredSize(new Dimension(120, 36));
-        field.setMinimumSize(new Dimension(120, 36));
-        field.setMaximumSize(new Dimension(120, 36));
-        field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIStyle.COLOR_BORDER),
+    private JTextField taoONgay(LocalDate ngay) {
+        JTextField truong = new JTextField(ngay.format(NGAY_DINHDANG));
+        truong.setFont(UIStyle.PHONGCHU_THUONG);
+        truong.setEditable(false);
+        truong.setFocusable(false);
+        truong.setHorizontalAlignment(SwingConstants.CENTER);
+        truong.setPreferredSize(new Dimension(120, 36));
+        truong.setMinimumSize(new Dimension(120, 36));
+        truong.setMaximumSize(new Dimension(120, 36));
+        truong.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIStyle.MAU_VIEN),
                 new EmptyBorder(6, 8, 6, 8)));
-        return field;
+        return truong;
     }
 
     private JButton taoNutLich() {
-        JButton button = new JButton("Lịch");
-        button.setFont(UIStyle.FONT_SMALL_BOLD);
-        button.setForeground(COLOR_TEXT);
-        button.setBackground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        button.setPreferredSize(new Dimension(64, 36));
-        button.setMaximumSize(new Dimension(64, 36));
-        return button;
+        JButton nut = new JButton("Lịch");
+        nut.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+        nut.setForeground(MAU_VANBAN);
+        nut.setBackground(Color.WHITE);
+        nut.setFocusPainted(false);
+        nut.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        nut.setPreferredSize(new Dimension(64, 36));
+        nut.setMaximumSize(new Dimension(64, 36));
+        return nut;
     }
 
     private void capNhatTheoKyNhanh() {
-        String preset = (String) cboKyBaoCao.getSelectedItem();
-        if (preset == null || preset.equals("Tùy chỉnh")) {
+        String luaChonSan = (String) hopChonKyBaoCao.getSelectedItem();
+        if (luaChonSan == null || luaChonSan.equals("Tùy chỉnh")) {
             return;
         }
 
-        LocalDate today = LocalDate.now();
-        switch (preset) {
+        LocalDate homNay = LocalDate.now();
+        switch (luaChonSan) {
             case "Hôm nay":
-                tuNgay = today;
-                denNgay = today;
+                tuNgay = homNay;
+                denNgay = homNay;
                 break;
             case "7 ngày gần đây":
-                tuNgay = today.minusDays(6);
-                denNgay = today;
+                tuNgay = homNay.minusDays(6);
+                denNgay = homNay;
                 break;
             case "30 ngày gần đây":
-                tuNgay = today.minusDays(29);
-                denNgay = today;
+                tuNgay = homNay.minusDays(29);
+                denNgay = homNay;
                 break;
             case "Tháng trước":
-                YearMonth previousMonth = YearMonth.from(today).minusMonths(1);
-                tuNgay = previousMonth.atDay(1);
-                denNgay = previousMonth.atEndOfMonth();
+                YearMonth truocThang = YearMonth.from(homNay).minusMonths(1);
+                tuNgay = truocThang.atDay(1);
+                denNgay = truocThang.atEndOfMonth();
                 break;
             case "Năm nay":
-                tuNgay = today.withDayOfYear(1);
-                denNgay = today;
+                tuNgay = homNay.withDayOfYear(1);
+                denNgay = homNay;
                 break;
             case "Toàn bộ thời gian":
                 tuNgay = LocalDate.of(1000, 1, 1);
-                denNgay = today;
+                denNgay = homNay;
                 break;
             case "Tháng này":
             default:
-                tuNgay = today.withDayOfMonth(1);
-                denNgay = today;
+                tuNgay = homNay.withDayOfMonth(1);
+                denNgay = homNay;
                 break;
         }
         capNhatONgay();
     }
 
     private void datKyTuyChinh() {
-        if (cboKyBaoCao.getSelectedItem() != null
-                && !cboKyBaoCao.getSelectedItem().equals("Tùy chỉnh")) {
-            cboKyBaoCao.setSelectedItem("Tùy chỉnh");
+        if (hopChonKyBaoCao.getSelectedItem() != null
+                && !hopChonKyBaoCao.getSelectedItem().equals("Tùy chỉnh")) {
+            hopChonKyBaoCao.setSelectedItem("Tùy chỉnh");
         }
     }
 
     private void capNhatONgay() {
-        txtTuNgay.setText(tuNgay.format(DATE_FORMATTER));
-        txtDenNgay.setText(denNgay.format(DATE_FORMATTER));
+        oNhapTuNgay.setText(tuNgay.format(NGAY_DINHDANG));
+        oNhapDenNgay.setText(denNgay.format(NGAY_DINHDANG));
     }
 
     private JTabbedPane taoNoiDungBaoCao() {
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.setFont(UIStyle.FONT_BOLD);
-        tabs.setBackground(UIStyle.COLOR_APP_BG);
-        tabs.setBorder(BorderFactory.createEmptyBorder());
+        JTabbedPane cacTab = new JTabbedPane();
+        cacTab.setFont(UIStyle.PHONGCHU_IN_DAM);
+        cacTab.setBackground(UIStyle.MAU_APP_MAUNEN);
+        cacTab.setBorder(BorderFactory.createEmptyBorder());
 
-        modelPhong = new DefaultTableModel(new String[] {
+        moHinhPhong = new DefaultTableModel(new String[] {
             "Phòng", "Loại phòng", "Tầng", "Lượt thuê", "Doanh thu", "Tỷ trọng"
         }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int hang, int chiSoCot) {
                 return false;
             }
         };
-        tblPhong = taoBang(modelPhong);
-        tblPhong.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        bangPhong = taoBang(moHinhPhong);
+        bangPhong.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         dinhChieuCotPhong();
 
-        JPanel tabPhong = new JPanel(new java.awt.GridLayout(1, 2, 14, 0));
-        tabPhong.setOpaque(false);
-        tabPhong.setBorder(new EmptyBorder(14, 2, 2, 2));
-        tabPhong.add(taoTheNoiDung(
+        JPanel thePhong = new JPanel(new java.awt.GridLayout(1, 2, 14, 0));
+        thePhong.setOpaque(false);
+        thePhong.setBorder(new EmptyBorder(14, 2, 2, 2));
+        thePhong.add(taoTheNoiDung(
                 "Doanh thu theo phòng",
                 "Top phòng đóng góp doanh thu trong kỳ đã chọn",
-                bieuDoDoanhThuPhong));
-        tabPhong.add(taoTheNoiDung(
+                bieuThucHienDoanhThuPhong));
+        thePhong.add(taoTheNoiDung(
                 "Hiệu quả từng phòng",
                 "Doanh thu và lượt thuê được sắp xếp theo doanh thu",
-                new JScrollPane(tblPhong)));
-        tabs.addTab("Tổng quan theo phòng", tabPhong);
+                new JScrollPane(bangPhong)));
+        cacTab.addTab("Tổng quan theo phòng", thePhong);
 
-        modelHoaDon = new DefaultTableModel(new String[] {
+        moHinhHoaDon = new DefaultTableModel(new String[] {
             "Mã HĐ", "Thời gian", "Phòng", "Khách hàng", "Số điện thoại",
             "Tiền phòng", "Phụ thu", "Giảm giá", "Thực thu", "Thanh toán"
         }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int hang, int chiSoCot) {
                 return false;
             }
         };
-        tblHoaDon = taoBang(modelHoaDon);
-        tblHoaDon.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        bangHoaDon = taoBang(moHinhHoaDon);
+        bangHoaDon.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         dinhChieuCotHoaDon();
 
-        tabs.addTab("Chi tiết hóa đơn", taoTheNoiDung(
+        cacTab.addTab("Chi tiết hóa đơn", taoTheNoiDung(
                 "Hóa đơn đã thanh toán",
                 "Danh sách giao dịch trong kỳ báo cáo",
-                new JScrollPane(tblHoaDon)));
-        return tabs;
+                new JScrollPane(bangHoaDon)));
+        return cacTab;
     }
 
-    private JPanel taoTheNoiDung(String title, String subtitle, java.awt.Component content) {
-        JPanel card = new JPanel(new BorderLayout(0, 12));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIStyle.COLOR_BORDER),
+    private JPanel taoTheNoiDung(String deMuc, String phuDe, java.awt.Component noiDung) {
+        JPanel the = new JPanel(new BorderLayout(0, 12));
+        the.setBackground(Color.WHITE);
+        the.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIStyle.MAU_VIEN),
                 new EmptyBorder(16, 16, 16, 16)));
 
-        JPanel heading = new JPanel();
-        heading.setOpaque(false);
-        heading.setLayout(new BoxLayout(heading, BoxLayout.Y_AXIS));
+        JPanel tieuDe = new JPanel();
+        tieuDe.setOpaque(false);
+        tieuDe.setLayout(new BoxLayout(tieuDe, BoxLayout.Y_AXIS));
 
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(UIStyle.FONT_HEADER);
-        titleLabel.setForeground(COLOR_TEXT);
+        JLabel nhanTieuDe = new JLabel(deMuc);
+        nhanTieuDe.setFont(UIStyle.PHONGCHU_TIEUDE_DAU);
+        nhanTieuDe.setForeground(MAU_VANBAN);
 
-        JLabel subtitleLabel = new JLabel(subtitle);
-        subtitleLabel.setFont(UIStyle.FONT_SMALL);
-        subtitleLabel.setForeground(COLOR_MUTED);
+        JLabel nhanPhuDe = new JLabel(phuDe);
+        nhanPhuDe.setFont(UIStyle.PHONGCHU_SMALL);
+        nhanPhuDe.setForeground(MAU_MUTED);
 
-        heading.add(titleLabel);
-        heading.add(Box.createVerticalStrut(4));
-        heading.add(subtitleLabel);
+        tieuDe.add(nhanTieuDe);
+        tieuDe.add(Box.createVerticalStrut(4));
+        tieuDe.add(nhanPhuDe);
 
-        if (content instanceof JScrollPane) {
-            JScrollPane scrollPane = (JScrollPane) content;
-            scrollPane.setBorder(BorderFactory.createEmptyBorder());
-            scrollPane.getViewport().setBackground(Color.WHITE);
-            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        if (noiDung instanceof JScrollPane) {
+            JScrollPane cuonPane = (JScrollPane) noiDung;
+            cuonPane.setBorder(BorderFactory.createEmptyBorder());
+            cuonPane.getViewport().setBackground(Color.WHITE);
+            cuonPane.getVerticalScrollBar().setUnitIncrement(16);
         }
 
-        card.add(heading, BorderLayout.NORTH);
-        card.add(content, BorderLayout.CENTER);
-        return card;
+        the.add(tieuDe, BorderLayout.NORTH);
+        the.add(noiDung, BorderLayout.CENTER);
+        return the;
     }
 
-    private JTable taoBang(DefaultTableModel model) {
-        JTable table = new JTable(model);
-        table.setFont(UIStyle.FONT_REGULAR);
-        table.setRowHeight(36);
-        table.setFillsViewportHeight(true);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setShowVerticalLines(false);
-        table.setShowHorizontalLines(true);
-        table.setGridColor(new Color(241, 245, 249));
-        table.setSelectionBackground(new Color(239, 246, 255));
-        table.setSelectionForeground(COLOR_TEXT);
-        table.setIntercellSpacing(new Dimension(0, 1));
+    private JTable taoBang(DefaultTableModel moHinh) {
+        JTable bang = new JTable(moHinh);
+        bang.setFont(UIStyle.PHONGCHU_THUONG);
+        bang.setRowHeight(36);
+        bang.setFillsViewportHeight(true);
+        bang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        bang.setShowVerticalLines(false);
+        bang.setShowHorizontalLines(true);
+        bang.setGridColor(new Color(241, 245, 249));
+        bang.setSelectionBackground(new Color(239, 246, 255));
+        bang.setSelectionForeground(MAU_VANBAN);
+        bang.setIntercellSpacing(new Dimension(0, 1));
 
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+        DefaultTableCellRenderer boKetXuat = new DefaultTableCellRenderer() {
             @Override
             public java.awt.Component getTableCellRendererComponent(
-                    JTable source, Object value, boolean selected, boolean focused, int row, int column) {
-                java.awt.Component component = super.getTableCellRendererComponent(
-                        source, value, selected, focused, row, column);
-                if (!selected) {
-                    component.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 250, 252));
-                    component.setForeground(COLOR_TEXT);
+                    JTable nguon, Object giaTri, boolean duocChon, boolean dangDuocChon, int hang, int chiSoCot) {
+                java.awt.Component thanhPhan = super.getTableCellRendererComponent(
+                        nguon, giaTri, duocChon, dangDuocChon, hang, chiSoCot);
+                if (!duocChon) {
+                    thanhPhan.setBackground(hang % 2 == 0 ? Color.WHITE : new Color(248, 250, 252));
+                    thanhPhan.setForeground(MAU_VANBAN);
                 }
                 setBorder(new EmptyBorder(0, 10, 0, 10));
-                return component;
+                return thanhPhan;
             }
         };
-        table.setDefaultRenderer(Object.class, renderer);
+        bang.setDefaultRenderer(Object.class, boKetXuat);
 
-        JTableHeader header = table.getTableHeader();
-        header.setFont(UIStyle.FONT_BOLD);
-        header.setForeground(COLOR_MUTED);
-        header.setBackground(new Color(248, 250, 252));
-        header.setReorderingAllowed(false);
-        header.setPreferredSize(new Dimension(header.getPreferredSize().width, 40));
-        return table;
+        JTableHeader tieuDe = bang.getTableHeader();
+        tieuDe.setFont(UIStyle.PHONGCHU_IN_DAM);
+        tieuDe.setForeground(MAU_MUTED);
+        tieuDe.setBackground(new Color(248, 250, 252));
+        tieuDe.setReorderingAllowed(false);
+        tieuDe.setPreferredSize(new Dimension(tieuDe.getPreferredSize().width, 40));
+        return bang;
     }
 
     private void dinhChieuCotPhong() {
-        int[] widths = { 66, 104, 48, 78, 118, 72 };
-        for (int i = 0; i < widths.length; i++) {
-            tblPhong.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
+        int[] cacDoRong = { 66, 104, 48, 78, 118, 72 };
+        for (int chiSo = 0; chiSo < cacDoRong.length; chiSo++) {
+            bangPhong.getColumnModel().getColumn(chiSo).setPreferredWidth(cacDoRong[chiSo]);
         }
     }
 
     private void dinhChieuCotHoaDon() {
-        int[] widths = { 62, 126, 70, 140, 112, 98, 84, 84, 104, 110 };
-        for (int i = 0; i < widths.length; i++) {
-            tblHoaDon.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
+        int[] cacDoRong = { 62, 126, 70, 140, 112, 98, 84, 84, 104, 110 };
+        for (int chiSo = 0; chiSo < cacDoRong.length; chiSo++) {
+            bangHoaDon.getColumnModel().getColumn(chiSo).setPreferredWidth(cacDoRong[chiSo]);
         }
     }
 
     public void capNhatBieuDoPhong(List<String> tenPhong, List<String> chiTiet, List<Double> doanhThu) {
-        bieuDoDoanhThuPhong.capNhat(tenPhong, chiTiet, doanhThu);
+        bieuThucHienDoanhThuPhong.capNhat(tenPhong, chiTiet, doanhThu);
     }
 
     public LocalDate getTuNgay() {
@@ -484,8 +484,8 @@ public class ViewBaoCaoThongKe extends JFrame {
     }
 
     private static class BieuDoDoanhThuPhong extends JPanel {
-        private static final int MAX_ROWS = 6;
-        private final List<DongBieuDo> rows = new ArrayList<>();
+        private static final int TOIDA_CACHANG = 6;
+        private final List<DongBieuDo> cacHang = new ArrayList<>();
 
         private BieuDoDoanhThuPhong() {
             setOpaque(false);
@@ -493,77 +493,77 @@ public class ViewBaoCaoThongKe extends JFrame {
         }
 
         private void capNhat(List<String> tenPhong, List<String> chiTiet, List<Double> doanhThu) {
-            rows.clear();
-            int count = Math.min(MAX_ROWS, Math.min(tenPhong.size(), Math.min(chiTiet.size(), doanhThu.size())));
-            for (int i = 0; i < count; i++) {
-                rows.add(new DongBieuDo(tenPhong.get(i), chiTiet.get(i), doanhThu.get(i)));
+            cacHang.clear();
+            int soLuong = Math.min(TOIDA_CACHANG, Math.min(tenPhong.size(), Math.min(chiTiet.size(), doanhThu.size())));
+            for (int chiSo = 0; chiSo < soLuong; chiSo++) {
+                cacHang.add(new DongBieuDo(tenPhong.get(chiSo), chiTiet.get(chiSo), doanhThu.get(chiSo)));
             }
             repaint();
         }
 
         @Override
-        protected void paintComponent(Graphics graphics) {
-            super.paintComponent(graphics);
-            Graphics2D g = (Graphics2D) graphics.create();
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        protected void paintComponent(Graphics doHoa) {
+            super.paintComponent(doHoa);
+            Graphics2D gia = (Graphics2D) doHoa.create();
+            gia.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (rows.isEmpty()) {
-                g.setFont(UIStyle.FONT_REGULAR);
-                g.setColor(COLOR_MUTED);
-                String message = "Chưa có dữ liệu doanh thu theo phòng";
-                int textX = Math.max(12, (getWidth() - g.getFontMetrics().stringWidth(message)) / 2);
-                g.drawString(message, textX, Math.max(36, getHeight() / 2));
-                g.dispose();
+            if (cacHang.isEmpty()) {
+                gia.setFont(UIStyle.PHONGCHU_THUONG);
+                gia.setColor(MAU_MUTED);
+                String thongDiep = "Chưa có dữ liệu doanh thu theo phòng";
+                int vanBanX = Math.max(12, (getWidth() - gia.getFontMetrics().stringWidth(thongDiep)) / 2);
+                gia.drawString(thongDiep, vanBanX, Math.max(36, getHeight() / 2));
+                gia.dispose();
                 return;
             }
 
-            double maxRevenue = 0;
-            for (DongBieuDo row : rows) {
-                maxRevenue = Math.max(maxRevenue, row.doanhThu);
+            double doanhThuToiDa = 0;
+            for (DongBieuDo hang : cacHang) {
+                doanhThuToiDa = Math.max(doanhThuToiDa, hang.doanhThu);
             }
-            maxRevenue = Math.max(1, maxRevenue);
+            doanhThuToiDa = Math.max(1, doanhThuToiDa);
 
-            int left = 2;
-            int right = 2;
-            int barTopOffset = 31;
-            int rowHeight = Math.max(47, (getHeight() - 8) / rows.size());
-            int barWidth = Math.max(1, getWidth() - left - right);
+            int trai = 2;
+            int phai = 2;
+            int leTrenThanh = 31;
+            int chieuCaoHang = Math.max(47, (getHeight() - 8) / cacHang.size());
+            int doRongThanh = Math.max(1, getWidth() - trai - phai);
 
-            for (int i = 0; i < rows.size(); i++) {
-                DongBieuDo row = rows.get(i);
-                int y = 8 + i * rowHeight;
+            for (int chiSo = 0; chiSo < cacHang.size(); chiSo++) {
+                DongBieuDo hang = cacHang.get(chiSo);
+                int toaDoY = 8 + chiSo * chieuCaoHang;
 
-                g.setFont(UIStyle.FONT_BOLD);
-                g.setColor(COLOR_TEXT);
-                g.drawString(row.tenPhong, left, y + 13);
+                gia.setFont(UIStyle.PHONGCHU_IN_DAM);
+                gia.setColor(MAU_VANBAN);
+                gia.drawString(hang.tenPhong, trai, toaDoY + 13);
 
-                String amount = String.format("%,.0f đ", row.doanhThu);
-                g.setFont(UIStyle.FONT_SMALL_BOLD);
-                Font amountFont = g.getFont();
-                int amountWidth = g.getFontMetrics(amountFont).stringWidth(amount);
-                g.setColor(UIStyle.COLOR_PRIMARY);
-                g.drawString(amount, Math.max(left, getWidth() - right - amountWidth), y + 13);
+                String soTien = String.format("%,.0f đ", hang.doanhThu);
+                gia.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+                Font phongChuSoTien = gia.getFont();
+                int doRongSoTien = gia.getFontMetrics(phongChuSoTien).stringWidth(soTien);
+                gia.setColor(UIStyle.MAU_CHINH);
+                gia.drawString(soTien, Math.max(trai, getWidth() - phai - doRongSoTien), toaDoY + 13);
 
-                g.setFont(UIStyle.FONT_SMALL);
-                g.setColor(COLOR_MUTED);
-                g.drawString(row.chiTiet, left, y + 27);
+                gia.setFont(UIStyle.PHONGCHU_SMALL);
+                gia.setColor(MAU_MUTED);
+                gia.drawString(hang.chiTiet, trai, toaDoY + 27);
 
-                int barY = y + barTopOffset;
-                g.setColor(new Color(241, 245, 249));
-                g.fillRoundRect(left, barY, barWidth, 7, 7, 7);
-                int filledWidth = (int) Math.round(barWidth * row.doanhThu / maxRevenue);
-                if (filledWidth > 0) {
-                    g.setColor(i == 0 ? UIStyle.COLOR_PRIMARY : new Color(96, 165, 250));
-                    g.fillRoundRect(left, barY, Math.max(7, filledWidth), 7, 7, 7);
+                int toaDoYThanh = toaDoY + leTrenThanh;
+                gia.setColor(new Color(241, 245, 249));
+                gia.fillRoundRect(trai, toaDoYThanh, doRongThanh, 7, 7, 7);
+                int doRongNoiDung = (int) Math.round(doRongThanh * hang.doanhThu / doanhThuToiDa);
+                if (doRongNoiDung > 0) {
+                    gia.setColor(chiSo == 0 ? UIStyle.MAU_CHINH : new Color(96, 165, 250));
+                    gia.fillRoundRect(trai, toaDoYThanh, Math.max(7, doRongNoiDung), 7, 7, 7);
                 }
 
-                g.setStroke(new BasicStroke(1f));
-                g.setColor(new Color(241, 245, 249));
-                if (i < rows.size() - 1) {
-                    g.drawLine(left, y + rowHeight - 4, getWidth() - right, y + rowHeight - 4);
+                gia.setStroke(new BasicStroke(1f));
+                gia.setColor(new Color(241, 245, 249));
+                if (chiSo < cacHang.size() - 1) {
+                    gia.drawLine(trai, toaDoY + chieuCaoHang - 4, getWidth() - phai, toaDoY + chieuCaoHang - 4);
                 }
             }
-            g.dispose();
+            gia.dispose();
         }
     }
 

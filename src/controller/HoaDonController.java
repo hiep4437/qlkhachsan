@@ -16,59 +16,59 @@ import view.view.ViewHoaDon;
 
 public class HoaDonController {
 
-	ViewHoaDon view;
-	HoaDonService service = new HoaDonService();
-	DecimalFormat df = new DecimalFormat("#,###");
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	ViewHoaDon viewHoaDon;
+	HoaDonService dichVu = new HoaDonService();
+	DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,###");
+	SimpleDateFormat dinhDangNgay = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	public HoaDonController(ViewHoaDon view) {
-		this.view = view;
+	public HoaDonController(ViewHoaDon viewHoaDon) {
+		this.viewHoaDon = viewHoaDon;
 
 		taiDuLieu();
 
 		// Nút xem chi tiết hóa đơn
-		view.btnXemChiTiet.addActionListener(e -> xemChiTiet());
+		viewHoaDon.nutXemChiTiet.addActionListener(suKien -> xemChiTiet());
 
 		// Tìm kiếm & Lọc
-		view.btnTimKiem.addActionListener(e -> apDungBoLoc());
-		view.txtTimKiem.addActionListener(e -> apDungBoLoc());
-		view.cboLocTrangThai.addActionListener(e -> apDungBoLoc());
-		view.cboLocThoiGian.addActionListener(e -> apDungBoLoc());
+		viewHoaDon.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
+		viewHoaDon.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
+		viewHoaDon.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
+		viewHoaDon.hopChonLocThoiGian.addActionListener(suKien -> apDungBoLoc());
 
-		view.btnLamMoi.addActionListener(e -> {
-			view.lamMoi();
+		viewHoaDon.nutLamMoi.addActionListener(suKien -> {
+			viewHoaDon.lamMoi();
 			taiDuLieu();
 		});
 	}
 
 	public void taiDuLieu() {
-		view.model.setRowCount(0);
+		viewHoaDon.moHinh.setRowCount(0);
 
-		ArrayList<HoaDon> ds = service.xuat();
-		int tong = ds.size();
+		ArrayList<HoaDon> danhSach = dichVu.xuat();
+		int chung = danhSach.size();
 		double daThu = 0;
 		double chuaThu = 0;
 
-		for (HoaDon i : ds) {
-			String st = i.getTrangThaiThanhToan();
-			if (st != null && (st.contains("PAID") || st.contains("Đã thanh toán"))) {
-				daThu += i.getTongTien();
+		for (HoaDon chiSo : danhSach) {
+			String luongTrinh = chiSo.getTrangThaiThanhToan();
+			if (luongTrinh != null && (luongTrinh.contains("PAID") || luongTrinh.contains("Đã thanh toán"))) {
+				daThu += chiSo.getTongTien();
 			} else {
-				chuaThu += i.getTongTien();
+				chuaThu += chiSo.getTongTien();
 			}
 
-			String ngayLapStr = i.getNgayLap() != null ? sdf.format(i.getNgayLap()) : "";
-			String tienPhongStr = df.format(i.getTienPhong()) + " đ";
-			String phuThuStr = df.format(i.getPhuThu()) + " đ";
-			String giamGiaStr = df.format(i.getGiamGia()) + " đ";
-			String tongTienStr = df.format(i.getTongTien()) + " đ";
+			String ngayLapStr = chiSo.getNgayLap() != null ? dinhDangNgay.format(chiSo.getNgayLap()) : "";
+			String tienPhongStr = dinhDangTienTeChinh.format(chiSo.getTienPhong()) + " đ";
+			String phuThuStr = dinhDangTienTeChinh.format(chiSo.getPhuThu()) + " đ";
+			String giamGiaStr = dinhDangTienTeChinh.format(chiSo.getGiamGia()) + " đ";
+			String chungTienStr = dinhDangTienTeChinh.format(chiSo.getTongTien()) + " đ";
 
-			String soPhong = !i.getSoPhong().isEmpty() ? "P." + i.getSoPhong() : "---";
-			String tenKhach = !i.getTenKhachHang().isEmpty() ? i.getTenKhachHang() : "---";
-			String sdt = !i.getSoDienThoai().isEmpty() ? i.getSoDienThoai() : "---";
+			String soPhong = !chiSo.getSoPhong().isEmpty() ? "P." + chiSo.getSoPhong() : "---";
+			String tenKhach = !chiSo.getTenKhachHang().isEmpty() ? chiSo.getTenKhachHang() : "---";
+			String sdt = !chiSo.getSoDienThoai().isEmpty() ? chiSo.getSoDienThoai() : "---";
 
-			view.model.addRow(new Object[] {
-				i.getIdHoaDon(),
+			viewHoaDon.moHinh.addRow(new Object[] {
+				chiSo.getIdHoaDon(),
 				soPhong,
 				tenKhach,
 				sdt,
@@ -76,35 +76,35 @@ public class HoaDonController {
 				tienPhongStr,
 				phuThuStr,
 				giamGiaStr,
-				tongTienStr,
-				i.getPhuongThucThanhToan() != null ? i.getPhuongThucThanhToan() : "Tiền mặt",
-				i.getTrangThaiThanhToan() != null ? i.getTrangThaiThanhToan() : "UNPAID"
+				chungTienStr,
+				chiSo.getPhuongThucThanhToan() != null ? chiSo.getPhuongThucThanhToan() : "Tiền mặt",
+				chiSo.getTrangThaiThanhToan() != null ? chiSo.getTrangThaiThanhToan() : "UNPAID"
 			});
 		}
 
-		view.lblThongKe.setText(String.format("Tổng số: %d hóa đơn  |  Đã thu: %s đ  |  Chưa thu: %s đ",
-				tong, df.format(daThu), df.format(chuaThu)));
+		viewHoaDon.nhanThongKe.setText(String.format("Tổng số: %d hóa đơn  |  Đã thu: %s đ  |  Chưa thu: %s đ",
+				chung, dinhDangTienTeChinh.format(daThu), dinhDangTienTeChinh.format(chuaThu)));
 
 		apDungBoLoc();
 	}
 
 	void apDungBoLoc() {
-		String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
-		String trangThaiLoc = (String) view.cboLocTrangThai.getSelectedItem();
-		String thoiGianLoc = (String) view.cboLocThoiGian.getSelectedItem();
+		String tuKhoa = viewHoaDon.oNhapTimKiem.getText().trim().toLowerCase();
+		String trangThaiLoc = (String) viewHoaDon.hopChonLocTrangThai.getSelectedItem();
+		String thoiGianLoc = (String) viewHoaDon.hopChonLocThoiGian.getSelectedItem();
 
-		if (view.sorter == null) return;
+		if (viewHoaDon.boSapXep == null) return;
 
-		List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+		List<RowFilter<DefaultTableModel, Object>> cacBoLoc = new ArrayList<>();
 
 		// 1. Lọc theo từ khóa (Mã HĐ, Số phòng, Khách hàng, SĐT)
 		if (!tuKhoa.isEmpty()) {
-			filters.add(new RowFilter<DefaultTableModel, Object>() {
+			cacBoLoc.add(new RowFilter<DefaultTableModel, Object>() {
 				@Override
-				public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
-					for (int i = 0; i < entry.getValueCount(); i++) {
-						Object val = entry.getValue(i);
-						if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+				public boolean include(Entry<? extends DefaultTableModel, ?> phanTu) {
+					for (int chiSo = 0; chiSo < phanTu.getValueCount(); chiSo++) {
+						Object giaTri = phanTu.getValue(chiSo);
+						if (giaTri != null && giaTri.toString().toLowerCase().contains(tuKhoa)) {
 							return true;
 						}
 					}
@@ -115,78 +115,78 @@ public class HoaDonController {
 
 		// 2. Lọc theo trạng thái
 		if (trangThaiLoc != null && !trangThaiLoc.equals("Tất cả trạng thái")) {
-			String regex = "";
-			if (trangThaiLoc.contains("PAID")) regex = "PAID|ĐÃ THANH TOÁN";
-			else if (trangThaiLoc.contains("REFUNDED")) regex = "REFUNDED|HOÀN TIỀN";
-			else regex = "UNPAID|CHƯA THANH TOÁN";
-			filters.add(RowFilter.regexFilter("(?i)" + regex, 10));
+			String bieuThucChinhQuy = "";
+			if (trangThaiLoc.contains("PAID")) bieuThucChinhQuy = "PAID|ĐÃ THANH TOÁN";
+			else if (trangThaiLoc.contains("REFUNDED")) bieuThucChinhQuy = "REFUNDED|HOÀN TIỀN";
+			else bieuThucChinhQuy = "UNPAID|CHƯA THANH TOÁN";
+			cacBoLoc.add(RowFilter.regexFilter("(?i)" + bieuThucChinhQuy, 10));
 		}
 
 		// 3. Lọc theo thời gian (Hôm nay, Tháng này, Năm nay)
 		if (thoiGianLoc != null && !thoiGianLoc.equals("Tất cả thời gian")) {
-			LocalDate today = LocalDate.now();
-			String todayStr = today.toString(); // YYYY-MM-DD
-			String monthStr = String.format("%04d-%02d", today.getYear(), today.getMonthValue());
-			String yearStr = String.valueOf(today.getYear());
+			LocalDate homNay = LocalDate.now();
+			String chuoiHomNay = homNay.toString(); // YYYY-MM-DD
+			String chuoiThang = String.format("%04d-%02d", homNay.getYear(), homNay.getMonthValue());
+			String chuoiNam = String.valueOf(homNay.getYear());
 
-			filters.add(new RowFilter<DefaultTableModel, Object>() {
+			cacBoLoc.add(new RowFilter<DefaultTableModel, Object>() {
 				@Override
-				public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
-					Object valNgay = entry.getValue(4); // Cột ngày lập
-					if (valNgay == null) return false;
-					String s = valNgay.toString();
+				public boolean include(Entry<? extends DefaultTableModel, ?> phanTu) {
+					Object giaTriNgay = phanTu.getValue(4); // Cột ngày lập
+					if (giaTriNgay == null) return false;
+					String chuoi = giaTriNgay.toString();
 
 					if (thoiGianLoc.equals("Hôm nay")) {
-						return s.startsWith(todayStr);
+						return chuoi.startsWith(chuoiHomNay);
 					} else if (thoiGianLoc.equals("Tháng này")) {
-						return s.startsWith(monthStr);
+						return chuoi.startsWith(chuoiThang);
 					} else if (thoiGianLoc.equals("Năm nay")) {
-						return s.startsWith(yearStr);
+						return chuoi.startsWith(chuoiNam);
 					}
 					return true;
 				}
 			});
 		}
 
-		if (filters.isEmpty()) {
-			view.sorter.setRowFilter(null);
+		if (cacBoLoc.isEmpty()) {
+			viewHoaDon.boSapXep.setRowFilter(null);
 		} else {
-			view.sorter.setRowFilter(RowFilter.andFilter(filters));
+			viewHoaDon.boSapXep.setRowFilter(RowFilter.andFilter(cacBoLoc));
 		}
 	}
 
 	Window getParentWindow() {
-		Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
-		return w != null ? w : view;
+		Window chieuRong = SwingUtilities.getWindowAncestor(viewHoaDon.getContentPane());
+		return chieuRong != null ? chieuRong : viewHoaDon;
 	}
 
-	HoaDon timTheoMa(int id) {
-		HoaDon t = new HoaDon();
-		t.setIdHoaDon(id);
-		return service.timKiem(t);
+	HoaDon timTheoMa(int ma) {
+		HoaDon bangHienTai = new HoaDon();
+		bangHienTai.setIdHoaDon(ma);
+		return dichVu.timKiem(bangHienTai);
 	}
 
 	// Xem & In hóa đơn
 	void xemChiTiet() {
-		int selectedRow = view.table.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(view, "Vui lòng chọn một hóa đơn trong bảng để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+		int hangDaChon = viewHoaDon.bang.getSelectedRow();
+		if (hangDaChon == -1) {
+			JOptionPane.showMessageDialog(viewHoaDon, "Vui lòng chọn một hóa đơn trong bảng để xem chi tiết!", "Thông báo", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 
-		int modelRow = view.table.convertRowIndexToModel(selectedRow);
-		int maHD = (int) view.model.getValueAt(modelRow, 0);
+		int hangMoHinh = viewHoaDon.bang.convertRowIndexToModel(hangDaChon);
+		int maHD = (int) viewHoaDon.moHinh.getValueAt(hangMoHinh, 0);
 
-		HoaDon inv = timTheoMa(maHD);
-		if (inv == null) {
-			JOptionPane.showMessageDialog(view, "Không tìm thấy hóa đơn #" + maHD, "Lỗi", JOptionPane.ERROR_MESSAGE);
+		HoaDon hoaDon = timTheoMa(maHD);
+		if (hoaDon == null) {
+			JOptionPane.showMessageDialog(viewHoaDon, "Không tìm thấy hóa đơn #" + maHD, "Lỗi", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		DialogChiTietHoaDon dlg = new DialogChiTietHoaDon(getParentWindow(), inv);
-		dlg.setVisible(true);
+		DialogChiTietHoaDon hopThoai = new DialogChiTietHoaDon(getParentWindow(), hoaDon);
+		hopThoai.setVisible(true);
 
-		if (dlg.isDaThanhToanXong()) {
+		if (hopThoai.isDaThanhToanXong()) {
 			taiDuLieu();
 		}
 	}

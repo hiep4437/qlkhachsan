@@ -19,355 +19,355 @@ import view.view.DatePickerField;
 
 public class DialogThemSuaDatPhong extends JDialog {
 
-    private JTextField txtCCCD;
-    private JTextField txtHoTen;
-    private JTextField txtSDT;
-    private JButton btnKiemTraCCCD;
+    private JTextField oNhapCCCD;
+    private JTextField oNhapHoTen;
+    private JTextField oNhapSDT;
+    private JButton nutKiemTraCCCD;
 
-    private JComboBox<Phong> cboPhong;
-    private DatePickerField txtNgayNhan;
-    private DatePickerField txtNgayTra;
-    private JSpinner spnSoNguoi;
-    private JComboBox<String> cboTrangThai;
-    private JTextField txtGhiChu;
+    private JComboBox<Phong> hopChonPhong;
+    private DatePickerField oNhapNgayNhan;
+    private DatePickerField oNhapNgayTra;
+    private JSpinner vongQuaySoNguoi;
+    private JComboBox<String> hopChonTrangThai;
+    private JTextField oNhapGhiChu;
 
-    private JButton btnLuu;
-    private JButton btnHuy;
+    private JButton nutLuu;
+    private JButton nutHuy;
 
-    private boolean saved = false;
-    private DatPhong booking;
-    private KhachHangDAO customerDAO = new KhachHangDAO();
-    private PhongDAO roomDAO = new PhongDAO();
-    private DatPhongService bookingService = new DatPhongService();
+    private boolean daLuu = false;
+    private DatPhong datPhong;
+    private KhachHangDAO khachHangDAO = new KhachHangDAO();
+    private PhongDAO phongDAO = new PhongDAO();
+    private DatPhongService dichVuDatPhong = new DatPhongService();
 
-    private int selectedCustomerId = 0;
-    private int selectedRoomId = 0;
-    private float selectedRoomPrice = 0;
+    private int maKhachHangDaChon = 0;
+    private int maPhongDaChon = 0;
+    private float giaPhongDaChon = 0;
 
-    public DialogThemSuaDatPhong(Window parent, DatPhong bookingToEdit) {
-        super(parent, bookingToEdit == null ? "Đặt phòng mới" : "Chỉnh sửa đơn đặt phòng #" + bookingToEdit.getIdDatPhong(),
+    public DialogThemSuaDatPhong(Window doiTuongCha, DatPhong datPhongCanSua) {
+        super(doiTuongCha, datPhongCanSua == null ? "Đặt phòng mới" : "Chỉnh sửa đơn đặt phòng #" + datPhongCanSua.getIdDatPhong(),
                 ModalityType.APPLICATION_MODAL);
 
-        this.booking = bookingToEdit != null ? bookingToEdit : new DatPhong();
-        boolean isEdit = (bookingToEdit != null && bookingToEdit.getIdDatPhong() > 0);
+        this.datPhong = datPhongCanSua != null ? datPhongCanSua : new DatPhong();
+        boolean dangSua = (datPhongCanSua != null && datPhongCanSua.getIdDatPhong() > 0);
 
         setSize(580, 640);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(doiTuongCha);
         setResizable(false);
         setLayout(new BorderLayout());
 
         // Header Panel
-        JPanel pHeader = new JPanel(new BorderLayout());
-        pHeader.setBackground(new Color(30, 60, 114));
-        pHeader.setBorder(new EmptyBorder(16, 20, 16, 20));
+        JPanel khungTieuDe = new JPanel(new BorderLayout());
+        khungTieuDe.setBackground(new Color(30, 60, 114));
+        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel lblTitle = new JLabel(isEdit ? "CHỈNH SỬA ĐƠN ĐẶT PHÒNG #" + this.booking.getIdDatPhong() : "TẠO ĐƠN ĐẶT PHÒNG MỚI");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        lblTitle.setForeground(Color.WHITE);
+        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA ĐƠN ĐẶT PHÒNG #" + this.datPhong.getIdDatPhong() : "TẠO ĐƠN ĐẶT PHÒNG MỚI");
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        nhanTieuDe.setForeground(Color.WHITE);
 
-        JLabel lblSub = new JLabel(isEdit ? "Cập nhật ngày nhận/trả, số người, trạng thái hoặc phòng"
+        JLabel nhanPhu = new JLabel(dangSua ? "Cập nhật ngày nhận/trả, số người, trạng thái hoặc phòng"
                 : "Nhập thông tin khách hàng, chọn phòng trống và ngày lưu trú");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSub.setForeground(new Color(220, 230, 242));
+        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nhanPhu.setForeground(new Color(220, 230, 242));
 
-        pHeader.add(lblTitle, BorderLayout.NORTH);
-        pHeader.add(lblSub, BorderLayout.SOUTH);
-        add(pHeader, BorderLayout.NORTH);
+        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
+        khungTieuDe.add(nhanPhu, BorderLayout.SOUTH);
+        add(khungTieuDe, BorderLayout.NORTH);
 
         // Body Form
-        JPanel pBody = new JPanel(new GridBagLayout());
-        pBody.setBorder(new EmptyBorder(15, 20, 15, 20));
-        pBody.setBackground(Color.WHITE);
+        JPanel khungNoiDung = new JPanel(new GridBagLayout());
+        khungNoiDung.setBorder(new EmptyBorder(15, 20, 15, 20));
+        khungNoiDung.setBackground(Color.WHITE);
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.fill = GridBagConstraints.HORIZONTAL;
-        g.insets = new Insets(6, 6, 6, 6);
+        GridBagConstraints gia = new GridBagConstraints();
+        gia.fill = GridBagConstraints.HORIZONTAL;
+        gia.insets = new Insets(6, 6, 6, 6);
 
-        Font fontLabel = new Font("Segoe UI", Font.BOLD, 13);
-        Font fontInput = new Font("Segoe UI", Font.PLAIN, 13);
+        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
+        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
 
         // 1. CCCD Khách hàng
-        g.gridx = 0; g.gridy = 0; g.weightx = 0;
-        JLabel lblCCCD = new JLabel("Số CCCD (*):");
-        lblCCCD.setFont(fontLabel);
-        pBody.add(lblCCCD, g);
+        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
+        JLabel nhanCCCD = new JLabel("Số CCCD (*):");
+        nhanCCCD.setFont(phongChuNhan);
+        khungNoiDung.add(nhanCCCD, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        JPanel pCCCD = new JPanel(new BorderLayout(5, 0));
-        pCCCD.setOpaque(false);
-        txtCCCD = new JTextField();
-        txtCCCD.setFont(fontInput);
-        txtCCCD.setPreferredSize(new Dimension(160, 32));
-        btnKiemTraCCCD = new JButton("Tìm");
-        view.view.UIStyle.setButtonIcon(btnKiemTraCCCD, "timkiem.png");
-        btnKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btnKiemTraCCCD.setFocusPainted(false);
-        pCCCD.add(txtCCCD, BorderLayout.CENTER);
-        pCCCD.add(btnKiemTraCCCD, BorderLayout.EAST);
-        pBody.add(pCCCD, g);
+        gia.gridx = 1; gia.weightx = 1;
+        JPanel khungCCCD = new JPanel(new BorderLayout(5, 0));
+        khungCCCD.setOpaque(false);
+        oNhapCCCD = new JTextField();
+        oNhapCCCD.setFont(phongChuNhap);
+        oNhapCCCD.setPreferredSize(new Dimension(160, 32));
+        nutKiemTraCCCD = new JButton("Tìm");
+        view.view.UIStyle.setButtonIcon(nutKiemTraCCCD, "timkiem.png");
+        nutKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nutKiemTraCCCD.setFocusPainted(false);
+        khungCCCD.add(oNhapCCCD, BorderLayout.CENTER);
+        khungCCCD.add(nutKiemTraCCCD, BorderLayout.EAST);
+        khungNoiDung.add(khungCCCD, gia);
 
         // 2. Tên khách hàng & SDT
-        g.gridx = 0; g.gridy = 1; g.weightx = 0;
-        JLabel lblHoTen = new JLabel("Họ tên khách (*):");
-        lblHoTen.setFont(fontLabel);
-        pBody.add(lblHoTen, g);
+        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
+        JLabel nhanHoTen = new JLabel("Họ tên khách (*):");
+        nhanHoTen.setFont(phongChuNhan);
+        khungNoiDung.add(nhanHoTen, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtHoTen = new JTextField();
-        txtHoTen.setFont(fontInput);
-        txtHoTen.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtHoTen, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapHoTen = new JTextField();
+        oNhapHoTen.setFont(phongChuNhap);
+        oNhapHoTen.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapHoTen, gia);
 
-        g.gridx = 0; g.gridy = 2; g.weightx = 0;
-        JLabel lblSDT = new JLabel("Số điện thoại (*):");
-        lblSDT.setFont(fontLabel);
-        pBody.add(lblSDT, g);
+        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
+        JLabel nhanSDT = new JLabel("Số điện thoại (*):");
+        nhanSDT.setFont(phongChuNhan);
+        khungNoiDung.add(nhanSDT, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtSDT = new JTextField();
-        txtSDT.setFont(fontInput);
-        txtSDT.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtSDT, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapSDT = new JTextField();
+        oNhapSDT.setFont(phongChuNhap);
+        oNhapSDT.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapSDT, gia);
 
         // 3. Chọn phòng
-        g.gridx = 0; g.gridy = 3; g.weightx = 0;
-        JLabel lblPhong = new JLabel("Chọn phòng (*):");
-        lblPhong.setFont(fontLabel);
-        pBody.add(lblPhong, g);
+        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
+        JLabel nhanPhong = new JLabel("Chọn phòng (*):");
+        nhanPhong.setFont(phongChuNhan);
+        khungNoiDung.add(nhanPhong, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboPhong = new JComboBox<>();
-        cboPhong.setFont(fontInput);
-        cboPhong.setPreferredSize(new Dimension(200, 32));
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonPhong = new JComboBox<>();
+        hopChonPhong.setFont(phongChuNhap);
+        hopChonPhong.setPreferredSize(new Dimension(200, 32));
 
         // Load danh sách phòng
-        ArrayList<Phong> allRooms = roomDAO.xuat();
-        for (Phong r : allRooms) {
-            boolean isAvailable = "AVAILABLE".equalsIgnoreCase(r.getTrangThai()) || "TRỐNG".equalsIgnoreCase(r.getTrangThai());
-            if (isAvailable || (isEdit && r.getSoPhong().equals(this.booking.getSoPhong()))) {
-                cboPhong.addItem(r);
+        ArrayList<Phong> tatCaPhong = phongDAO.xuat();
+        for (Phong hangHienTai : tatCaPhong) {
+            boolean dangTrong = "AVAILABLE".equalsIgnoreCase(hangHienTai.getTrangThai()) || "TRỐNG".equalsIgnoreCase(hangHienTai.getTrangThai());
+            if (dangTrong || (dangSua && hangHienTai.getSoPhong().equals(this.datPhong.getSoPhong()))) {
+                hopChonPhong.addItem(hangHienTai);
             }
         }
-        cboPhong.setRenderer(new DefaultListCellRenderer() {
+        hopChonPhong.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Phong) {
-                    Phong rm = (Phong) value;
-                    setText("Phòng " + rm.getSoPhong() + " - " + rm.getTenLoaiPhong()
-                            + " (Tầng " + rm.getTang() + ", tối đa " + rm.getSucChua() + " khách)");
+            public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
+                                                          boolean dangChon, boolean oDangChon) {
+                super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
+                if (giaTri instanceof Phong) {
+                    Phong phong = (Phong) giaTri;
+                    setText("Phòng " + phong.getSoPhong() + " - " + phong.getTenLoaiPhong()
+                            + " (Tầng " + phong.getTang() + ", tối đa " + phong.getSucChua() + " khách)");
                 }
                 return this;
             }
         });
-        pBody.add(cboPhong, g);
+        khungNoiDung.add(hopChonPhong, gia);
 
         // 4. Ngày nhận & Ngày trả (yyyy-MM-dd)
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
 
-        g.gridx = 0; g.gridy = 4; g.weightx = 0;
-        JLabel lblNhan = new JLabel("Ngày nhận:");
-        lblNhan.setFont(fontLabel);
-        pBody.add(lblNhan, g);
+        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
+        JLabel nhanNhan = new JLabel("Ngày nhận:");
+        nhanNhan.setFont(phongChuNhan);
+        khungNoiDung.add(nhanNhan, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtNgayNhan = new DatePickerField(homNay, homNay);
-        txtNgayNhan.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtNgayNhan, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapNgayNhan = new DatePickerField(homNay, homNay);
+        oNhapNgayNhan.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapNgayNhan, gia);
 
-        g.gridx = 0; g.gridy = 5; g.weightx = 0;
-        JLabel lblTra = new JLabel("Ngày trả:");
-        lblTra.setFont(fontLabel);
-        pBody.add(lblTra, g);
+        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
+        JLabel nhanTra = new JLabel("Ngày trả:");
+        nhanTra.setFont(phongChuNhan);
+        khungNoiDung.add(nhanTra, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtNgayTra = new DatePickerField(ngayMai, ngayMai);
-        txtNgayTra.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtNgayTra, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapNgayTra = new DatePickerField(ngayMai, ngayMai);
+        oNhapNgayTra.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapNgayTra, gia);
 
         // 5. Số lượng người
-        g.gridx = 0; g.gridy = 6; g.weightx = 0;
-        JLabel lblSoNguoi = new JLabel("Số người ở:");
-        lblSoNguoi.setFont(fontLabel);
-        pBody.add(lblSoNguoi, g);
+        gia.gridx = 0; gia.gridy = 6; gia.weightx = 0;
+        JLabel nhanSoNguoi = new JLabel("Số người ở:");
+        nhanSoNguoi.setFont(phongChuNhan);
+        khungNoiDung.add(nhanSoNguoi, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        Phong initialRoom = (Phong) cboPhong.getSelectedItem();
-        int initialCapacity = initialRoom != null ? Math.max(1, initialRoom.getSucChua()) : 1;
-        spnSoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, initialCapacity, 1));
-        spnSoNguoi.setFont(fontInput);
-        spnSoNguoi.setPreferredSize(new Dimension(200, 32));
-        pBody.add(spnSoNguoi, g);
-        cboPhong.addActionListener(e -> capNhatSucChuaPhong());
+        gia.gridx = 1; gia.weightx = 1;
+        Phong phongBanDau = (Phong) hopChonPhong.getSelectedItem();
+        int sucChuaBanDau = phongBanDau != null ? Math.max(1, phongBanDau.getSucChua()) : 1;
+        vongQuaySoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChuaBanDau, 1));
+        vongQuaySoNguoi.setFont(phongChuNhap);
+        vongQuaySoNguoi.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(vongQuaySoNguoi, gia);
+        hopChonPhong.addActionListener(suKien -> capNhatSucChuaPhong());
 
         // 6. Trạng thái
-        g.gridx = 0; g.gridy = 7; g.weightx = 0;
-        JLabel lblTT = new JLabel("Trạng thái:");
-        lblTT.setFont(fontLabel);
-        pBody.add(lblTT, g);
+        gia.gridx = 0; gia.gridy = 7; gia.weightx = 0;
+        JLabel nhanTrangThai = new JLabel("Trạng thái:");
+        nhanTrangThai.setFont(phongChuNhan);
+        khungNoiDung.add(nhanTrangThai, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboTrangThai = new JComboBox<>(isEdit
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonTrangThai = new JComboBox<>(dangSua
                 ? new String[] { "BOOKED", "CHECKED_IN", "CHECKED_OUT", "CANCELLED" }
                 : new String[] { "BOOKED" });
-        cboTrangThai.setFont(fontInput);
-        cboTrangThai.setPreferredSize(new Dimension(200, 32));
-        cboTrangThai.setEnabled(isEdit);
-        cboTrangThai.setRenderer(new DefaultListCellRenderer() {
+        hopChonTrangThai.setFont(phongChuNhap);
+        hopChonTrangThai.setPreferredSize(new Dimension(200, 32));
+        hopChonTrangThai.setEnabled(dangSua);
+        hopChonTrangThai.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                String s = String.valueOf(value);
-                if ("BOOKED".equalsIgnoreCase(s)) setText("Đã đặt (BOOKED)");
-                else if ("CHECKED_IN".equalsIgnoreCase(s)) setText("Đã nhận phòng (CHECKED_IN)");
-                else if ("CHECKED_OUT".equalsIgnoreCase(s)) setText("Đã trả phòng (CHECKED_OUT)");
-                else if ("CANCELLED".equalsIgnoreCase(s)) setText("Đã hủy (CANCELLED)");
+            public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
+                                                          boolean dangChon, boolean oDangChon) {
+                super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
+                String chuoi = String.valueOf(giaTri);
+                if ("BOOKED".equalsIgnoreCase(chuoi)) setText("Đã đặt (BOOKED)");
+                else if ("CHECKED_IN".equalsIgnoreCase(chuoi)) setText("Đã nhận phòng (CHECKED_IN)");
+                else if ("CHECKED_OUT".equalsIgnoreCase(chuoi)) setText("Đã trả phòng (CHECKED_OUT)");
+                else if ("CANCELLED".equalsIgnoreCase(chuoi)) setText("Đã hủy (CANCELLED)");
                 return this;
             }
         });
-        pBody.add(cboTrangThai, g);
+        khungNoiDung.add(hopChonTrangThai, gia);
 
         // 7. Ghi chú
-        g.gridx = 0; g.gridy = 8; g.weightx = 0;
-        JLabel lblGhiChu = new JLabel("Ghi chú:");
-        lblGhiChu.setFont(fontLabel);
-        pBody.add(lblGhiChu, g);
+        gia.gridx = 0; gia.gridy = 8; gia.weightx = 0;
+        JLabel nhanGhiChu = new JLabel("Ghi chú:");
+        nhanGhiChu.setFont(phongChuNhan);
+        khungNoiDung.add(nhanGhiChu, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtGhiChu = new JTextField();
-        txtGhiChu.setFont(fontInput);
-        txtGhiChu.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtGhiChu, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapGhiChu = new JTextField();
+        oNhapGhiChu.setFont(phongChuNhap);
+        oNhapGhiChu.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapGhiChu, gia);
 
-        add(pBody, BorderLayout.CENTER);
+        add(khungNoiDung, BorderLayout.CENTER);
 
         // Xử lý tìm kiếm CCCD
-        btnKiemTraCCCD.addActionListener(e -> {
-            String cccd = txtCCCD.getText().trim();
+        nutKiemTraCCCD.addActionListener(suKien -> {
+            String cccd = oNhapCCCD.getText().trim();
             if (cccd.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD để tìm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            KhachHang tk = new KhachHang();
-            tk.setSoCCCD(cccd);
-            KhachHang found = customerDAO.timKiem(tk);
-            if (found != null) {
-                selectedCustomerId = found.getIdKhachHang();
-                txtHoTen.setText(found.getNameKhachHang());
-                txtSDT.setText(found.getSoDienThoai());
-                JOptionPane.showMessageDialog(this, "Tìm thấy khách hàng: " + found.getNameKhachHang(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            KhachHang taiKhoan = new KhachHang();
+            taiKhoan.setSoCCCD(cccd);
+            KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
+            if (timThay != null) {
+                maKhachHangDaChon = timThay.getIdKhachHang();
+                oNhapHoTen.setText(timThay.getNameKhachHang());
+                oNhapSDT.setText(timThay.getSoDienThoai());
+                JOptionPane.showMessageDialog(this, "Tìm thấy khách hàng: " + timThay.getNameKhachHang(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Chưa có thông tin khách hàng này. Vui lòng nhập họ tên & SĐT để hệ thống tự động lưu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                txtHoTen.requestFocus();
+                oNhapHoTen.requestFocus();
             }
         });
 
         // Điền dữ liệu nếu là sửa
-        if (isEdit) {
-            txtCCCD.setText(this.booking.getCccd() != null ? this.booking.getCccd() : "");
-            if (this.booking.getNgayNhanPhong() != null) {
-                txtNgayNhan.setDate(this.booking.getNgayNhanPhong().toLocalDate());
+        if (dangSua) {
+            oNhapCCCD.setText(this.datPhong.getCccd() != null ? this.datPhong.getCccd() : "");
+            if (this.datPhong.getNgayNhanPhong() != null) {
+                oNhapNgayNhan.setDate(this.datPhong.getNgayNhanPhong().toLocalDate());
             }
-            if (this.booking.getNgayTraPhong() != null) {
-                txtNgayTra.setDate(this.booking.getNgayTraPhong().toLocalDate());
+            if (this.datPhong.getNgayTraPhong() != null) {
+                oNhapNgayTra.setDate(this.datPhong.getNgayTraPhong().toLocalDate());
             }
-            txtGhiChu.setText(this.booking.getGhiChu() != null ? this.booking.getGhiChu() : "");
+            oNhapGhiChu.setText(this.datPhong.getGhiChu() != null ? this.datPhong.getGhiChu() : "");
 
-            String st = this.booking.getTrangThai();
-            if (st != null) {
-                if (st.contains("CHECKED_IN") || st.contains("Đã nhận")) cboTrangThai.setSelectedItem("CHECKED_IN");
-                else if (st.contains("CHECKED_OUT") || st.contains("Đã trả")) cboTrangThai.setSelectedItem("CHECKED_OUT");
-                else if (st.contains("CANCELLED") || st.contains("Đã hủy")) cboTrangThai.setSelectedItem("CANCELLED");
-                else cboTrangThai.setSelectedItem("BOOKED");
+            String luongTrinh = this.datPhong.getTrangThai();
+            if (luongTrinh != null) {
+                if (luongTrinh.contains("CHECKED_IN") || luongTrinh.contains("Đã nhận")) hopChonTrangThai.setSelectedItem("CHECKED_IN");
+                else if (luongTrinh.contains("CHECKED_OUT") || luongTrinh.contains("Đã trả")) hopChonTrangThai.setSelectedItem("CHECKED_OUT");
+                else if (luongTrinh.contains("CANCELLED") || luongTrinh.contains("Đã hủy")) hopChonTrangThai.setSelectedItem("CANCELLED");
+                else hopChonTrangThai.setSelectedItem("BOOKED");
             }
 
             // Chọn phòng
-            if (this.booking.getSoPhong() != null) {
-                for (int i = 0; i < cboPhong.getItemCount(); i++) {
-                    Phong r = cboPhong.getItemAt(i);
-                    if (r.getSoPhong().equals(this.booking.getSoPhong())) {
-                        cboPhong.setSelectedIndex(i);
+            if (this.datPhong.getSoPhong() != null) {
+                for (int chiSo = 0; chiSo < hopChonPhong.getItemCount(); chiSo++) {
+                    Phong hangHienTai = hopChonPhong.getItemAt(chiSo);
+                    if (hangHienTai.getSoPhong().equals(this.datPhong.getSoPhong())) {
+                        hopChonPhong.setSelectedIndex(chiSo);
                         break;
                     }
                 }
             }
             capNhatSucChuaPhong();
-            int capacity = phongDangChon() != null ? Math.max(1, phongDangChon().getSucChua()) : 1;
-            spnSoNguoi.setValue(Math.min(Math.max(1, this.booking.getSoNguoi()), capacity));
+            int sucChua = phongDangChon() != null ? Math.max(1, phongDangChon().getSucChua()) : 1;
+            vongQuaySoNguoi.setValue(Math.min(Math.max(1, this.datPhong.getSoNguoi()), sucChua));
 
             // Tìm thông tin khách hàng
-            if (this.booking.getIdKhachHang() > 0) {
-                selectedCustomerId = this.booking.getIdKhachHang();
-                KhachHang tk = new KhachHang();
-                tk.setIdKhachHang(selectedCustomerId);
-                KhachHang found = customerDAO.timKiem(tk);
-                if (found != null) {
-                    txtHoTen.setText(found.getNameKhachHang());
-                    txtSDT.setText(found.getSoDienThoai());
+            if (this.datPhong.getIdKhachHang() > 0) {
+                maKhachHangDaChon = this.datPhong.getIdKhachHang();
+                KhachHang taiKhoan = new KhachHang();
+                taiKhoan.setIdKhachHang(maKhachHangDaChon);
+                KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
+                if (timThay != null) {
+                    oNhapHoTen.setText(timThay.getNameKhachHang());
+                    oNhapSDT.setText(timThay.getSoDienThoai());
                 }
             }
         }
 
-        txtNgayTra.setMinimumDate(txtNgayNhan.getDate().plusDays(1));
-        txtNgayNhan.addDateChangeListener(event -> {
-            LocalDate earliestCheckout = txtNgayNhan.getDate().plusDays(1);
-            txtNgayTra.setMinimumDate(earliestCheckout);
-            if (txtNgayTra.getDate().isBefore(earliestCheckout)) {
-                txtNgayTra.setDate(earliestCheckout);
+        oNhapNgayTra.setMinimumDate(oNhapNgayNhan.getDate().plusDays(1));
+        oNhapNgayNhan.addDateChangeListener(suKien -> {
+            LocalDate earliestTraPhong = oNhapNgayNhan.getDate().plusDays(1);
+            oNhapNgayTra.setMinimumDate(earliestTraPhong);
+            if (oNhapNgayTra.getDate().isBefore(earliestTraPhong)) {
+                oNhapNgayTra.setDate(earliestTraPhong);
             }
         });
 
         // Footer buttons
-        JPanel pFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        pFooter.setBackground(new Color(245, 247, 250));
-        pFooter.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
+        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        khungChan.setBackground(new Color(245, 247, 250));
+        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        btnHuy = new JButton("Hủy bỏ");
-        btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnHuy.setPreferredSize(new Dimension(100, 34));
-        btnHuy.setFocusPainted(false);
-        btnHuy.addActionListener(e -> dispose());
+        nutHuy = new JButton("Hủy bỏ");
+        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutHuy.setPreferredSize(new Dimension(100, 34));
+        nutHuy.setFocusPainted(false);
+        nutHuy.addActionListener(suKien -> dispose());
 
-        btnLuu = new JButton(isEdit ? "Cập nhật" : "Đặt phòng");
-        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
-        btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnLuu.setBackground(new Color(13, 110, 253));
-        btnLuu.setForeground(Color.WHITE);
-        btnLuu.setPreferredSize(new Dimension(130, 34));
-        btnLuu.setFocusPainted(false);
-        btnLuu.addActionListener(e -> xuLyLuu());
+        nutLuu = new JButton(dangSua ? "Cập nhật" : "Đặt phòng");
+        view.view.UIStyle.setButtonIcon(nutLuu, dangSua ? "sua.png" : "them.png");
+        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nutLuu.setBackground(new Color(13, 110, 253));
+        nutLuu.setForeground(Color.WHITE);
+        nutLuu.setPreferredSize(new Dimension(130, 34));
+        nutLuu.setFocusPainted(false);
+        nutLuu.addActionListener(suKien -> xuLyLuu());
 
-        pFooter.add(btnHuy);
-        pFooter.add(btnLuu);
-        add(pFooter, BorderLayout.SOUTH);
+        khungChan.add(nutHuy);
+        khungChan.add(nutLuu);
+        add(khungChan, BorderLayout.SOUTH);
     }
 
     private void xuLyLuu() {
-        String cccd = txtCCCD.getText().trim();
-        String hoTen = txtHoTen.getText().trim();
-        String sdt = txtSDT.getText().trim();
+        String cccd = oNhapCCCD.getText().trim();
+        String hoTen = oNhapHoTen.getText().trim();
+        String sdt = oNhapSDT.getText().trim();
 
         if (cccd.isEmpty() || hoTen.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD và họ tên khách hàng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        Phong phongChon = (Phong) cboPhong.getSelectedItem();
+        Phong phongChon = (Phong) hopChonPhong.getSelectedItem();
         if (phongChon == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        selectedRoomId = phongChon.getMaPhong();
-        selectedRoomPrice = phongChon.getGiaMoiDem();
+        maPhongDaChon = phongChon.getMaPhong();
+        giaPhongDaChon = phongChon.getGiaMoiDem();
 
         Date ngayNhan;
         Date ngayTra;
         try {
-            ngayNhan = Date.valueOf(txtNgayNhan.getDate());
-            ngayTra = Date.valueOf(txtNgayTra.getDate());
+            ngayNhan = Date.valueOf(oNhapNgayNhan.getDate());
+            ngayTra = Date.valueOf(oNhapNgayTra.getDate());
             if (ngayNhan.toLocalDate().isBefore(LocalDate.now())) {
                 JOptionPane.showMessageDialog(this, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ",
                         JOptionPane.WARNING_MESSAGE);
@@ -377,13 +377,13 @@ public class DialogThemSuaDatPhong extends JDialog {
                 JOptionPane.showMessageDialog(this, "Ngày trả phòng phải sau ngày nhận phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        } catch (Exception ex) {
+        } catch (Exception ngoaiLe) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận và ngày trả hợp lệ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            if (bookingService.phongBiDatTrung(selectedRoomId, ngayNhan, ngayTra, booking.getIdDatPhong())) {
+            if (dichVuDatPhong.phongBiDatTrung(maPhongDaChon, ngayNhan, ngayTra, datPhong.getIdDatPhong())) {
                 JOptionPane.showMessageDialog(
                         this,
                         "Phòng " + phongChon.getSoPhong() + " đã được đặt hoặc có khách trong khoảng thời gian này.\n"
@@ -392,13 +392,13 @@ public class DialogThemSuaDatPhong extends JDialog {
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Không thể kiểm tra tình trạng phòng: " + ex.getMessage(),
+        } catch (Exception ngoaiLe) {
+            JOptionPane.showMessageDialog(this, "Không thể kiểm tra tình trạng phòng: " + ngoaiLe.getMessage(),
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int soNguoi = (int) spnSoNguoi.getValue();
+        int soNguoi = (int) vongQuaySoNguoi.getValue();
         if (soNguoi > Math.max(1, phongChon.getSucChua())) {
             JOptionPane.showMessageDialog(this,
                     "Phòng " + phongChon.getSoPhong() + " chỉ nhận tối đa " + phongChon.getSucChua() + " khách!",
@@ -407,64 +407,64 @@ public class DialogThemSuaDatPhong extends JDialog {
         }
 
         // Kiểm tra hoặc tạo mới khách hàng sau khi xác thực phòng và ngày lưu trú.
-        KhachHang tk = new KhachHang();
-        tk.setSoCCCD(cccd);
-        KhachHang found = customerDAO.timKiem(tk);
-        if (found == null) {
+        KhachHang taiKhoan = new KhachHang();
+        taiKhoan.setSoCCCD(cccd);
+        KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
+        if (timThay == null) {
             KhachHang moi = new KhachHang(0, hoTen, cccd, sdt, "", "");
-            customerDAO.them(moi);
-            found = customerDAO.timKiem(tk);
+            khachHangDAO.them(moi);
+            timThay = khachHangDAO.timKiem(taiKhoan);
         }
-        if (found == null) {
+        if (timThay == null) {
             JOptionPane.showMessageDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng kiểm tra CCCD và thử lại.",
                     "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        selectedCustomerId = found.getIdKhachHang();
+        maKhachHangDaChon = timThay.getIdKhachHang();
 
-        String tt = (String) cboTrangThai.getSelectedItem();
-        String ghiChu = txtGhiChu.getText().trim();
+        String trangThai = (String) hopChonTrangThai.getSelectedItem();
+        String ghiChu = oNhapGhiChu.getText().trim();
 
-        this.booking.setIdKhachHang(selectedCustomerId);
-        this.booking.setCccd(cccd);
-        this.booking.setNgayNhanPhong(ngayNhan);
-        this.booking.setNgayTraPhong(ngayTra);
-        this.booking.setSoNguoi(soNguoi);
-        this.booking.setTrangThai(tt);
-        this.booking.setGhiChu(ghiChu);
-        this.booking.setSoPhong(phongChon.getSoPhong());
-        this.booking.setMaPhong(phongChon.getMaPhong());
-        this.booking.setGiaMoiDem(phongChon.getGiaMoiDem());
-        this.booking.setTang("Tầng " + phongChon.getTang());
+        this.datPhong.setIdKhachHang(maKhachHangDaChon);
+        this.datPhong.setCccd(cccd);
+        this.datPhong.setNgayNhanPhong(ngayNhan);
+        this.datPhong.setNgayTraPhong(ngayTra);
+        this.datPhong.setSoNguoi(soNguoi);
+        this.datPhong.setTrangThai(trangThai);
+        this.datPhong.setGhiChu(ghiChu);
+        this.datPhong.setSoPhong(phongChon.getSoPhong());
+        this.datPhong.setMaPhong(phongChon.getMaPhong());
+        this.datPhong.setGiaMoiDem(phongChon.getGiaMoiDem());
+        this.datPhong.setTang("Tầng " + phongChon.getTang());
 
-        saved = true;
+        daLuu = true;
         dispose();
     }
 
     public boolean isSaved() {
-        return saved;
+        return daLuu;
     }
 
     public DatPhong getBooking() {
-        return booking;
+        return datPhong;
     }
 
     public int getSelectedRoomId() {
-        return selectedRoomId;
+        return maPhongDaChon;
     }
 
     public float getSelectedRoomPrice() {
-        return selectedRoomPrice;
+        return giaPhongDaChon;
     }
 
     private Phong phongDangChon() {
-        return (Phong) cboPhong.getSelectedItem();
+        return (Phong) hopChonPhong.getSelectedItem();
     }
 
     private void capNhatSucChuaPhong() {
         Phong phong = phongDangChon();
         int sucChua = phong != null ? Math.max(1, phong.getSucChua()) : 1;
-        int soNguoi = (int) spnSoNguoi.getValue();
-        spnSoNguoi.setModel(new SpinnerNumberModel(Math.min(soNguoi, sucChua), 1, sucChua, 1));
+        int soNguoi = (int) vongQuaySoNguoi.getValue();
+        vongQuaySoNguoi.setModel(new SpinnerNumberModel(Math.min(soNguoi, sucChua), 1, sucChua, 1));
     }
 }

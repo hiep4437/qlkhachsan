@@ -1,7 +1,7 @@
 package model;
 
 public class NguoiDung {
-	private int idNguoiDung;
+	private int maNguoiDung;
 	private String tenDangNhap;
 	private String matKhau;
 	private String hoTen;
@@ -9,11 +9,11 @@ public class NguoiDung {
 	private boolean trangThai;
 
 	public int getIdNguoiDung() {
-		return idNguoiDung;
+		return maNguoiDung;
 	}
 
-	public void setIdNguoiDung(int idNguoiDung) {
-		this.idNguoiDung = idNguoiDung;
+	public void setIdNguoiDung(int maNguoiDung) {
+		this.maNguoiDung = maNguoiDung;
 	}
 
 	public String getTenDangNhap() {
@@ -56,9 +56,9 @@ public class NguoiDung {
 		this.trangThai = trangThai;
 	}
 
-	public NguoiDung(int idNguoiDung, String tenDangNhap, String matKhau, String hoTen, String vaiTro, boolean trangThai) {
+	public NguoiDung(int maNguoiDung, String tenDangNhap, String matKhau, String hoTen, String vaiTro, boolean trangThai) {
 		super();
-		this.idNguoiDung = idNguoiDung;
+		this.maNguoiDung = maNguoiDung;
 		this.tenDangNhap = tenDangNhap;
 		this.matKhau = matKhau;
 		this.hoTen = hoTen;

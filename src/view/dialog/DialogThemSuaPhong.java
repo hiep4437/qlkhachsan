@@ -10,167 +10,167 @@ import model.LoaiPhong;
 
 public class DialogThemSuaPhong extends JDialog {
 
-    private JTextField txtSoPhong;
-    private JSpinner spnTang;
-    private JComboBox<LoaiPhong> cboLoaiPhong;
-    private JTextField txtGiaMoiDem;
-    private JComboBox<String> cboTrangThai;
-    private JTextArea txtMoTa;
-    private JButton btnLuu;
-    private JButton btnHuy;
+    private JTextField oNhapSoPhong;
+    private JSpinner vongQuayTang;
+    private JComboBox<LoaiPhong> hopChonLoaiPhong;
+    private JTextField oNhapGiaMoiDem;
+    private JComboBox<String> hopChonTrangThai;
+    private JTextArea oNhapMoTa;
+    private JButton nutLuu;
+    private JButton nutHuy;
 
-    private boolean saved = false;
-    private Phong room;
+    private boolean daLuu = false;
+    private Phong phong;
 
-    public DialogThemSuaPhong(Window parent, Phong roomToEdit, List<LoaiPhong> danhSachLoaiPhong) {
-        super(parent, roomToEdit == null ? "Thêm phòng mới" : "Chỉnh sửa phòng " + roomToEdit.getSoPhong(),
+    public DialogThemSuaPhong(Window doiTuongCha, Phong phongCanSua, List<LoaiPhong> danhSachLoaiPhong) {
+        super(doiTuongCha, phongCanSua == null ? "Thêm phòng mới" : "Chỉnh sửa phòng " + phongCanSua.getSoPhong(),
                 ModalityType.APPLICATION_MODAL);
 
-        this.room = roomToEdit != null ? roomToEdit : new Phong();
-        boolean isEdit = (roomToEdit != null && roomToEdit.getMaPhong() > 0);
+        this.phong = phongCanSua != null ? phongCanSua : new Phong();
+        boolean dangSua = (phongCanSua != null && phongCanSua.getMaPhong() > 0);
 
         setSize(520, 560);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(doiTuongCha);
         setResizable(false);
         setLayout(new BorderLayout());
 
         // Header Panel
-        JPanel pHeader = new JPanel(new BorderLayout());
-        pHeader.setBackground(new Color(30, 60, 114));
-        pHeader.setBorder(new EmptyBorder(16, 20, 16, 20));
+        JPanel khungTieuDe = new JPanel(new BorderLayout());
+        khungTieuDe.setBackground(new Color(30, 60, 114));
+        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel lblTitle = new JLabel(isEdit ? "CHỈNH SỬA THÔNG TIN PHÒNG" : "THÊM PHÒNG MỚI VÀO HỆ THỐNG");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        lblTitle.setForeground(Color.WHITE);
+        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA THÔNG TIN PHÒNG" : "THÊM PHÒNG MỚI VÀO HỆ THỐNG");
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        nhanTieuDe.setForeground(Color.WHITE);
 
-        JLabel lblSub = new JLabel(isEdit ? "Cập nhật loại phòng, giá, trạng thái hoặc thông tin phòng"
+        JLabel nhanPhu = new JLabel(dangSua ? "Cập nhật loại phòng, giá, trạng thái hoặc thông tin phòng"
                 : "Nhập thông tin chi tiết để thêm phòng mới");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSub.setForeground(new Color(220, 230, 242));
+        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nhanPhu.setForeground(new Color(220, 230, 242));
 
-        pHeader.add(lblTitle, BorderLayout.NORTH);
-        pHeader.add(lblSub, BorderLayout.SOUTH);
-        add(pHeader, BorderLayout.NORTH);
+        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
+        khungTieuDe.add(nhanPhu, BorderLayout.SOUTH);
+        add(khungTieuDe, BorderLayout.NORTH);
 
         // Body Form Panel
-        JPanel pBody = new JPanel(new GridBagLayout());
-        pBody.setBorder(new EmptyBorder(20, 24, 15, 24));
-        pBody.setBackground(Color.WHITE);
+        JPanel khungNoiDung = new JPanel(new GridBagLayout());
+        khungNoiDung.setBorder(new EmptyBorder(20, 24, 15, 24));
+        khungNoiDung.setBackground(Color.WHITE);
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.fill = GridBagConstraints.HORIZONTAL;
-        g.insets = new Insets(8, 8, 8, 8);
+        GridBagConstraints gia = new GridBagConstraints();
+        gia.fill = GridBagConstraints.HORIZONTAL;
+        gia.insets = new Insets(8, 8, 8, 8);
 
-        Font fontLabel = new Font("Segoe UI", Font.BOLD, 13);
-        Font fontInput = new Font("Segoe UI", Font.PLAIN, 13);
+        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
+        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
 
         // 1. Số phòng
-        g.gridx = 0; g.gridy = 0; g.weightx = 0;
-        JLabel lblSoPhong = new JLabel("Số phòng (*):");
-        lblSoPhong.setFont(fontLabel);
-        pBody.add(lblSoPhong, g);
+        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
+        JLabel nhanSoPhong = new JLabel("Số phòng (*):");
+        nhanSoPhong.setFont(phongChuNhan);
+        khungNoiDung.add(nhanSoPhong, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtSoPhong = new JTextField(15);
-        txtSoPhong.setFont(fontInput);
-        txtSoPhong.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtSoPhong, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapSoPhong = new JTextField(15);
+        oNhapSoPhong.setFont(phongChuNhap);
+        oNhapSoPhong.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapSoPhong, gia);
 
         // 2. Tầng
-        g.gridx = 0; g.gridy = 1; g.weightx = 0;
-        JLabel lblTang = new JLabel("Tầng:");
-        lblTang.setFont(fontLabel);
-        pBody.add(lblTang, g);
+        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
+        JLabel nhanTang = new JLabel("Tầng:");
+        nhanTang.setFont(phongChuNhan);
+        khungNoiDung.add(nhanTang, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        spnTang = new JSpinner(new SpinnerNumberModel(1, 1, 99, 1));
-        spnTang.setFont(fontInput);
-        spnTang.setPreferredSize(new Dimension(200, 32));
-        pBody.add(spnTang, g);
+        gia.gridx = 1; gia.weightx = 1;
+        vongQuayTang = new JSpinner(new SpinnerNumberModel(1, 1, 99, 1));
+        vongQuayTang.setFont(phongChuNhap);
+        vongQuayTang.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(vongQuayTang, gia);
 
         // 3. Loại phòng (JComboBox load từ DB)
-        g.gridx = 0; g.gridy = 2; g.weightx = 0;
-        JLabel lblLoaiPhong = new JLabel("Loại phòng (*):");
-        lblLoaiPhong.setFont(fontLabel);
-        pBody.add(lblLoaiPhong, g);
+        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
+        JLabel nhanLoaiPhong = new JLabel("Loại phòng (*):");
+        nhanLoaiPhong.setFont(phongChuNhan);
+        khungNoiDung.add(nhanLoaiPhong, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboLoaiPhong = new JComboBox<>();
-        cboLoaiPhong.setFont(fontInput);
-        cboLoaiPhong.setPreferredSize(new Dimension(200, 32));
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonLoaiPhong = new JComboBox<>();
+        hopChonLoaiPhong.setFont(phongChuNhap);
+        hopChonLoaiPhong.setPreferredSize(new Dimension(200, 32));
 
         if (danhSachLoaiPhong != null) {
-            for (LoaiPhong lt : danhSachLoaiPhong) {
-                cboLoaiPhong.addItem(lt);
+            for (LoaiPhong nhoHon : danhSachLoaiPhong) {
+                hopChonLoaiPhong.addItem(nhoHon);
             }
         }
-        cboLoaiPhong.setRenderer(new DefaultListCellRenderer() {
+        hopChonLoaiPhong.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof LoaiPhong) {
-                    LoaiPhong rt = (LoaiPhong) value;
-                    setText(rt.getTenLoaiPhong() + " (Sức chứa " + rt.getSucChua() + " người)");
+            public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
+                                                          boolean dangChon, boolean oDangChon) {
+                super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
+                if (giaTri instanceof LoaiPhong) {
+                    LoaiPhong loai = (LoaiPhong) giaTri;
+                    setText(loai.getTenLoaiPhong() + " (Sức chứa " + loai.getSucChua() + " người)");
                 }
                 return this;
             }
         });
-        pBody.add(cboLoaiPhong, g);
+        khungNoiDung.add(hopChonLoaiPhong, gia);
 
         // 4. Giá mỗi đêm
-        g.gridx = 0; g.gridy = 3; g.weightx = 0;
-        JLabel lblGia = new JLabel("Giá mỗi đêm (VNĐ) (*):");
-        lblGia.setFont(fontLabel);
-        pBody.add(lblGia, g);
+        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
+        JLabel nhanGia = new JLabel("Giá mỗi đêm (VNĐ) (*):");
+        nhanGia.setFont(phongChuNhan);
+        khungNoiDung.add(nhanGia, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtGiaMoiDem = new JTextField(15);
-        txtGiaMoiDem.setFont(fontInput);
-        txtGiaMoiDem.setPreferredSize(new Dimension(200, 32));
-        pBody.add(txtGiaMoiDem, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapGiaMoiDem = new JTextField(15);
+        oNhapGiaMoiDem.setFont(phongChuNhap);
+        oNhapGiaMoiDem.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(oNhapGiaMoiDem, gia);
 
         // 5. Trạng thái
-        g.gridx = 0; g.gridy = 4; g.weightx = 0;
-        JLabel lblTrangThai = new JLabel("Trạng thái:");
-        lblTrangThai.setFont(fontLabel);
-        pBody.add(lblTrangThai, g);
+        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
+        JLabel nhanTrangThai = new JLabel("Trạng thái:");
+        nhanTrangThai.setFont(phongChuNhan);
+        khungNoiDung.add(nhanTrangThai, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboTrangThai = new JComboBox<>(new String[] { "TRỐNG", "CÓ KHÁCH", "ĐANG DỌN", "BẢO TRÌ" });
-        cboTrangThai.setFont(fontInput);
-        cboTrangThai.setPreferredSize(new Dimension(200, 32));
-        pBody.add(cboTrangThai, g);
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonTrangThai = new JComboBox<>(new String[] { "TRỐNG", "CÓ KHÁCH", "ĐANG DỌN", "BẢO TRÌ" });
+        hopChonTrangThai.setFont(phongChuNhap);
+        hopChonTrangThai.setPreferredSize(new Dimension(200, 32));
+        khungNoiDung.add(hopChonTrangThai, gia);
 
         // 6. Mô tả
-        g.gridx = 0; g.gridy = 5; g.weightx = 0;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        JLabel lblMoTa = new JLabel("Mô tả / Ghi chú:");
-        lblMoTa.setFont(fontLabel);
-        pBody.add(lblMoTa, g);
+        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
+        gia.anchor = GridBagConstraints.NORTHWEST;
+        JLabel nhanMoTa = new JLabel("Mô tả / Ghi chú:");
+        nhanMoTa.setFont(phongChuNhan);
+        khungNoiDung.add(nhanMoTa, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        g.anchor = GridBagConstraints.CENTER;
-        txtMoTa = new JTextArea(3, 15);
-        txtMoTa.setFont(fontInput);
-        txtMoTa.setLineWrap(true);
-        txtMoTa.setWrapStyleWord(true);
-        JScrollPane spMoTa = new JScrollPane(txtMoTa);
-        spMoTa.setPreferredSize(new Dimension(200, 75));
-        pBody.add(spMoTa, g);
+        gia.gridx = 1; gia.weightx = 1;
+        gia.anchor = GridBagConstraints.CENTER;
+        oNhapMoTa = new JTextArea(3, 15);
+        oNhapMoTa.setFont(phongChuNhap);
+        oNhapMoTa.setLineWrap(true);
+        oNhapMoTa.setWrapStyleWord(true);
+        JScrollPane thanhCuonMoTa = new JScrollPane(oNhapMoTa);
+        thanhCuonMoTa.setPreferredSize(new Dimension(200, 75));
+        khungNoiDung.add(thanhCuonMoTa, gia);
 
-        add(pBody, BorderLayout.CENTER);
+        add(khungNoiDung, BorderLayout.CENTER);
 
         // Tự động tính tầng khi gõ số phòng (nếu thêm mới)
-        txtSoPhong.addKeyListener(new java.awt.event.KeyAdapter() {
+        oNhapSoPhong.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
-            public void keyReleased(java.awt.event.KeyEvent e) {
-                if (!isEdit) {
-                    String sp = txtSoPhong.getText().trim();
-                    if (!sp.isEmpty() && Character.isDigit(sp.charAt(0))) {
-                        int t = Character.getNumericValue(sp.charAt(0));
-                        if (t >= 1 && t <= 9) {
-                            spnTang.setValue(t);
+            public void keyReleased(java.awt.event.KeyEvent suKien) {
+                if (!dangSua) {
+                    String thanhCuon = oNhapSoPhong.getText().trim();
+                    if (!thanhCuon.isEmpty() && Character.isDigit(thanhCuon.charAt(0))) {
+                        int bangHienTai = Character.getNumericValue(thanhCuon.charAt(0));
+                        if (bangHienTai >= 1 && bangHienTai <= 9) {
+                            vongQuayTang.setValue(bangHienTai);
                         }
                     }
                 }
@@ -178,75 +178,75 @@ public class DialogThemSuaPhong extends JDialog {
         });
 
         // Điền dữ liệu nếu là Edit
-        if (isEdit) {
-            txtSoPhong.setText(this.room.getSoPhong());
-            int t = this.room.getTang() > 0 ? this.room.getTang() : 1;
-            spnTang.setValue(t);
+        if (dangSua) {
+            oNhapSoPhong.setText(this.phong.getSoPhong());
+            int bangHienTai = this.phong.getTang() > 0 ? this.phong.getTang() : 1;
+            vongQuayTang.setValue(bangHienTai);
 
             // Chọn đúng loại phòng
             if (danhSachLoaiPhong != null) {
-                for (int i = 0; i < cboLoaiPhong.getItemCount(); i++) {
-                    LoaiPhong rt = cboLoaiPhong.getItemAt(i);
-                    if (rt.getMaLoaiPhong() == this.room.getMaLoaiPhong()) {
-                        cboLoaiPhong.setSelectedIndex(i);
+                for (int chiSo = 0; chiSo < hopChonLoaiPhong.getItemCount(); chiSo++) {
+                    LoaiPhong loai = hopChonLoaiPhong.getItemAt(chiSo);
+                    if (loai.getMaLoaiPhong() == this.phong.getMaLoaiPhong()) {
+                        hopChonLoaiPhong.setSelectedIndex(chiSo);
                         break;
                     }
                 }
             }
 
-            DecimalFormat df = new DecimalFormat("#.##");
-            txtGiaMoiDem.setText(df.format(this.room.getGiaMoiDem()));
+            DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#.##");
+            oNhapGiaMoiDem.setText(dinhDangTienTeChinh.format(this.phong.getGiaMoiDem()));
 
-            String tt = this.room.getTrangThai();
-            if ("AVAILABLE".equalsIgnoreCase(tt) || "TRỐNG".equalsIgnoreCase(tt)) {
-                cboTrangThai.setSelectedItem("TRỐNG");
-            } else if ("OCCUPIED".equalsIgnoreCase(tt) || "CÓ KHÁCH".equalsIgnoreCase(tt)) {
-                cboTrangThai.setSelectedItem("CÓ KHÁCH");
-            } else if ("CLEANING".equalsIgnoreCase(tt) || "ĐANG DỌN".equalsIgnoreCase(tt)) {
-                cboTrangThai.setSelectedItem("ĐANG DỌN");
-            } else if ("MAINTENANCE".equalsIgnoreCase(tt) || "BẢO TRÌ".equalsIgnoreCase(tt)) {
-                cboTrangThai.setSelectedItem("BẢO TRÌ");
+            String trangThai = this.phong.getTrangThai();
+            if ("AVAILABLE".equalsIgnoreCase(trangThai) || "TRỐNG".equalsIgnoreCase(trangThai)) {
+                hopChonTrangThai.setSelectedItem("TRỐNG");
+            } else if ("OCCUPIED".equalsIgnoreCase(trangThai) || "CÓ KHÁCH".equalsIgnoreCase(trangThai)) {
+                hopChonTrangThai.setSelectedItem("CÓ KHÁCH");
+            } else if ("CLEANING".equalsIgnoreCase(trangThai) || "ĐANG DỌN".equalsIgnoreCase(trangThai)) {
+                hopChonTrangThai.setSelectedItem("ĐANG DỌN");
+            } else if ("MAINTENANCE".equalsIgnoreCase(trangThai) || "BẢO TRÌ".equalsIgnoreCase(trangThai)) {
+                hopChonTrangThai.setSelectedItem("BẢO TRÌ");
             }
 
-            txtMoTa.setText(this.room.getMoTa() != null ? this.room.getMoTa() : "");
+            oNhapMoTa.setText(this.phong.getMoTa() != null ? this.phong.getMoTa() : "");
         } else {
-            txtGiaMoiDem.setText("300000");
+            oNhapGiaMoiDem.setText("300000");
         }
 
         // Footer Buttons
-        JPanel pFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        pFooter.setBackground(new Color(245, 247, 250));
-        pFooter.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
+        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        khungChan.setBackground(new Color(245, 247, 250));
+        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        btnHuy = new JButton("Hủy bỏ");
-        btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnHuy.setPreferredSize(new Dimension(100, 34));
-        btnHuy.setFocusPainted(false);
-        btnHuy.addActionListener(e -> dispose());
+        nutHuy = new JButton("Hủy bỏ");
+        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutHuy.setPreferredSize(new Dimension(100, 34));
+        nutHuy.setFocusPainted(false);
+        nutHuy.addActionListener(suKien -> dispose());
 
-        btnLuu = new JButton(isEdit ? "Cập nhật" : "Thêm mới");
-        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
-        btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnLuu.setBackground(new Color(13, 110, 253));
-        btnLuu.setForeground(Color.WHITE);
-        btnLuu.setPreferredSize(new Dimension(120, 34));
-        btnLuu.setFocusPainted(false);
-        btnLuu.addActionListener(e -> xuLyLuu());
+        nutLuu = new JButton(dangSua ? "Cập nhật" : "Thêm mới");
+        view.view.UIStyle.setButtonIcon(nutLuu, dangSua ? "sua.png" : "them.png");
+        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nutLuu.setBackground(new Color(13, 110, 253));
+        nutLuu.setForeground(Color.WHITE);
+        nutLuu.setPreferredSize(new Dimension(120, 34));
+        nutLuu.setFocusPainted(false);
+        nutLuu.addActionListener(suKien -> xuLyLuu());
 
-        pFooter.add(btnHuy);
-        pFooter.add(btnLuu);
-        add(pFooter, BorderLayout.SOUTH);
+        khungChan.add(nutHuy);
+        khungChan.add(nutLuu);
+        add(khungChan, BorderLayout.SOUTH);
     }
 
     private void xuLyLuu() {
-        String soPhong = txtSoPhong.getText().trim();
+        String soPhong = oNhapSoPhong.getText().trim();
         if (soPhong.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            txtSoPhong.requestFocus();
+            oNhapSoPhong.requestFocus();
             return;
         }
 
-        LoaiPhong loaiDaChon = (LoaiPhong) cboLoaiPhong.getSelectedItem();
+        LoaiPhong loaiDaChon = (LoaiPhong) hopChonLoaiPhong.getSelectedItem();
         if (loaiDaChon == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn loại phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
@@ -254,41 +254,41 @@ public class DialogThemSuaPhong extends JDialog {
 
         float gia;
         try {
-            String giaStr = txtGiaMoiDem.getText().trim().replace(",", "").replace(".", "");
+            String giaStr = oNhapGiaMoiDem.getText().trim().replace(",", "").replace(".", "");
             gia = Float.parseFloat(giaStr);
             if (gia < 0) {
                 JOptionPane.showMessageDialog(this, "Giá mỗi đêm không được âm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                txtGiaMoiDem.requestFocus();
+                oNhapGiaMoiDem.requestFocus();
                 return;
             }
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException ngoaiLe) {
             JOptionPane.showMessageDialog(this, "Giá mỗi đêm phải là số hợp lệ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            txtGiaMoiDem.requestFocus();
+            oNhapGiaMoiDem.requestFocus();
             return;
         }
 
-        int tang = (int) spnTang.getValue();
-        String trangThaiChon = (String) cboTrangThai.getSelectedItem();
-        String moTa = txtMoTa.getText().trim();
+        int tang = (int) vongQuayTang.getValue();
+        String trangThaiChon = (String) hopChonTrangThai.getSelectedItem();
+        String moTa = oNhapMoTa.getText().trim();
 
         // Gán vào đối tượng room
-        this.room.setSoPhong(soPhong);
-        this.room.setTang(tang);
-        this.room.setMaLoaiPhong(loaiDaChon.getMaLoaiPhong());
-        this.room.setTenLoaiPhong(loaiDaChon.getTenLoaiPhong());
-        this.room.setGiaMoiDem(gia);
-        this.room.setTrangThai(trangThaiChon);
-        this.room.setMoTa(moTa);
+        this.phong.setSoPhong(soPhong);
+        this.phong.setTang(tang);
+        this.phong.setMaLoaiPhong(loaiDaChon.getMaLoaiPhong());
+        this.phong.setTenLoaiPhong(loaiDaChon.getTenLoaiPhong());
+        this.phong.setGiaMoiDem(gia);
+        this.phong.setTrangThai(trangThaiChon);
+        this.phong.setMoTa(moTa);
 
-        saved = true;
+        daLuu = true;
         dispose();
     }
 
     public boolean isSaved() {
-        return saved;
+        return daLuu;
     }
 
     public Phong getRoom() {
-        return room;
+        return phong;
     }
 }

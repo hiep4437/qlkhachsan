@@ -17,26 +17,26 @@ import javax.swing.SortOrder;
 public class ViewQuanLyKhachHang extends JFrame {
 
     // Bảng dữ liệu
-    public JTable table;
-    public DefaultTableModel model;
-    public TableRowSorter<DefaultTableModel> sorter;
+    public JTable bang;
+    public DefaultTableModel moHinh;
+    public TableRowSorter<DefaultTableModel> boSapXep;
 
     // Tìm kiếm & Thống kê
-    public JTextField txtTimKiem;
-    public JButton btnTimKiem;
-    public JLabel lblThongKe;
+    public JTextField oNhapTimKiem;
+    public JButton nutTimKiem;
+    public JLabel nhanThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton btnThem, btnSua, btnLichSu, btnXoa, btnLamMoi;
-    public JButton btnQuayLai = new JButton("Quay lại");
+    public JButton nutThem, nutSua, nutLichSu, nutXoa, nutLamMoi;
+    public JButton nutQuayLai = new JButton("Quay lại");
 
     // Khai báo field cũ để đảm bảo tương thích
-    public JTextField txtMa = new JTextField();
-    public JTextField txtHoTen = new JTextField();
-    public JTextField txtCCCD = new JTextField();
-    public JTextField txtSDT = new JTextField();
-    public JTextField txtEmail = new JTextField();
-    public JTextField txtDiaChi = new JTextField();
+    public JTextField oNhapMa = new JTextField();
+    public JTextField oNhapHoTen = new JTextField();
+    public JTextField oNhapCCCD = new JTextField();
+    public JTextField oNhapSDT = new JTextField();
+    public JTextField oNhapThuDienTu = new JTextField();
+    public JTextField oNhapDiaChi = new JTextField();
 
     public ViewQuanLyKhachHang() {
         setTitle("Quản lý khách sạn - Quản lý khách hàng");
@@ -46,151 +46,151 @@ public class ViewQuanLyKhachHang extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel pMain = new JPanel(new BorderLayout(0, 10));
-        pMain.setBackground(new Color(245, 247, 250));
-        pMain.setBorder(new EmptyBorder(15, 15, 15, 15));
+        JPanel khungChinh = new JPanel(new BorderLayout(0, 10));
+        khungChinh.setBackground(new Color(245, 247, 250));
+        khungChinh.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // ================= TOP: HEADER & THANH TÌM KIẾM =================
-        JPanel pTop = new JPanel();
-        pTop.setLayout(new BoxLayout(pTop, BoxLayout.Y_AXIS));
-        pTop.setBackground(new Color(245, 247, 250));
+        JPanel khungTren = new JPanel();
+        khungTren.setLayout(new BoxLayout(khungTren, BoxLayout.Y_AXIS));
+        khungTren.setBackground(new Color(245, 247, 250));
 
         // 1. Tiêu đề
-        JPanel pTieuDe = new JPanel(new BorderLayout());
-        pTieuDe.setOpaque(false);
+        JPanel khungTieuDe = new JPanel(new BorderLayout());
+        khungTieuDe.setOpaque(false);
 
-        JLabel lblTieuDe = new JLabel("DANH SÁCH QUẢN LÝ KHÁCH HÀNG");
-        lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTieuDe.setForeground(new Color(30, 41, 59));
+        JLabel nhanTieuDe = new JLabel("DANH SÁCH QUẢN LÝ KHÁCH HÀNG");
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        nhanTieuDe.setForeground(new Color(30, 41, 59));
 
-        lblThongKe = new JLabel("Tổng số: 0 khách hàng");
-        lblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblThongKe.setForeground(new Color(100, 116, 139));
+        nhanThongKe = new JLabel("Tổng số: 0 khách hàng");
+        nhanThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nhanThongKe.setForeground(new Color(100, 116, 139));
 
-        pTieuDe.add(lblTieuDe, BorderLayout.WEST);
-        pTieuDe.add(lblThongKe, BorderLayout.EAST);
-        pTop.add(pTieuDe);
-        pTop.add(Box.createVerticalStrut(12));
+        khungTieuDe.add(nhanTieuDe, BorderLayout.WEST);
+        khungTieuDe.add(nhanThongKe, BorderLayout.EAST);
+        khungTren.add(khungTieuDe);
+        khungTren.add(Box.createVerticalStrut(12));
 
         // 2. Thanh tìm kiếm
-        JPanel pTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pTimKiem.setOpaque(false);
+        JPanel khungTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        khungTimKiem.setOpaque(false);
 
-        JLabel lblTim = new JLabel("Tìm kiếm:");
-        lblTim.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblTim.setForeground(new Color(51, 65, 85));
+        JLabel nhanTim = new JLabel("Tìm kiếm:");
+        nhanTim.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nhanTim.setForeground(new Color(51, 65, 85));
 
-        txtTimKiem = new JTextField(20);
-        txtTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        txtTimKiem.setPreferredSize(new Dimension(280, 34));
-        txtTimKiem.putClientProperty("JTextField.placeholderText", "Họ tên, CCCD, số điện thoại, địa chỉ...");
+        oNhapTimKiem = new JTextField(20);
+        oNhapTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        oNhapTimKiem.setPreferredSize(new Dimension(280, 34));
+        oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Họ tên, CCCD, số điện thoại, địa chỉ...");
 
-        btnTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
-        btnTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnTimKiem.setPreferredSize(new Dimension(110, 34));
-        btnTimKiem.setFocusPainted(false);
+        nutTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
+        nutTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutTimKiem.setPreferredSize(new Dimension(110, 34));
+        nutTimKiem.setFocusPainted(false);
 
-        pTimKiem.add(lblTim);
-        pTimKiem.add(txtTimKiem);
-        pTimKiem.add(btnTimKiem);
+        khungTimKiem.add(nhanTim);
+        khungTimKiem.add(oNhapTimKiem);
+        khungTimKiem.add(nutTimKiem);
 
-        pTop.add(pTimKiem);
-        pMain.add(pTop, BorderLayout.NORTH);
+        khungTren.add(khungTimKiem);
+        khungChinh.add(khungTren, BorderLayout.NORTH);
 
         // ================= CENTER: BẢNG KHÁCH HÀNG =================
-        model = new DefaultTableModel(
+        moHinh = new DefaultTableModel(
                 new String[] { "Mã KH", "Họ và tên", "Số CCCD", "Số điện thoại", "Email", "Địa chỉ", "Số lần thuê phòng" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int hang, int chiSoCot) {
                 return false;
             }
 
             @Override
-            public Class<?> getColumnClass(int column) {
-                if (column == 0 || column == 6) return Integer.class;
+            public Class<?> getColumnClass(int chiSoCot) {
+                if (chiSoCot == 0 || chiSoCot == 6) return Integer.class;
                 return String.class;
             }
         };
 
-        table = new JTable(model);
-        table.setRowHeight(38);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setGridColor(new Color(230, 235, 240));
-        table.setShowVerticalLines(false);
-        table.setShowHorizontalLines(true);
-        table.setSelectionBackground(new Color(225, 238, 255));
-        table.setSelectionForeground(new Color(15, 23, 42));
+        bang = new JTable(moHinh);
+        bang.setRowHeight(38);
+        bang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        bang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        bang.setGridColor(new Color(230, 235, 240));
+        bang.setShowVerticalLines(false);
+        bang.setShowHorizontalLines(true);
+        bang.setSelectionBackground(new Color(225, 238, 255));
+        bang.setSelectionForeground(new Color(15, 23, 42));
 
         // Header bảng
-        JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        header.setBackground(new Color(238, 242, 246));
-        header.setForeground(new Color(30, 41, 59));
-        header.setPreferredSize(new Dimension(header.getWidth(), 38));
+        JTableHeader tieuDe = bang.getTableHeader();
+        tieuDe.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        tieuDe.setBackground(new Color(238, 242, 246));
+        tieuDe.setForeground(new Color(30, 41, 59));
+        tieuDe.setPreferredSize(new Dimension(tieuDe.getWidth(), 38));
 
-        sorter = new TableRowSorter<>(model);
-        table.setRowSorter(sorter);
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
-        sorter.setSortKeys(sortKeys);
+        boSapXep = new TableRowSorter<>(moHinh);
+        bang.setRowSorter(boSapXep);
+        List<RowSorter.SortKey> cacKhoaSapXep = new ArrayList<>();
+        cacKhoaSapXep.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
+        boSapXep.setSortKeys(cacKhoaSapXep);
 
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        DefaultTableCellRenderer boKetXuatGiua = new DefaultTableCellRenderer();
+        boKetXuatGiua.setHorizontalAlignment(SwingConstants.CENTER);
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(60);
-        table.getColumnModel().getColumn(0).setMaxWidth(80);
-        table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        bang.getColumnModel().getColumn(0).setPreferredWidth(60);
+        bang.getColumnModel().getColumn(0).setMaxWidth(80);
+        bang.getColumnModel().getColumn(0).setCellRenderer(boKetXuatGiua);
 
-        table.getColumnModel().getColumn(1).setPreferredWidth(170);
-        DefaultTableCellRenderer boldRenderer = new DefaultTableCellRenderer() {
+        bang.getColumnModel().getColumn(1).setPreferredWidth(170);
+        DefaultTableCellRenderer boKetXuatDam = new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
+                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
+                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
-                return c;
+                return thanhPhan;
             }
         };
-        table.getColumnModel().getColumn(1).setCellRenderer(boldRenderer);
+        bang.getColumnModel().getColumn(1).setCellRenderer(boKetXuatDam);
 
-        table.getColumnModel().getColumn(2).setPreferredWidth(130);
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        bang.getColumnModel().getColumn(2).setPreferredWidth(130);
+        bang.getColumnModel().getColumn(2).setCellRenderer(boKetXuatGiua);
 
-        table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        bang.getColumnModel().getColumn(3).setPreferredWidth(120);
+        bang.getColumnModel().getColumn(3).setCellRenderer(boKetXuatGiua);
 
-        table.getColumnModel().getColumn(4).setPreferredWidth(160);
-        table.getColumnModel().getColumn(5).setPreferredWidth(160);
+        bang.getColumnModel().getColumn(4).setPreferredWidth(160);
+        bang.getColumnModel().getColumn(5).setPreferredWidth(160);
 
         // Cột 6: Số lần thuê phòng (Badge)
-        table.getColumnModel().getColumn(6).setPreferredWidth(130);
-        table.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+        bang.getColumnModel().getColumn(6).setPreferredWidth(130);
+        bang.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus,
-                                                           int row, int column) {
-                super.getTableCellRendererComponent(table, value, selected, focus, row, column);
+            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean duocChon, boolean tieuDiem,
+                                                           int hang, int chiSoCot) {
+                super.getTableCellRendererComponent(bang, giaTri, duocChon, tieuDiem, hang, chiSoCot);
                 setHorizontalAlignment(CENTER);
                 setFont(new Font("Segoe UI", Font.BOLD, 12));
 
-                if (selected) {
-                    setBackground(table.getSelectionBackground());
-                    setForeground(table.getSelectionForeground());
+                if (duocChon) {
+                    setBackground(bang.getSelectionBackground());
+                    setForeground(bang.getSelectionForeground());
                     return this;
                 }
 
-                int times = 0;
+                int cacLan = 0;
                 try {
-                    times = Integer.parseInt(value.toString());
-                } catch (Exception ignored) {}
+                    cacLan = Integer.parseInt(giaTri.toString());
+                } catch (Exception biBoQua) {}
 
-                if (times >= 3) {
-                    setText(times + " lần (Khách quen)");
+                if (cacLan >= 3) {
+                    setText(cacLan + " lần (Khách quen)");
                     setBackground(new Color(209, 231, 221));
                     setForeground(new Color(15, 81, 50));
-                } else if (times > 0) {
-                    setText(times + " lần");
+                } else if (cacLan > 0) {
+                    setText(cacLan + " lần");
                     setBackground(new Color(225, 238, 255));
                     setForeground(new Color(13, 110, 253));
                 } else {
@@ -203,74 +203,74 @@ public class ViewQuanLyKhachHang extends JFrame {
         });
 
         // Click đúp vào dòng để mở modal sửa
-        table.addMouseListener(new MouseAdapter() {
+        bang.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                    btnSua.doClick();
+            public void mouseClicked(MouseEvent suKien) {
+                if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
+                    nutSua.doClick();
                 }
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 226, 235), 1));
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        pMain.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane cuonPane = new JScrollPane(bang);
+        cuonPane.setBorder(BorderFactory.createLineBorder(new Color(220, 226, 235), 1));
+        cuonPane.getViewport().setBackground(Color.WHITE);
+        khungChinh.add(cuonPane, BorderLayout.CENTER);
 
         // ================= BOTTOM: CÁC NÚT THAO TÁC =================
-        JPanel pBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-        pBottom.setOpaque(false);
+        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        khungDuoi.setOpaque(false);
 
-        btnThem = new JButton("Thêm khách hàng");
-        UIStyle.setButtonIcon(btnThem, "them.png");
-        btnThem.setFont(UIStyle.FONT_BOLD);
-        btnThem.setBackground(new Color(13, 110, 253));
-        btnThem.setForeground(Color.BLACK);
-        btnThem.setPreferredSize(new Dimension(160, 36));
-        btnThem.setFocusPainted(false);
+        nutThem = new JButton("Thêm khách hàng");
+        UIStyle.setButtonIcon(nutThem, "them.png");
+        nutThem.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nutThem.setBackground(new Color(13, 110, 253));
+        nutThem.setForeground(Color.BLACK);
+        nutThem.setPreferredSize(new Dimension(160, 36));
+        nutThem.setFocusPainted(false);
 
-        btnSua = new JButton("Sửa thông tin");
-        UIStyle.setButtonIcon(btnSua, "sua.png");
-        btnSua.setFont(UIStyle.FONT_BOLD);
-        btnSua.setBackground(new Color(255, 193, 7));
-        btnSua.setForeground(Color.BLACK);
-        btnSua.setPreferredSize(new Dimension(130, 36));
-        btnSua.setFocusPainted(false);
+        nutSua = new JButton("Sửa thông tin");
+        UIStyle.setButtonIcon(nutSua, "sua.png");
+        nutSua.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nutSua.setBackground(new Color(255, 193, 7));
+        nutSua.setForeground(Color.BLACK);
+        nutSua.setPreferredSize(new Dimension(130, 36));
+        nutSua.setFocusPainted(false);
 
-        btnLichSu = new JButton("Lịch sử thuê phòng");
-        btnLichSu.setFont(UIStyle.FONT_BOLD);
-        btnLichSu.setBackground(new Color(25, 135, 84));
-        btnLichSu.setForeground(Color.BLACK);
-        btnLichSu.setPreferredSize(new Dimension(170, 36));
-        btnLichSu.setFocusPainted(false);
+        nutLichSu = new JButton("Lịch sử thuê phòng");
+        nutLichSu.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nutLichSu.setBackground(new Color(25, 135, 84));
+        nutLichSu.setForeground(Color.BLACK);
+        nutLichSu.setPreferredSize(new Dimension(170, 36));
+        nutLichSu.setFocusPainted(false);
 
-        btnXoa = new JButton("Xóa khách hàng");
-        UIStyle.setButtonIcon(btnXoa, "xoa.png");
-        btnXoa.setFont(UIStyle.FONT_BOLD);
-        btnXoa.setBackground(new Color(220, 53, 69));
-        btnXoa.setForeground(Color.BLACK);
-        btnXoa.setPreferredSize(new Dimension(140, 36));
-        btnXoa.setFocusPainted(false);
+        nutXoa = new JButton("Xóa khách hàng");
+        UIStyle.setButtonIcon(nutXoa, "xoa.png");
+        nutXoa.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nutXoa.setBackground(new Color(220, 53, 69));
+        nutXoa.setForeground(Color.BLACK);
+        nutXoa.setPreferredSize(new Dimension(140, 36));
+        nutXoa.setFocusPainted(false);
 
-        btnLamMoi = new JButton("Làm mới");
-        UIStyle.setButtonIcon(btnLamMoi, "load.png");
-        btnLamMoi.setFont(UIStyle.FONT_BOLD);
-        btnLamMoi.setForeground(Color.BLACK);
-        btnLamMoi.setPreferredSize(new Dimension(120, 36));
-        btnLamMoi.setFocusPainted(false);
+        nutLamMoi = new JButton("Làm mới");
+        UIStyle.setButtonIcon(nutLamMoi, "load.png");
+        nutLamMoi.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nutLamMoi.setForeground(Color.BLACK);
+        nutLamMoi.setPreferredSize(new Dimension(120, 36));
+        nutLamMoi.setFocusPainted(false);
 
-        pBottom.add(btnThem);
-        pBottom.add(btnSua);
-        pBottom.add(btnLichSu);
-        pBottom.add(btnXoa);
-        pBottom.add(btnLamMoi);
+        khungDuoi.add(nutThem);
+        khungDuoi.add(nutSua);
+        khungDuoi.add(nutLichSu);
+        khungDuoi.add(nutXoa);
+        khungDuoi.add(nutLamMoi);
 
-        pMain.add(pBottom, BorderLayout.SOUTH);
-        setContentPane(pMain);
+        khungChinh.add(khungDuoi, BorderLayout.SOUTH);
+        setContentPane(khungChinh);
     }
 
     public void lamMoi() {
-        txtTimKiem.setText("");
-        table.clearSelection();
+        oNhapTimKiem.setText("");
+        bang.clearSelection();
     }
 }

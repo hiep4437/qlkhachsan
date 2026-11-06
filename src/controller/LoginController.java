@@ -11,50 +11,50 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class LoginController {
-    ViewDangNhap view;
-    NguoiDungService service = new NguoiDungService();
+    ViewDangNhap viewDangNhap;
+    NguoiDungService dichVu = new NguoiDungService();
 
-    public LoginController(ViewDangNhap view) {
-        this.view = view;
-        view.getBtnDangNhap().addActionListener(e -> dangNhap());
+    public LoginController(ViewDangNhap viewDangNhap) {
+        this.viewDangNhap = viewDangNhap;
+        viewDangNhap.getBtnDangNhap().addActionListener(suKien -> dangNhap());
 
-        KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
-        Action enterAction = new AbstractAction() {
+        KeyStroke nhap = KeyStroke.getKeyStroke("ENTER");
+        Action lenhNhap = new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent suKien) {
                 xuLyEnter();
             }
         };
-        view.txtTenDangNhap.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "login-enter");
-        view.txtTenDangNhap.getActionMap().put("login-enter", enterAction);
-        view.txtMatKhau.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "login-enter");
-        view.txtMatKhau.getActionMap().put("login-enter", enterAction);
+        viewDangNhap.oNhapTenDangNhap.getInputMap(JComponent.WHEN_FOCUSED).put(nhap, "login-enter");
+        viewDangNhap.oNhapTenDangNhap.getActionMap().put("login-enter", lenhNhap);
+        viewDangNhap.oNhapMatKhau.getInputMap(JComponent.WHEN_FOCUSED).put(nhap, "login-enter");
+        viewDangNhap.oNhapMatKhau.getActionMap().put("login-enter", lenhNhap);
     }
 
     private void xuLyEnter() {
-        if (view.getTenDangNhap().isEmpty()) {
-            view.txtTenDangNhap.requestFocusInWindow();
-        } else if (view.getMatKhau().trim().isEmpty()) {
-            view.txtMatKhau.requestFocusInWindow();
+        if (viewDangNhap.getTenDangNhap().isEmpty()) {
+            viewDangNhap.oNhapTenDangNhap.requestFocusInWindow();
+        } else if (viewDangNhap.getMatKhau().trim().isEmpty()) {
+            viewDangNhap.oNhapMatKhau.requestFocusInWindow();
         } else {
             dangNhap();
         }
     }
 
     void dangNhap() {
-        String ten = view.getTenDangNhap();
-        String matKhau = view.getMatKhau();
+        String ten = viewDangNhap.getTenDangNhap();
+        String matKhau = viewDangNhap.getMatKhau();
 
         if (ten.isEmpty() || matKhau.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(viewDangNhap, "Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         // Kiem tra ket noi CSDL truoc
-        Connection conn = KetNoiCSDL.getConnection();
-        if (conn == null) {
+        Connection ketNoi = KetNoiCSDL.getConnection();
+        if (ketNoi == null) {
             int luaChon = JOptionPane.showConfirmDialog(
-                    view,
+                    viewDangNhap,
                     "Không thể kết nối đến máy chủ CSDL MySQL (" + KetNoiCSDL.getHost() + ":" + KetNoiCSDL.getPort() + ").\n"
                     + "Bạn có muốn mở hộp thoại Cấu hình máy chủ để kiểm tra/thay đổi thông tin kết nối không?",
                     "Lỗi kết nối CSDL",
@@ -62,21 +62,21 @@ public class LoginController {
                     JOptionPane.ERROR_MESSAGE
             );
             if (luaChon == JOptionPane.YES_OPTION) {
-                view.hienThiDialogCauHinhServer();
+                viewDangNhap.hienThiDialogCauHinhServer();
             }
             return;
         }
-        KetNoiCSDL.closeConnection(conn);
+        KetNoiCSDL.closeConnection(ketNoi);
 
-        NguoiDung userDangNhap = service.kiemTraDangNhap(ten, matKhau);
+        NguoiDung nguoiDungDangNhap = dichVu.kiemTraDangNhap(ten, matKhau);
 
-        if (userDangNhap != null) {
-            JOptionPane.showMessageDialog(view, "Đăng nhập thành công!\nXin chào: " + userDangNhap.getHoTen() + " (" + userDangNhap.getVaiTro() + ")", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            ViewTrangChu trangChu = new ViewTrangChu(userDangNhap);
+        if (nguoiDungDangNhap != null) {
+            JOptionPane.showMessageDialog(viewDangNhap, "Đăng nhập thành công!\nXin chào: " + nguoiDungDangNhap.getHoTen() + " (" + nguoiDungDangNhap.getVaiTro() + ")", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            ViewTrangChu trangChu = new ViewTrangChu(nguoiDungDangNhap);
             trangChu.setVisible(true);
-            view.dispose();
+            viewDangNhap.dispose();
         } else {
-            JOptionPane.showMessageDialog(view, "Sai tên đăng nhập hoặc mật khẩu, hoặc tài khoản đã bị vô hiệu hóa!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(viewDangNhap, "Sai tên đăng nhập hoặc mật khẩu, hoặc tài khoản đã bị vô hiệu hóa!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

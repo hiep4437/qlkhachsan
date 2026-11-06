@@ -4,13 +4,13 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class HoaDon {
-	private int idHoaDon;
-	private int idDatPhong;
+	private int maHoaDon;
+	private int maDatPhong;
 	private Timestamp ngayLap;
 	private float tienPhong;
 	private float phuThu;
 	private float giamGia;
-	private float tongTien;
+	private float chungTien;
 	private String phuongThucThanhToan;
 	private String trangThaiThanhToan;
 
@@ -24,16 +24,16 @@ public class HoaDon {
 	private Date ngayTraPhong;
 
 	public int getIdHoaDon() {
-		return idHoaDon;
+		return maHoaDon;
 	}
-	public void setIdHoaDon(int idHoaDon) {
-		this.idHoaDon = idHoaDon;
+	public void setIdHoaDon(int maHoaDon) {
+		this.maHoaDon = maHoaDon;
 	}
 	public int getIdDatPhong() {
-		return idDatPhong;
+		return maDatPhong;
 	}
-	public void setIdDatPhong(int idDatPhong) {
-		this.idDatPhong = idDatPhong;
+	public void setIdDatPhong(int maDatPhong) {
+		this.maDatPhong = maDatPhong;
 	}
 	public Timestamp getNgayLap() {
 		return ngayLap;
@@ -60,10 +60,10 @@ public class HoaDon {
 		this.giamGia = giamGia;
 	}
 	public float getTongTien() {
-		return tongTien;
+		return chungTien;
 	}
-	public void setTongTien(float tongTien) {
-		this.tongTien = tongTien;
+	public void setTongTien(float chungTien) {
+		this.chungTien = chungTien;
 	}
 	public String getPhuongThucThanhToan() {
 		return phuongThucThanhToan;
@@ -121,24 +121,24 @@ public class HoaDon {
 		this.ngayTraPhong = ngayTraPhong;
 	}
 
-	public HoaDon(int idHoaDon, int idDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
-			float tongTien, String phuongThucThanhToan, String trangThaiThanhToan) {
-		this.idHoaDon = idHoaDon;
-		this.idDatPhong = idDatPhong;
+	public HoaDon(int maHoaDon, int maDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
+			float chungTien, String phuongThucThanhToan, String trangThaiThanhToan) {
+		this.maHoaDon = maHoaDon;
+		this.maDatPhong = maDatPhong;
 		this.ngayLap = ngayLap;
 		this.tienPhong = tienPhong;
 		this.phuThu = phuThu;
 		this.giamGia = giamGia;
-		this.tongTien = tongTien;
+		this.chungTien = chungTien;
 		this.phuongThucThanhToan = phuongThucThanhToan;
 		this.trangThaiThanhToan = trangThaiThanhToan;
 	}
 
-	public HoaDon(int idHoaDon, int idDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
-			float tongTien, String phuongThucThanhToan, String trangThaiThanhToan,
+	public HoaDon(int maHoaDon, int maDatPhong, Timestamp ngayLap, float tienPhong, float phuThu, float giamGia,
+			float chungTien, String phuongThucThanhToan, String trangThaiThanhToan,
 			String soPhong, String tenLoaiPhong, String tenKhachHang, String soDienThoai, String soCCCD,
 			Date ngayNhanPhong, Date ngayTraPhong) {
-		this(idHoaDon, idDatPhong, ngayLap, tienPhong, phuThu, giamGia, tongTien, phuongThucThanhToan, trangThaiThanhToan);
+		this(maHoaDon, maDatPhong, ngayLap, tienPhong, phuThu, giamGia, chungTien, phuongThucThanhToan, trangThaiThanhToan);
 		this.soPhong = soPhong;
 		this.tenLoaiPhong = tenLoaiPhong;
 		this.tenKhachHang = tenKhachHang;

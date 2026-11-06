@@ -14,68 +14,68 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class DatePickerField extends JPanel {
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter NGAY_DINHDANG = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private final JTextField dateField = new JTextField();
-    private final JButton calendarButton = new JButton("Lịch");
-    private final javax.swing.event.EventListenerList dateChangeListeners =
+    private final JTextField truongNgay = new JTextField();
+    private final JButton nutLich = new JButton("Lịch");
+    private final javax.swing.event.EventListenerList danhSachBoNgheNgay =
             new javax.swing.event.EventListenerList();
-    private LocalDate date;
-    private LocalDate minimumDate;
+    private LocalDate ngay;
+    private LocalDate ngayToiThieu;
 
-    public DatePickerField(LocalDate initialDate, LocalDate minimumDate) {
+    public DatePickerField(LocalDate ngayBanDau, LocalDate ngayToiThieu) {
         super(new BorderLayout(5, 0));
-        this.minimumDate = minimumDate;
-        this.date = initialDate;
+        this.ngayToiThieu = ngayToiThieu;
+        this.ngay = ngayBanDau;
 
-        dateField.setFont(UIStyle.FONT_REGULAR);
-        dateField.setEditable(false);
-        dateField.setFocusable(false);
-        dateField.setHorizontalAlignment(SwingConstants.CENTER);
-        dateField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIStyle.COLOR_BORDER),
+        truongNgay.setFont(UIStyle.PHONGCHU_THUONG);
+        truongNgay.setEditable(false);
+        truongNgay.setFocusable(false);
+        truongNgay.setHorizontalAlignment(SwingConstants.CENTER);
+        truongNgay.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIStyle.MAU_VIEN),
                 new EmptyBorder(6, 8, 6, 8)));
 
-        calendarButton.setFont(UIStyle.FONT_SMALL_BOLD);
-        calendarButton.setForeground(new Color(30, 41, 59));
-        calendarButton.setBackground(Color.WHITE);
-        calendarButton.setFocusPainted(false);
-        calendarButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        calendarButton.setPreferredSize(new Dimension(64, 32));
-        calendarButton.addActionListener(event -> DatePickerCalendar.show(
-                calendarButton, date, minimumDate, this::setDate));
+        nutLich.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+        nutLich.setForeground(new Color(30, 41, 59));
+        nutLich.setBackground(Color.WHITE);
+        nutLich.setFocusPainted(false);
+        nutLich.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        nutLich.setPreferredSize(new Dimension(64, 32));
+        nutLich.addActionListener(suKien -> DatePickerCalendar.show(
+                nutLich, ngay, ngayToiThieu, this::setDate));
 
-        add(dateField, BorderLayout.CENTER);
-        add(calendarButton, BorderLayout.EAST);
+        add(truongNgay, BorderLayout.CENTER);
+        add(nutLich, BorderLayout.EAST);
         setPreferredSize(new Dimension(200, 32));
-        setDate(initialDate);
+        setDate(ngayBanDau);
     }
 
     public LocalDate getDate() {
-        return date;
+        return ngay;
     }
 
-    public void setDate(LocalDate date) {
-        if (date == null) {
+    public void setDate(LocalDate ngay) {
+        if (ngay == null) {
             throw new IllegalArgumentException("Ngày không được để trống.");
         }
-        this.date = date;
-        dateField.setText(date.format(DATE_FORMATTER));
-        for (ActionListener listener : dateChangeListeners.getListeners(ActionListener.class)) {
-            listener.actionPerformed(new java.awt.event.ActionEvent(
+        this.ngay = ngay;
+        truongNgay.setText(ngay.format(NGAY_DINHDANG));
+        for (ActionListener boNghe : danhSachBoNgheNgay.getListeners(ActionListener.class)) {
+            boNghe.actionPerformed(new java.awt.event.ActionEvent(
                     this, java.awt.event.ActionEvent.ACTION_PERFORMED, "dateChanged"));
         }
     }
 
-    public void setMinimumDate(LocalDate minimumDate) {
-        this.minimumDate = minimumDate;
+    public void setMinimumDate(LocalDate ngayToiThieu) {
+        this.ngayToiThieu = ngayToiThieu;
     }
 
-    public void addDateChangeListener(ActionListener listener) {
-        dateChangeListeners.add(ActionListener.class, listener);
+    public void addDateChangeListener(ActionListener boNghe) {
+        danhSachBoNgheNgay.add(ActionListener.class, boNghe);
     }
 
-    public void removeDateChangeListener(ActionListener listener) {
-        dateChangeListeners.remove(ActionListener.class, listener);
+    public void removeDateChangeListener(ActionListener boNghe) {
+        danhSachBoNgheNgay.remove(ActionListener.class, boNghe);
     }
 }

@@ -7,13 +7,13 @@ import dao.ThongKeDAO;
 
 public class StatisticService {
 
-    private ThongKeDAO dao = new ThongKeDAO();
+    private ThongKeDAO truyCapDuLieu = new ThongKeDAO();
 
     public ArrayList<ThongKeDAO.ThongKePhong> thongKeTheoKhoang(Date tuNgay, Date denNgay) throws SQLException {
-        return dao.thongKeTheoKhoang(tuNgay, denNgay);
+        return truyCapDuLieu.thongKeTheoKhoang(tuNgay, denNgay);
     }
 
     public ArrayList<ThongKeDAO.ChiTietHoaDonBaoCao> layHoaDonTheoKhoang(Date tuNgay, Date denNgay) throws SQLException {
-        return dao.layHoaDonTheoKhoang(tuNgay, denNgay);
+        return truyCapDuLieu.layHoaDonTheoKhoang(tuNgay, denNgay);
     }
 }

@@ -10,116 +10,116 @@ import java.sql.DriverManager;
 import java.util.Properties;
 
 public class KetNoiCSDL {
-    private static final String CONFIG_FILE = "db.properties";
+    private static final String CAUHINH_TEP = "db.properties";
 
-    private static String host = "localhost";
-    private static String port = "3306";
-    private static String database = "hotel_management";
-    private static String user = "root";
-    private static String pass = "";
+    private static String mayChu = "localhost";
+    private static String cong = "3306";
+    private static String coSoDuLieu = "hotel_management";
+    private static String nguoiDung = "root";
+    private static String matKhau = "";
 
     static {
         loadConfig();
     }
 
     public static void loadConfig() {
-        File f = new File(CONFIG_FILE);
-        if (f.exists()) {
-            try (InputStream is = new FileInputStream(f)) {
-                Properties props = new Properties();
-                props.load(is);
-                host = props.getProperty("host", "localhost");
-                port = props.getProperty("port", "3306");
-                database = props.getProperty("database", "hotel_management");
-                user = props.getProperty("user", "root");
-                pass = props.getProperty("pass", "");
-            } catch (Exception e) {
-                System.err.println("Không thể đọc file " + CONFIG_FILE + ", sử dụng mặc định: " + e.getMessage());
+        File tieuDiem = new File(CAUHINH_TEP);
+        if (tieuDiem.exists()) {
+            try (InputStream dangLa = new FileInputStream(tieuDiem)) {
+                Properties thuocTinh = new Properties();
+                thuocTinh.load(dangLa);
+                mayChu = thuocTinh.getProperty("host", "localhost");
+                cong = thuocTinh.getProperty("port", "3306");
+                coSoDuLieu = thuocTinh.getProperty("database", "hotel_management");
+                nguoiDung = thuocTinh.getProperty("user", "root");
+                matKhau = thuocTinh.getProperty("pass", "");
+            } catch (Exception suKien) {
+                System.err.println("Không thể đọc file " + CAUHINH_TEP + ", sử dụng mặc định: " + suKien.getMessage());
             }
         }
     }
 
-    public static boolean saveConfig(String newHost, String newPort, String newDb, String newUser, String newPass) {
+    public static boolean saveConfig(String mayChuMoi, String congMoi, String coSoDuLieuMoi, String nguoiDungMoi, String matKhauMoi) {
         try {
-            host = newHost;
-            port = newPort;
-            database = newDb;
-            user = newUser;
-            pass = newPass;
+            mayChu = mayChuMoi;
+            cong = congMoi;
+            coSoDuLieu = coSoDuLieuMoi;
+            nguoiDung = nguoiDungMoi;
+            matKhau = matKhauMoi;
 
-            Properties props = new Properties();
-            props.setProperty("host", host);
-            props.setProperty("port", port);
-            props.setProperty("database", database);
-            props.setProperty("user", user);
-            props.setProperty("pass", pass);
+            Properties thuocTinh = new Properties();
+            thuocTinh.setProperty("host", mayChu);
+            thuocTinh.setProperty("port", cong);
+            thuocTinh.setProperty("database", coSoDuLieu);
+            thuocTinh.setProperty("user", nguoiDung);
+            thuocTinh.setProperty("pass", matKhau);
 
-            try (OutputStream os = new FileOutputStream(CONFIG_FILE)) {
-                props.store(os, "Hotel Management Database Connection Configuration");
+            try (OutputStream heDieuHanh = new FileOutputStream(CAUHINH_TEP)) {
+                thuocTinh.store(heDieuHanh, "Hotel Management Database Connection Configuration");
             }
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return false;
         }
     }
 
-    public static String testConnection(String tHost, String tPort, String tDb, String tUser, String tPass) {
+    public static String testConnection(String bangHienTaiMayChu, String bangHienTaiCong, String bangHienTaiCoSoDuLieu, String bangHienTaiNguoiDung, String bangHienTaiMatKhau) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://" + tHost.trim() + ":" + tPort.trim() + "/" + tDb.trim()
+            String duongDan = "jdbc:mysql://" + bangHienTaiMayChu.trim() + ":" + bangHienTaiCong.trim() + "/" + bangHienTaiCoSoDuLieu.trim()
                     + "?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
-            try (Connection conn = DriverManager.getConnection(url, tUser, tPass)) {
-                if (conn != null && !conn.isClosed()) {
+            try (Connection ketNoi = DriverManager.getConnection(duongDan, bangHienTaiNguoiDung, bangHienTaiMatKhau)) {
+                if (ketNoi != null && !ketNoi.isClosed()) {
                     return null; // thành công
                 }
             }
             return "Không thể mở kết nối tới CSDL.";
-        } catch (Exception e) {
-            return e.getMessage();
+        } catch (Exception suKien) {
+            return suKien.getMessage();
         }
     }
 
     public static Connection getConnection() {
-        Connection c = null;
+        Connection thanhPhan = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://" + host.trim() + ":" + port.trim() + "/" + database.trim()
+            String duongDan = "jdbc:mysql://" + mayChu.trim() + ":" + cong.trim() + "/" + coSoDuLieu.trim()
                     + "?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
-            c = DriverManager.getConnection(url, user, pass);
-        } catch (Exception e) {
-            System.err.println("Lỗi kết nối CSDL (" + host + ":" + port + "/" + database + "): " + e.getMessage());
+            thanhPhan = DriverManager.getConnection(duongDan, nguoiDung, matKhau);
+        } catch (Exception suKien) {
+            System.err.println("Lỗi kết nối CSDL (" + mayChu + ":" + cong + "/" + coSoDuLieu + "): " + suKien.getMessage());
         }
-        return c;
+        return thanhPhan;
     }
 
-    public static void closeConnection(Connection c) {
+    public static void closeConnection(Connection thanhPhan) {
         try {
-            if (c != null && !c.isClosed()) {
-                c.close();
+            if (thanhPhan != null && !thanhPhan.isClosed()) {
+                thanhPhan.close();
             }
-        } catch (Exception e) {
+        } catch (Exception suKien) {
             // không biết viết gì =))
         }
     }
 
     public static String getHost() {
-        return host;
+        return mayChu;
     }
 
     public static String getPort() {
-        return port;
+        return cong;
     }
 
     public static String getDatabase() {
-        return database;
+        return coSoDuLieu;
     }
 
     public static String getUser() {
-        return user;
+        return nguoiDung;
     }
 
     public static String getPass() {
-        return pass;
+        return matKhau;
     }
 }

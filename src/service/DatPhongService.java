@@ -8,111 +8,111 @@ import model.DatPhong;
 
 public class DatPhongService {
 
-    DatPhongDAO dao = new DatPhongDAO();
+    DatPhongDAO truyCapDuLieu = new DatPhongDAO();
 
     // Them dat phong
-    public int them(DatPhong t) {
-        if (t.getIdKhachHang() <= 0
-                || t.getMaPhong() <= 0
-                || t.getNgayNhanPhong() == null
-                || t.getNgayTraPhong() == null
-                || t.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())) {
+    public int them(DatPhong bangHienTai) {
+        if (bangHienTai.getIdKhachHang() <= 0
+                || bangHienTai.getMaPhong() <= 0
+                || bangHienTai.getNgayNhanPhong() == null
+                || bangHienTai.getNgayTraPhong() == null
+                || bangHienTai.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())) {
             System.out.println("Thong tin dat phong khong hop le!");
             return 0;
         }
 
-        if (!t.getNgayTraPhong().after(t.getNgayNhanPhong())) {
+        if (!bangHienTai.getNgayTraPhong().after(bangHienTai.getNgayNhanPhong())) {
             System.out.println("Ngay tra phong phai sau ngay nhan phong!");
             return 0;
         }
 
-        if (!"BOOKED".equals(t.getTrangThai())) {
+        if (!"BOOKED".equals(bangHienTai.getTrangThai())) {
             System.out.println("Don dat phong moi phai bat dau o trang thai BOOKED!");
             return 0;
         }
 
-        return dao.them(t);
+        return truyCapDuLieu.them(bangHienTai);
     }
 
     // Dat phong nhanh kem phong va tao hoa don
-    public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId, double pricePerNight) {
-        return datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, 1);
+    public int datPhongNhanh(int maKhachHang, Date nhanPhong, Date traPhong, String trangThai, String ghiChu, int maPhong, double giaMoiDem) {
+        return datPhongNhanh(maKhachHang, nhanPhong, traPhong, trangThai, ghiChu, maPhong, giaMoiDem, 1);
     }
 
-    public int datPhongNhanh(int customerId, Date checkIn, Date checkOut, String status, String note, int roomId,
-            double pricePerNight, int soNguoi) {
-        if (checkIn == null || checkIn.toLocalDate().isBefore(LocalDate.now())
-                || checkOut == null || !checkOut.after(checkIn)) {
+    public int datPhongNhanh(int maKhachHang, Date nhanPhong, Date traPhong, String trangThai, String ghiChu, int maPhong,
+            double giaMoiDem, int soNguoi) {
+        if (nhanPhong == null || nhanPhong.toLocalDate().isBefore(LocalDate.now())
+                || traPhong == null || !traPhong.after(nhanPhong)) {
             System.out.println("Ngay nhan phong phai tu hom nay tro di va ngay tra phai sau ngay nhan!");
             return 0;
         }
-        return dao.datPhongNhanh(customerId, checkIn, checkOut, status, note, roomId, pricePerNight, soNguoi);
+        return truyCapDuLieu.datPhongNhanh(maKhachHang, nhanPhong, traPhong, trangThai, ghiChu, maPhong, giaMoiDem, soNguoi);
     }
 
     // Nhan phong (Check-in)
-    public boolean nhanPhong(int bookingId) {
-        return dao.nhanPhong(bookingId);
+    public boolean nhanPhong(int maDatPhong) {
+        return truyCapDuLieu.nhanPhong(maDatPhong);
     }
 
     // Tra phong va thanh toan, chuyen phong sang CLEANING
-    public boolean traPhongVaThanhToan(int bookingId, int roomId, double tienPhong, double phuThu, double giamGia, double tongTien, String phuongThuc) {
-        return dao.traPhongVaThanhToan(bookingId, roomId, tienPhong, phuThu, giamGia, tongTien, phuongThuc);
+    public boolean traPhongVaThanhToan(int maDatPhong, int maPhong, double tienPhong, double phuThu, double giamGia, double chungTien, String phuongThuc) {
+        return truyCapDuLieu.traPhongVaThanhToan(maDatPhong, maPhong, tienPhong, phuThu, giamGia, chungTien, phuongThuc);
     }
 
     // Huy dat phong
-    public boolean huyDatPhong(int bookingId) {
-        return dao.huyDatPhong(bookingId);
+    public boolean huyDatPhong(int maDatPhong) {
+        return truyCapDuLieu.huyDatPhong(maDatPhong);
     }
 
     // Sua dat phong
-    public int sua(DatPhong t) {
-        if (t.getIdDatPhong() <= 0) {
+    public int sua(DatPhong bangHienTai) {
+        if (bangHienTai.getIdDatPhong() <= 0) {
             System.out.println("Ma dat phong khong hop le!");
             return 0;
         }
 
-        if (t.getIdKhachHang() <= 0
-                || t.getMaPhong() <= 0
-                || t.getNgayNhanPhong() == null
-                || t.getNgayTraPhong() == null
-                || t.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())
-                || !t.getNgayTraPhong().after(t.getNgayNhanPhong())) {
+        if (bangHienTai.getIdKhachHang() <= 0
+                || bangHienTai.getMaPhong() <= 0
+                || bangHienTai.getNgayNhanPhong() == null
+                || bangHienTai.getNgayTraPhong() == null
+                || bangHienTai.getNgayNhanPhong().toLocalDate().isBefore(LocalDate.now())
+                || !bangHienTai.getNgayTraPhong().after(bangHienTai.getNgayNhanPhong())) {
             System.out.println("Thong tin dat phong khong hop le!");
             return 0;
         }
 
-        return dao.sua(t);
+        return truyCapDuLieu.sua(bangHienTai);
     }
 
-    public boolean phongBiDatTrung(int roomId, Date ngayNhan, Date ngayTra, int maDatPhongBoQua) throws Exception {
-        return dao.phongBiDatTrung(roomId, ngayNhan, ngayTra, maDatPhongBoQua);
+    public boolean phongBiDatTrung(int maPhong, Date ngayNhan, Date ngayTra, int maDatPhongBoQua) throws Exception {
+        return truyCapDuLieu.phongBiDatTrung(maPhong, ngayNhan, ngayTra, maDatPhongBoQua);
     }
 
     // Xoa dat phong
-    public int xoa(DatPhong t) {
-        if (t.getIdDatPhong() <= 0) {
+    public int xoa(DatPhong bangHienTai) {
+        if (bangHienTai.getIdDatPhong() <= 0) {
             System.out.println("Ma dat phong khong hop le!");
             return 0;
         }
 
-        return dao.xoa(t);
+        return truyCapDuLieu.xoa(bangHienTai);
     }
 
     // Xuat danh sach dat phong
     public ArrayList<DatPhong> xuat() {
-        return dao.xuat();
+        return truyCapDuLieu.xuat();
     }
 
     // Tim dat phong theo ma
-    public DatPhong timKiem(DatPhong t) {
-        if (t.getIdDatPhong() <= 0) {
+    public DatPhong timKiem(DatPhong bangHienTai) {
+        if (bangHienTai.getIdDatPhong() <= 0) {
             return null;
         }
 
-        return dao.timKiem(t);
+        return truyCapDuLieu.timKiem(bangHienTai);
     }
 
-    public int capNhatTrangThai(int id, String trangThai) {
-        return dao.capNhatTrangThai(id, trangThai);
+    public int capNhatTrangThai(int ma, String trangThai) {
+        return truyCapDuLieu.capNhatTrangThai(ma, trangThai);
     }
 }

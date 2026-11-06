@@ -10,237 +10,237 @@ import model.NguoiDung;
 public class NguoiDungDAO {
 
     // Chuyen doi chuoi vai tro sang so TINYINT (0: STAFF, 1: ADMIN)
-    public static int chuyenVaiTroSangSo(String vt) {
-        if (vt != null && (vt.equalsIgnoreCase("ADMIN") || vt.equals("1") || vt.toLowerCase().contains("quản trị"))) {
+    public static int chuyenVaiTroSangSo(String vaiTro) {
+        if (vaiTro != null && (vaiTro.equalsIgnoreCase("ADMIN") || vaiTro.equals("1") || vaiTro.toLowerCase().contains("quản trị"))) {
             return 1;
         }
         return 0; // STAFF
     }
 
     // Chuyen doi so TINYINT sang chuoi vai tro
-    public static String chuyenSoSangVaiTro(int vt) {
-        return (vt == 1) ? "ADMIN" : "STAFF";
+    public static String chuyenSoSangVaiTro(int vaiTro) {
+        return (vaiTro == 1) ? "ADMIN" : "STAFF";
     }
 
     // Them nguoi dung moi
-    public int themNguoiDung(NguoiDung t) {
-        if (timTheoUsername(t.getTenDangNhap()) != null) {
-            System.out.println("Tai khoan da ton tai: " + t.getTenDangNhap());
+    public int themNguoiDung(NguoiDung bangHienTai) {
+        if (timTheoUsername(bangHienTai.getTenDangNhap()) != null) {
+            System.out.println("Tai khoan da ton tai: " + bangHienTai.getTenDangNhap());
             return -1; // Da ton tai
         }
 
-        String sql;
-        boolean hasId = t.getIdNguoiDung() > 0;
-        if (hasId) {
-            sql = "INSERT INTO nguoi_dung (ma_nguoi_dung, ten_dang_nhap, mat_khau, ho_ten, vai_tro, trang_thai) VALUES (?, ?, ?, ?, ?, ?)";
+        String cauLenhSQL;
+        boolean hasMa = bangHienTai.getIdNguoiDung() > 0;
+        if (hasMa) {
+            cauLenhSQL = "INSERT INTO nguoi_dung (ma_nguoi_dung, ten_dang_nhap, mat_khau, ho_ten, vai_tro, trang_thai) VALUES (?, ?, ?, ?, ?, ?)";
         } else {
-            sql = "INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau, ho_ten, vai_tro, trang_thai) VALUES (?, ?, ?, ?, ?)";
+            cauLenhSQL = "INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau, ho_ten, vai_tro, trang_thai) VALUES (?, ?, ?, ?, ?)";
         }
 
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            int idx = 1;
-            if (hasId) {
-                ps.setInt(idx++, t.getIdNguoiDung());
+            int chiSo = 1;
+            if (hasMa) {
+                luongIn.setInt(chiSo++, bangHienTai.getIdNguoiDung());
             }
-            ps.setString(idx++, t.getTenDangNhap().trim());
-            ps.setString(idx++, t.getMatKhau());
-            ps.setString(idx++, t.getHoTen().trim());
-            ps.setInt(idx++, chuyenVaiTroSangSo(t.getVaiTro()));
-            ps.setInt(idx++, t.isTrangThai() ? 1 : 0);
+            luongIn.setString(chiSo++, bangHienTai.getTenDangNhap().trim());
+            luongIn.setString(chiSo++, bangHienTai.getMatKhau());
+            luongIn.setString(chiSo++, bangHienTai.getHoTen().trim());
+            luongIn.setInt(chiSo++, chuyenVaiTroSangSo(bangHienTai.getVaiTro()));
+            luongIn.setInt(chiSo++, bangHienTai.isTrangThai() ? 1 : 0);
 
-            int kq = ps.executeUpdate();
-            if (kq > 0 && !hasId) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        t.setIdNguoiDung(rs.getInt(1));
+            int ketQua = luongIn.executeUpdate();
+            if (ketQua > 0 && !hasMa) {
+                try (ResultSet ketQuaTruyVan = luongIn.getGeneratedKeys()) {
+                    if (ketQuaTruyVan.next()) {
+                        bangHienTai.setIdNguoiDung(ketQuaTruyVan.getInt(1));
                     }
                 }
             }
-            System.out.println("Da them nguoi dung: " + t.getTenDangNhap());
-            return kq;
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Da them nguoi dung: " + bangHienTai.getTenDangNhap());
+            return ketQua;
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }
 
     // Sua nguoi dung
-    public int suaNguoiDung(NguoiDung t) {
-        boolean coDoiMatKhau = t.getMatKhau() != null && !t.getMatKhau().trim().isEmpty();
-        String sql;
+    public int suaNguoiDung(NguoiDung bangHienTai) {
+        boolean coDoiMatKhau = bangHienTai.getMatKhau() != null && !bangHienTai.getMatKhau().trim().isEmpty();
+        String cauLenhSQL;
         if (coDoiMatKhau) {
-            sql = "UPDATE nguoi_dung SET ten_dang_nhap = ?, mat_khau = ?, ho_ten = ?, vai_tro = ?, trang_thai = ? WHERE ma_nguoi_dung = ?";
+            cauLenhSQL = "UPDATE nguoi_dung SET ten_dang_nhap = ?, mat_khau = ?, ho_ten = ?, vai_tro = ?, trang_thai = ? WHERE ma_nguoi_dung = ?";
         } else {
-            sql = "UPDATE nguoi_dung SET ten_dang_nhap = ?, ho_ten = ?, vai_tro = ?, trang_thai = ? WHERE ma_nguoi_dung = ?";
+            cauLenhSQL = "UPDATE nguoi_dung SET ten_dang_nhap = ?, ho_ten = ?, vai_tro = ?, trang_thai = ? WHERE ma_nguoi_dung = ?";
         }
 
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
-            int idx = 1;
-            ps.setString(idx++, t.getTenDangNhap().trim());
+            int chiSo = 1;
+            luongIn.setString(chiSo++, bangHienTai.getTenDangNhap().trim());
             if (coDoiMatKhau) {
-                ps.setString(idx++, t.getMatKhau());
+                luongIn.setString(chiSo++, bangHienTai.getMatKhau());
             }
-            ps.setString(idx++, t.getHoTen().trim());
-            ps.setInt(idx++, chuyenVaiTroSangSo(t.getVaiTro()));
-            ps.setInt(idx++, t.isTrangThai() ? 1 : 0);
-            ps.setInt(idx++, t.getIdNguoiDung());
+            luongIn.setString(chiSo++, bangHienTai.getHoTen().trim());
+            luongIn.setInt(chiSo++, chuyenVaiTroSangSo(bangHienTai.getVaiTro()));
+            luongIn.setInt(chiSo++, bangHienTai.isTrangThai() ? 1 : 0);
+            luongIn.setInt(chiSo++, bangHienTai.getIdNguoiDung());
 
-            return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+            return luongIn.executeUpdate();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }
 
     // Xoa nguoi dung theo ID
-    public int xoaNguoiDung(int idNguoiDung) {
-        String sql = "DELETE FROM nguoi_dung WHERE ma_nguoi_dung = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idNguoiDung);
-            return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public int xoaNguoiDung(int maNguoiDung) {
+        String cauLenhSQL = "DELETE FROM nguoi_dung WHERE ma_nguoi_dung = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setInt(1, maNguoiDung);
+            return luongIn.executeUpdate();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }
 
     // Xoa nguoi dung theo object (backward compatibility)
-    public int xoaNguoiDung(NguoiDung t) {
-        if (t == null) return 0;
-        return xoaNguoiDung(t.getIdNguoiDung());
+    public int xoaNguoiDung(NguoiDung bangHienTai) {
+        if (bangHienTai == null) return 0;
+        return xoaNguoiDung(bangHienTai.getIdNguoiDung());
     }
 
     // Xuat danh sach nguoi dung
     public ArrayList<NguoiDung> xuat() {
-        ArrayList<NguoiDung> ds = new ArrayList<>();
-        String sql = "SELECT * FROM nguoi_dung ORDER BY ma_nguoi_dung ASC";
+        ArrayList<NguoiDung> danhSach = new ArrayList<>();
+        String cauLenhSQL = "SELECT * FROM nguoi_dung ORDER BY ma_nguoi_dung ASC";
 
-        try (Connection conn = KetNoiCSDL.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             Statement luongTrinh = ketNoi.createStatement();
+             ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
-            while (rs.next()) {
-                int vt = rs.getInt("vai_tro");
-                int tt = rs.getInt("trang_thai");
-                NguoiDung t = new NguoiDung(
-                        rs.getInt("ma_nguoi_dung"),
-                        rs.getString("ten_dang_nhap"),
-                        rs.getString("mat_khau"),
-                        rs.getString("ho_ten"),
-                        chuyenSoSangVaiTro(vt),
-                        (tt == 1)
+            while (ketQuaTruyVan.next()) {
+                int vaiTro = ketQuaTruyVan.getInt("vai_tro");
+                int trangThai = ketQuaTruyVan.getInt("trang_thai");
+                NguoiDung bangHienTai = new NguoiDung(
+                        ketQuaTruyVan.getInt("ma_nguoi_dung"),
+                        ketQuaTruyVan.getString("ten_dang_nhap"),
+                        ketQuaTruyVan.getString("mat_khau"),
+                        ketQuaTruyVan.getString("ho_ten"),
+                        chuyenSoSangVaiTro(vaiTro),
+                        (trangThai == 1)
                 );
-                ds.add(t);
+                danhSach.add(bangHienTai);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
         }
 
-        return ds;
+        return danhSach;
     }
 
     // Tim kiem theo ten dang nhap (backward compatibility)
-    public NguoiDung timKiem(NguoiDung t) {
-        if (t == null || t.getTenDangNhap() == null) return null;
-        return timTheoUsername(t.getTenDangNhap());
+    public NguoiDung timKiem(NguoiDung bangHienTai) {
+        if (bangHienTai == null || bangHienTai.getTenDangNhap() == null) return null;
+        return timTheoUsername(bangHienTai.getTenDangNhap());
     }
 
     // Tim kiem theo username
-    public NguoiDung timTheoUsername(String username) {
-        if (username == null || username.trim().isEmpty()) return null;
-        String sql = "SELECT * FROM nguoi_dung WHERE ten_dang_nhap = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, username.trim());
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int vt = rs.getInt("vai_tro");
-                    int tt = rs.getInt("trang_thai");
+    public NguoiDung timTheoUsername(String tenDangNhap) {
+        if (tenDangNhap == null || tenDangNhap.trim().isEmpty()) return null;
+        String cauLenhSQL = "SELECT * FROM nguoi_dung WHERE ten_dang_nhap = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setString(1, tenDangNhap.trim());
+            try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
+                if (ketQuaTruyVan.next()) {
+                    int vaiTro = ketQuaTruyVan.getInt("vai_tro");
+                    int trangThai = ketQuaTruyVan.getInt("trang_thai");
                     return new NguoiDung(
-                            rs.getInt("ma_nguoi_dung"),
-                            rs.getString("ten_dang_nhap"),
-                            rs.getString("mat_khau"),
-                            rs.getString("ho_ten"),
-                            chuyenSoSangVaiTro(vt),
-                            (tt == 1)
+                            ketQuaTruyVan.getInt("ma_nguoi_dung"),
+                            ketQuaTruyVan.getString("ten_dang_nhap"),
+                            ketQuaTruyVan.getString("mat_khau"),
+                            ketQuaTruyVan.getString("ho_ten"),
+                            chuyenSoSangVaiTro(vaiTro),
+                            (trangThai == 1)
                     );
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
         }
         return null;
     }
 
     // Tim kiem theo ID
-    public NguoiDung timTheoId(int userId) {
-        String sql = "SELECT * FROM nguoi_dung WHERE ma_nguoi_dung = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    int vt = rs.getInt("vai_tro");
-                    int tt = rs.getInt("trang_thai");
+    public NguoiDung timTheoId(int maNguoiDung) {
+        String cauLenhSQL = "SELECT * FROM nguoi_dung WHERE ma_nguoi_dung = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setInt(1, maNguoiDung);
+            try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
+                if (ketQuaTruyVan.next()) {
+                    int vaiTro = ketQuaTruyVan.getInt("vai_tro");
+                    int trangThai = ketQuaTruyVan.getInt("trang_thai");
                     return new NguoiDung(
-                            rs.getInt("ma_nguoi_dung"),
-                            rs.getString("ten_dang_nhap"),
-                            rs.getString("mat_khau"),
-                            rs.getString("ho_ten"),
-                            chuyenSoSangVaiTro(vt),
-                            (tt == 1)
+                            ketQuaTruyVan.getInt("ma_nguoi_dung"),
+                            ketQuaTruyVan.getString("ten_dang_nhap"),
+                            ketQuaTruyVan.getString("mat_khau"),
+                            ketQuaTruyVan.getString("ho_ten"),
+                            chuyenSoSangVaiTro(vaiTro),
+                            (trangThai == 1)
                     );
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
         }
         return null;
     }
 
     // Doi mat khau nguoi dung
-    public int doiMatKhau(int userId, String matKhauMoi) {
-        String sql = "UPDATE nguoi_dung SET mat_khau = ? WHERE ma_nguoi_dung = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, matKhauMoi);
-            ps.setInt(2, userId);
-            return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public int doiMatKhau(int maNguoiDung, String matKhauMoi) {
+        String cauLenhSQL = "UPDATE nguoi_dung SET mat_khau = ? WHERE ma_nguoi_dung = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setString(1, matKhauMoi);
+            luongIn.setInt(2, maNguoiDung);
+            return luongIn.executeUpdate();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }
 
     // Doi trang thai hoat dong (khoa / mo khoa)
-    public int doiTrangThai(int userId, boolean isActive) {
-        String sql = "UPDATE nguoi_dung SET trang_thai = ? WHERE ma_nguoi_dung = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, isActive ? 1 : 0);
-            ps.setInt(2, userId);
-            return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public int doiTrangThai(int maNguoiDung, boolean dangHoatDong) {
+        String cauLenhSQL = "UPDATE nguoi_dung SET trang_thai = ? WHERE ma_nguoi_dung = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setInt(1, dangHoatDong ? 1 : 0);
+            luongIn.setInt(2, maNguoiDung);
+            return luongIn.executeUpdate();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }
 
     // Cap nhat thong tin ca nhan (ho ten)
-    public int capNhatHoTen(int userId, String hoTen) {
-        String sql = "UPDATE nguoi_dung SET ho_ten = ? WHERE ma_nguoi_dung = ?";
-        try (Connection conn = KetNoiCSDL.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, hoTen.trim());
-            ps.setInt(2, userId);
-            return ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public int capNhatHoTen(int maNguoiDung, String hoTen) {
+        String cauLenhSQL = "UPDATE nguoi_dung SET ho_ten = ? WHERE ma_nguoi_dung = ?";
+        try (Connection ketNoi = KetNoiCSDL.getConnection();
+             PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+            luongIn.setString(1, hoTen.trim());
+            luongIn.setInt(2, maNguoiDung);
+            return luongIn.executeUpdate();
+        } catch (Exception suKien) {
+            suKien.printStackTrace();
             return 0;
         }
     }

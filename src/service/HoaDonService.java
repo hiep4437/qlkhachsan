@@ -6,76 +6,76 @@ import model.HoaDon;
 
 public class HoaDonService {
 
-	HoaDonDAO dao = new HoaDonDAO();
+	HoaDonDAO truyCapDuLieu = new HoaDonDAO();
 
 	// Them hoa don
-	public int them(HoaDon t) {
-		if (t.getIdDatPhong() <= 0) {
+	public int them(HoaDon bangHienTai) {
+		if (bangHienTai.getIdDatPhong() <= 0) {
 			System.out.println("Ma dat phong khong hop le!");
 			return 0;
 		}
 
-		if (t.getTienPhong() < 0 || t.getPhuThu() < 0 || t.getGiamGia() < 0) {
+		if (bangHienTai.getTienPhong() < 0 || bangHienTai.getPhuThu() < 0 || bangHienTai.getGiamGia() < 0) {
 			System.out.println("Cac khoan tien phai >= 0!");
 			return 0;
 		}
 
-		return dao.them(t);
+		return truyCapDuLieu.them(bangHienTai);
 	}
 
 	// Sua hoa don
-	public int sua(HoaDon t) {
-		if (t.getIdHoaDon() <= 0) {
+	public int sua(HoaDon bangHienTai) {
+		if (bangHienTai.getIdHoaDon() <= 0) {
 			System.out.println("Ma hoa don khong hop le!");
 			return 0;
 		}
 
-		if (t.getIdDatPhong() <= 0) {
+		if (bangHienTai.getIdDatPhong() <= 0) {
 			System.out.println("Ma dat phong khong hop le!");
 			return 0;
 		}
 
-		if (t.getTienPhong() < 0 || t.getPhuThu() < 0 || t.getGiamGia() < 0) {
+		if (bangHienTai.getTienPhong() < 0 || bangHienTai.getPhuThu() < 0 || bangHienTai.getGiamGia() < 0) {
 			System.out.println("Cac khoan tien phai >= 0!");
 			return 0;
 		}
 
-		return dao.sua(t);
+		return truyCapDuLieu.sua(bangHienTai);
 	}
 
 	// Xoa hoa don
-	public int xoa(HoaDon t) {
-		if (t.getIdHoaDon() <= 0) {
+	public int xoa(HoaDon bangHienTai) {
+		if (bangHienTai.getIdHoaDon() <= 0) {
 			System.out.println("Ma hoa don khong hop le!");
 			return 0;
 		}
 
-		return dao.xoa(t);
+		return truyCapDuLieu.xoa(bangHienTai);
 	}
 
 	// Xuat danh sach hoa don
 	public ArrayList<HoaDon> xuat() {
-		return dao.xuat();
+		return truyCapDuLieu.xuat();
 	}
 
 	// Tim hoa don theo ma
-	public HoaDon timKiem(HoaDon t) {
-		if (t.getIdHoaDon() <= 0) {
+	public HoaDon timKiem(HoaDon bangHienTai) {
+		if (bangHienTai.getIdHoaDon() <= 0) {
 			return null;
 		}
 
-		return dao.timKiem(t);
+		return truyCapDuLieu.timKiem(bangHienTai);
 	}
 
 	// Tim theo dat phong
 	public HoaDon timTheoDatPhong(int maDatPhong) {
 		if (maDatPhong <= 0) return null;
-		return dao.timTheoDatPhong(maDatPhong);
+		return truyCapDuLieu.timTheoDatPhong(maDatPhong);
 	}
 
 	// Cap nhat trang thai thanh toan
 	public int capNhatTrangThai(int maHoaDon, String trangThai, String phuongThuc) {
 		if (maHoaDon <= 0) return 0;
-		return dao.capNhatTrangThai(maHoaDon, trangThai, phuongThuc);
+		return truyCapDuLieu.capNhatTrangThai(maHoaDon, trangThai, phuongThuc);
 	}
 }

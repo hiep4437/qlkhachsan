@@ -1,23 +1,23 @@
 package model;
 
 public class KhachHang {
-	private int idKhachHang;
-	private String nameKhachHang;
+	private int maKhachHang;
+	private String tenKhachHang;
 	private String soCCCD;
 	private String soDienThoai;
-	private String email;
+	private String thuDienTu;
 	private String diaChi;
 	public int getIdKhachHang() {
-		return idKhachHang;
+		return maKhachHang;
 	}
-	public void setIdKhachHang(int idKhachHang) {
-		this.idKhachHang = idKhachHang;
+	public void setIdKhachHang(int maKhachHang) {
+		this.maKhachHang = maKhachHang;
 	}
 	public String getNameKhachHang() {
-		return nameKhachHang;
+		return tenKhachHang;
 	}
-	public void setNameKhachHang(String nameKhachHang) {
-		this.nameKhachHang = nameKhachHang;
+	public void setNameKhachHang(String tenKhachHang) {
+		this.tenKhachHang = tenKhachHang;
 	}
 	public String getSoCCCD() {
 		return soCCCD;
@@ -32,10 +32,10 @@ public class KhachHang {
 		this.soDienThoai = soDienThoai;
 	}
 	public String getEmail() {
-		return email;
+		return thuDienTu;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setEmail(String thuDienTu) {
+		this.thuDienTu = thuDienTu;
 	}
 	public String getDiaChi() {
 		return diaChi;
@@ -43,14 +43,14 @@ public class KhachHang {
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
 	}
-	public KhachHang(int idKhachHang, String nameKhachHang, String soCCCD, String soDienThoai, String email,
+	public KhachHang(int maKhachHang, String tenKhachHang, String soCCCD, String soDienThoai, String thuDienTu,
 			String diaChi) {
 		super();
-		this.idKhachHang = idKhachHang;
-		this.nameKhachHang = nameKhachHang;
+		this.maKhachHang = maKhachHang;
+		this.tenKhachHang = tenKhachHang;
 		this.soCCCD = soCCCD;
 		this.soDienThoai = soDienThoai;
-		this.email = email;
+		this.thuDienTu = thuDienTu;
 		this.diaChi = diaChi;
 	}
 	public KhachHang() {

@@ -19,103 +19,103 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 public final class DatePickerCalendar {
-    private static final Color COLOR_TEXT = new Color(30, 41, 59);
-    private static final Color COLOR_MUTED = new Color(100, 116, 139);
+    private static final Color MAU_VANBAN = new Color(30, 41, 59);
+    private static final Color MAU_MUTED = new Color(100, 116, 139);
 
     private DatePickerCalendar() {
     }
 
-    public static void show(Component parent, LocalDate selectedDate, LocalDate minimumDate,
-            Consumer<LocalDate> onDateSelected) {
-        JDialog calendar = new JDialog(
-                SwingUtilities.getWindowAncestor(parent), "Chọn ngày", Dialog.ModalityType.APPLICATION_MODAL);
-        calendar.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    public static void show(Component doiTuongCha, LocalDate ngayDaChon, LocalDate ngayToiThieu,
+            Consumer<LocalDate> khiNgayDuocChon) {
+        JDialog lich = new JDialog(
+                SwingUtilities.getWindowAncestor(doiTuongCha), "Chọn ngày", Dialog.ModalityType.APPLICATION_MODAL);
+        lich.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        JPanel content = new JPanel(new BorderLayout(8, 10));
-        content.setBackground(Color.WHITE);
-        content.setBorder(new EmptyBorder(12, 12, 12, 12));
+        JPanel noiDung = new JPanel(new BorderLayout(8, 10));
+        noiDung.setBackground(Color.WHITE);
+        noiDung.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-        JPanel monthHeader = new JPanel(new BorderLayout(8, 0));
-        monthHeader.setOpaque(false);
-        YearMonth[] displayedMonth = { YearMonth.from(selectedDate) };
-        JLabel monthLabel = new JLabel("", SwingConstants.CENTER);
-        monthLabel.setFont(UIStyle.FONT_BOLD);
-        monthLabel.setForeground(COLOR_TEXT);
+        JPanel tieuDeThang = new JPanel(new BorderLayout(8, 0));
+        tieuDeThang.setOpaque(false);
+        YearMonth[] thangDangHien = { YearMonth.from(ngayDaChon) };
+        JLabel nhanThang = new JLabel("", SwingConstants.CENTER);
+        nhanThang.setFont(UIStyle.PHONGCHU_IN_DAM);
+        nhanThang.setForeground(MAU_VANBAN);
 
-        JButton previousMonth = new JButton("<");
-        JButton nextMonth = new JButton(">");
-        previousMonth.setFocusable(false);
-        nextMonth.setFocusable(false);
-        monthHeader.add(previousMonth, BorderLayout.WEST);
-        monthHeader.add(monthLabel, BorderLayout.CENTER);
-        monthHeader.add(nextMonth, BorderLayout.EAST);
+        JButton truocThang = new JButton("<");
+        JButton thangTiepTheo = new JButton(">");
+        truocThang.setFocusable(false);
+        thangTiepTheo.setFocusable(false);
+        tieuDeThang.add(truocThang, BorderLayout.WEST);
+        tieuDeThang.add(nhanThang, BorderLayout.CENTER);
+        tieuDeThang.add(thangTiepTheo, BorderLayout.EAST);
 
-        JPanel daysGrid = new JPanel(new GridLayout(0, 7, 4, 4));
-        daysGrid.setOpaque(false);
+        JPanel luoiNgay = new JPanel(new GridLayout(0, 7, 4, 4));
+        luoiNgay.setOpaque(false);
 
-        Runnable[] updateCalendar = new Runnable[1];
-        updateCalendar[0] = () -> {
-            monthLabel.setText(displayedMonth[0].getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
-                    + " " + displayedMonth[0].getYear());
-            previousMonth.setEnabled(minimumDate == null
-                    || displayedMonth[0].isAfter(YearMonth.from(minimumDate)));
-            daysGrid.removeAll();
+        Runnable[] capNhatLich = new Runnable[1];
+        capNhatLich[0] = () -> {
+            nhanThang.setText(thangDangHien[0].getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("vi"))
+                    + " " + thangDangHien[0].getYear());
+            truocThang.setEnabled(ngayToiThieu == null
+                    || thangDangHien[0].isAfter(YearMonth.from(ngayToiThieu)));
+            luoiNgay.removeAll();
 
-            String[] weekDays = { "T2", "T3", "T4", "T5", "T6", "T7", "CN" };
-            for (String weekDay : weekDays) {
-                JLabel dayHeading = new JLabel(weekDay, SwingConstants.CENTER);
-                dayHeading.setFont(UIStyle.FONT_SMALL_BOLD);
-                dayHeading.setForeground(COLOR_MUTED);
-                daysGrid.add(dayHeading);
+            String[] cacNgayTrongTuan = { "T2", "T3", "T4", "T5", "T6", "T7", "CN" };
+            for (String ngayTrongTuan : cacNgayTrongTuan) {
+                JLabel tieuDeNgay = new JLabel(ngayTrongTuan, SwingConstants.CENTER);
+                tieuDeNgay.setFont(UIStyle.PHONGCHU_SMALL_INDAM);
+                tieuDeNgay.setForeground(MAU_MUTED);
+                luoiNgay.add(tieuDeNgay);
             }
 
-            LocalDate firstDay = displayedMonth[0].atDay(1);
-            int leadingDays = firstDay.getDayOfWeek().getValue() - 1;
-            for (int i = 0; i < leadingDays; i++) {
-                daysGrid.add(new JLabel());
+            LocalDate ngayDau = thangDangHien[0].atDay(1);
+            int soNgayTruocThang = ngayDau.getDayOfWeek().getValue() - 1;
+            for (int chiSo = 0; chiSo < soNgayTruocThang; chiSo++) {
+                luoiNgay.add(new JLabel());
             }
 
-            for (int day = 1; day <= displayedMonth[0].lengthOfMonth(); day++) {
-                LocalDate date = displayedMonth[0].atDay(day);
-                JButton dayButton = new JButton(Integer.toString(day));
-                dayButton.setFocusable(false);
-                dayButton.setFont(UIStyle.FONT_REGULAR);
-                dayButton.setMargin(new java.awt.Insets(4, 4, 4, 4));
-                dayButton.setEnabled(minimumDate == null || !date.isBefore(minimumDate));
-                if (date.equals(selectedDate)) {
-                    dayButton.setBackground(UIStyle.COLOR_PRIMARY);
-                    dayButton.setForeground(Color.WHITE);
-                    dayButton.setOpaque(true);
+            for (int ngayTrongThang = 1; ngayTrongThang <= thangDangHien[0].lengthOfMonth(); ngayTrongThang++) {
+                LocalDate ngay = thangDangHien[0].atDay(ngayTrongThang);
+                JButton nutNgay = new JButton(Integer.toString(ngayTrongThang));
+                nutNgay.setFocusable(false);
+                nutNgay.setFont(UIStyle.PHONGCHU_THUONG);
+                nutNgay.setMargin(new java.awt.Insets(4, 4, 4, 4));
+                nutNgay.setEnabled(ngayToiThieu == null || !ngay.isBefore(ngayToiThieu));
+                if (ngay.equals(ngayDaChon)) {
+                    nutNgay.setBackground(UIStyle.MAU_CHINH);
+                    nutNgay.setForeground(Color.WHITE);
+                    nutNgay.setOpaque(true);
                 } else {
-                    dayButton.setBackground(Color.WHITE);
-                    dayButton.setForeground(COLOR_TEXT);
+                    nutNgay.setBackground(Color.WHITE);
+                    nutNgay.setForeground(MAU_VANBAN);
                 }
-                dayButton.addActionListener(event -> {
-                    onDateSelected.accept(date);
-                    calendar.dispose();
+                nutNgay.addActionListener(suKien -> {
+                    khiNgayDuocChon.accept(ngay);
+                    lich.dispose();
                 });
-                daysGrid.add(dayButton);
+                luoiNgay.add(nutNgay);
             }
-            daysGrid.revalidate();
-            daysGrid.repaint();
-            calendar.pack();
+            luoiNgay.revalidate();
+            luoiNgay.repaint();
+            lich.pack();
         };
 
-        previousMonth.addActionListener(event -> {
-            displayedMonth[0] = displayedMonth[0].minusMonths(1);
-            updateCalendar[0].run();
+        truocThang.addActionListener(suKien -> {
+            thangDangHien[0] = thangDangHien[0].minusMonths(1);
+            capNhatLich[0].run();
         });
-        nextMonth.addActionListener(event -> {
-            displayedMonth[0] = displayedMonth[0].plusMonths(1);
-            updateCalendar[0].run();
+        thangTiepTheo.addActionListener(suKien -> {
+            thangDangHien[0] = thangDangHien[0].plusMonths(1);
+            capNhatLich[0].run();
         });
 
-        content.add(monthHeader, BorderLayout.NORTH);
-        content.add(daysGrid, BorderLayout.CENTER);
-        calendar.setContentPane(content);
-        updateCalendar[0].run();
-        calendar.setResizable(false);
-        calendar.setLocationRelativeTo(parent);
-        calendar.setVisible(true);
+        noiDung.add(tieuDeThang, BorderLayout.NORTH);
+        noiDung.add(luoiNgay, BorderLayout.CENTER);
+        lich.setContentPane(noiDung);
+        capNhatLich[0].run();
+        lich.setResizable(false);
+        lich.setLocationRelativeTo(doiTuongCha);
+        lich.setVisible(true);
     }
 }

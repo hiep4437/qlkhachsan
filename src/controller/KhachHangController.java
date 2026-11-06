@@ -21,75 +21,75 @@ import view.view.ViewQuanLyKhachHang;
 
 public class KhachHangController {
 
-    ViewQuanLyKhachHang view;
-    KhachHangService service = new KhachHangService();
-    DatPhongService bookingService = new DatPhongService();
-    java.util.function.Consumer<String> onChuyenTabDatPhong;
+    ViewQuanLyKhachHang viewQuanLyKhachHang;
+    KhachHangService dichVu = new KhachHangService();
+    DatPhongService dichVuDatPhong = new DatPhongService();
+    java.util.function.Consumer<String> khiChuyenTheDatPhong;
 
-    public KhachHangController(ViewQuanLyKhachHang view) {
-        this(view, null);
+    public KhachHangController(ViewQuanLyKhachHang viewQuanLyKhachHang) {
+        this(viewQuanLyKhachHang, null);
     }
 
-    public KhachHangController(ViewQuanLyKhachHang view, java.util.function.Consumer<String> onChuyenTabDatPhong) {
-        this.view = view;
-        this.onChuyenTabDatPhong = onChuyenTabDatPhong;
+    public KhachHangController(ViewQuanLyKhachHang viewQuanLyKhachHang, java.util.function.Consumer<String> khiChuyenTheDatPhong) {
+        this.viewQuanLyKhachHang = viewQuanLyKhachHang;
+        this.khiChuyenTheDatPhong = khiChuyenTheDatPhong;
 
         taiDuLieu();
 
         // Nút thêm, sửa, lịch sử, xóa
-        view.btnThem.addActionListener(e -> them());
-        view.btnSua.addActionListener(e -> sua());
-        view.btnLichSu.addActionListener(e -> xemLichSu());
-        view.btnXoa.addActionListener(e -> xoa());
+        viewQuanLyKhachHang.nutThem.addActionListener(suKien -> them());
+        viewQuanLyKhachHang.nutSua.addActionListener(suKien -> sua());
+        viewQuanLyKhachHang.nutLichSu.addActionListener(suKien -> xemLichSu());
+        viewQuanLyKhachHang.nutXoa.addActionListener(suKien -> xoa());
 
         // Tìm kiếm
-        view.btnTimKiem.addActionListener(e -> apDungBoLoc());
-        view.txtTimKiem.addActionListener(e -> apDungBoLoc());
+        viewQuanLyKhachHang.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyKhachHang.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
 
-        view.btnLamMoi.addActionListener(e -> {
-            view.lamMoi();
+        viewQuanLyKhachHang.nutLamMoi.addActionListener(suKien -> {
+            viewQuanLyKhachHang.lamMoi();
             taiDuLieu();
         });
     }
 
     public void taiDuLieu() {
-        view.model.setRowCount(0);
+        viewQuanLyKhachHang.moHinh.setRowCount(0);
 
-        ArrayList<KhachHang> ds = service.xuat();
-        for (KhachHang kh : ds) {
-            int soLan = service.demSoLanDatPhong(kh.getIdKhachHang());
+        ArrayList<KhachHang> danhSach = dichVu.xuat();
+        for (KhachHang khachHang : danhSach) {
+            int soLan = dichVu.demSoLanDatPhong(khachHang.getIdKhachHang());
 
-            view.model.addRow(new Object[] {
-                kh.getIdKhachHang(),
-                kh.getNameKhachHang(),
-                kh.getSoCCCD() != null ? kh.getSoCCCD() : "",
-                kh.getSoDienThoai() != null ? kh.getSoDienThoai() : "",
-                kh.getEmail() != null ? kh.getEmail() : "",
-                kh.getDiaChi() != null ? kh.getDiaChi() : "",
+            viewQuanLyKhachHang.moHinh.addRow(new Object[] {
+                khachHang.getIdKhachHang(),
+                khachHang.getNameKhachHang(),
+                khachHang.getSoCCCD() != null ? khachHang.getSoCCCD() : "",
+                khachHang.getSoDienThoai() != null ? khachHang.getSoDienThoai() : "",
+                khachHang.getEmail() != null ? khachHang.getEmail() : "",
+                khachHang.getDiaChi() != null ? khachHang.getDiaChi() : "",
                 soLan
             });
         }
 
-        view.lblThongKe.setText("Tổng số: " + ds.size() + " khách hàng trong hệ thống");
+        viewQuanLyKhachHang.nhanThongKe.setText("Tổng số: " + danhSach.size() + " khách hàng trong hệ thống");
         apDungBoLoc();
     }
 
     void apDungBoLoc() {
-        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
+        String tuKhoa = viewQuanLyKhachHang.oNhapTimKiem.getText().trim().toLowerCase();
 
-        if (view.sorter == null) return;
+        if (viewQuanLyKhachHang.boSapXep == null) return;
 
         if (tuKhoa.isEmpty()) {
-            view.sorter.setRowFilter(null);
+            viewQuanLyKhachHang.boSapXep.setRowFilter(null);
             return;
         }
 
-        view.sorter.setRowFilter(new RowFilter<DefaultTableModel, Object>() {
+        viewQuanLyKhachHang.boSapXep.setRowFilter(new RowFilter<DefaultTableModel, Object>() {
             @Override
-            public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
-                for (int i = 0; i < entry.getValueCount(); i++) {
-                    Object val = entry.getValue(i);
-                    if (val != null && val.toString().toLowerCase().contains(tuKhoa)) {
+            public boolean include(Entry<? extends DefaultTableModel, ?> phanTu) {
+                for (int chiSo = 0; chiSo < phanTu.getValueCount(); chiSo++) {
+                    Object giaTri = phanTu.getValue(chiSo);
+                    if (giaTri != null && giaTri.toString().toLowerCase().contains(tuKhoa)) {
                         return true;
                     }
                 }
@@ -99,31 +99,31 @@ public class KhachHangController {
     }
 
     Window getParentWindow() {
-        Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
-        return w != null ? w : view;
+        Window chieuRong = SwingUtilities.getWindowAncestor(viewQuanLyKhachHang.getContentPane());
+        return chieuRong != null ? chieuRong : viewQuanLyKhachHang;
     }
 
-    KhachHang timTheoMa(int id) {
-        KhachHang t = new KhachHang();
-        t.setIdKhachHang(id);
-        return service.timKiem(t);
+    KhachHang timTheoMa(int ma) {
+        KhachHang bangHienTai = new KhachHang();
+        bangHienTai.setIdKhachHang(ma);
+        return dichVu.timKiem(bangHienTai);
     }
 
     // Xem lịch sử đặt phòng của khách: Chuyển sang tab Quản lý đặt phòng và tự tìm theo CCCD (tất cả trạng thái, toàn thời gian)
     void xemLichSu() {
-        int selectedRow = view.table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để xem lịch sử đặt phòng!",
+        int hangDaChon = viewQuanLyKhachHang.bang.getSelectedRow();
+        if (hangDaChon == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Vui lòng chọn một khách hàng trong bảng để xem lịch sử đặt phòng!",
                     "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int modelRow = view.table.convertRowIndexToModel(selectedRow);
-        String cccd = (String) view.model.getValueAt(modelRow, 2);
-        String tenKhach = (String) view.model.getValueAt(modelRow, 1);
+        int hangMoHinh = viewQuanLyKhachHang.bang.convertRowIndexToModel(hangDaChon);
+        String cccd = (String) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 2);
+        String tenKhach = (String) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 1);
 
         if (cccd == null || cccd.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Khách hàng " + tenKhach + " chưa cập nhật số CCCD nên không thể tra cứu!",
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Khách hàng " + tenKhach + " chưa cập nhật số CCCD nên không thể tra cứu!",
                     "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -131,176 +131,176 @@ public class KhachHangController {
         String cccdTim = cccd.trim();
 
         // 1. Kiểm tra nếu có callback
-        if (onChuyenTabDatPhong != null) {
-            onChuyenTabDatPhong.accept(cccdTim);
+        if (khiChuyenTheDatPhong != null) {
+            khiChuyenTheDatPhong.accept(cccdTim);
             return;
         }
 
         // 2. Kiểm tra nếu Window cha là ViewTrangChu
-        Window parent = getParentWindow();
-        if (parent instanceof view.view.ViewTrangChu) {
-            ((view.view.ViewTrangChu) parent).chuyenSangTabDatPhongVaTimKiem(cccdTim);
+        Window doiTuongCha = getParentWindow();
+        if (doiTuongCha instanceof view.view.ViewTrangChu) {
+            ((view.view.ViewTrangChu) doiTuongCha).chuyenSangTabDatPhongVaTimKiem(cccdTim);
             return;
         }
 
         // 3. Fallback: Nếu không trong ViewTrangChu thì mở modal
-        moModalLichSuDatPhong(modelRow, tenKhach, cccdTim);
+        moModalLichSuDatPhong(hangMoHinh, tenKhach, cccdTim);
     }
 
-    private void moModalLichSuDatPhong(int modelRow, String tenKhach, String cccd) {
-        int maKH = (int) view.model.getValueAt(modelRow, 0);
+    private void moModalLichSuDatPhong(int hangMoHinh, String tenKhach, String cccd) {
+        int maKhachHang = (int) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 0);
 
         // Lấy tất cả các đơn đặt phòng của khách này
-        ArrayList<DatPhong> tatCa = bookingService.xuat();
+        ArrayList<DatPhong> tatCa = dichVuDatPhong.xuat();
         ArrayList<DatPhong> cuaKhach = new ArrayList<>();
-        for (DatPhong b : tatCa) {
-            if (b.getIdKhachHang() == maKH || (cccd != null && !cccd.isEmpty() && cccd.equals(b.getCccd()))) {
-                cuaKhach.add(b);
+        for (DatPhong nut : tatCa) {
+            if (nut.getIdKhachHang() == maKhachHang || (cccd != null && !cccd.isEmpty() && cccd.equals(nut.getCccd()))) {
+                cuaKhach.add(nut);
             }
         }
 
-        JDialog dlg = new JDialog(getParentWindow(), "Lịch sử thuê phòng - Khách hàng: " + tenKhach, JDialog.ModalityType.APPLICATION_MODAL);
-        dlg.setSize(800, 480);
-        dlg.setLocationRelativeTo(getParentWindow());
-        dlg.setLayout(new BorderLayout());
+        JDialog hopThoai = new JDialog(getParentWindow(), "Lịch sử thuê phòng - Khách hàng: " + tenKhach, JDialog.ModalityType.APPLICATION_MODAL);
+        hopThoai.setSize(800, 480);
+        hopThoai.setLocationRelativeTo(getParentWindow());
+        hopThoai.setLayout(new BorderLayout());
 
-        JPanel pHead = new JPanel(new BorderLayout());
-        pHead.setBackground(new Color(24, 44, 97));
-        pHead.setBorder(new EmptyBorder(12, 16, 12, 16));
+        JPanel khungDau = new JPanel(new BorderLayout());
+        khungDau.setBackground(new Color(24, 44, 97));
+        khungDau.setBorder(new EmptyBorder(12, 16, 12, 16));
 
-        JLabel lblTitle = new JLabel("LỊCH SỬ THUÊ PHÒNG CỦA KHÁCH HÀNG: " + tenKhach.toUpperCase());
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTitle.setForeground(Color.WHITE);
+        JLabel nhanTieuDe = new JLabel("LỊCH SỬ THUÊ PHÒNG CỦA KHÁCH HÀNG: " + tenKhach.toUpperCase());
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        nhanTieuDe.setForeground(Color.WHITE);
 
-        JLabel lblSub = new JLabel("Tổng số lần đặt: " + cuaKhach.size() + " lượt | CCCD: " + cccd);
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSub.setForeground(new Color(200, 220, 240));
+        JLabel nhanPhu = new JLabel("Tổng số lần đặt: " + cuaKhach.size() + " lượt | CCCD: " + cccd);
+        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nhanPhu.setForeground(new Color(200, 220, 240));
 
-        pHead.add(lblTitle, BorderLayout.NORTH);
-        pHead.add(lblSub, BorderLayout.SOUTH);
-        dlg.add(pHead, BorderLayout.NORTH);
+        khungDau.add(nhanTieuDe, BorderLayout.NORTH);
+        khungDau.add(nhanPhu, BorderLayout.SOUTH);
+        hopThoai.add(khungDau, BorderLayout.NORTH);
 
-        String[] cols = { "Mã ĐP", "Phòng", "Loại phòng", "Ngày nhận", "Ngày trả", "Số người", "Trạng thái", "Ghi chú" };
-        DefaultTableModel modelLS = new DefaultTableModel(cols, 0) {
+        String[] cacCot = { "Mã ĐP", "Phòng", "Loại phòng", "Ngày nhận", "Ngày trả", "Số người", "Trạng thái", "Ghi chú" };
+        DefaultTableModel moHinhLichSu = new DefaultTableModel(cacCot, 0) {
             @Override
-            public boolean isCellEditable(int row, int column) {
+            public boolean isCellEditable(int hang, int chiSoCot) {
                 return false;
             }
         };
 
-        for (DatPhong b : cuaKhach) {
-            String tt = b.getTrangThai();
-            if (tt.contains("CHECKED_IN") || tt.contains("Đã nhận")) tt = "Đang ở";
-            else if (tt.contains("CHECKED_OUT") || tt.contains("Đã trả")) tt = "Đã trả phòng";
-            else if (tt.contains("CANCELLED") || tt.contains("Đã hủy")) tt = "Đã hủy";
-            else tt = "Chờ nhận phòng";
+        for (DatPhong nut : cuaKhach) {
+            String trangThai = nut.getTrangThai();
+            if (trangThai.contains("CHECKED_IN") || trangThai.contains("Đã nhận")) trangThai = "Đang ở";
+            else if (trangThai.contains("CHECKED_OUT") || trangThai.contains("Đã trả")) trangThai = "Đã trả phòng";
+            else if (trangThai.contains("CANCELLED") || trangThai.contains("Đã hủy")) trangThai = "Đã hủy";
+            else trangThai = "Chờ nhận phòng";
 
-            modelLS.addRow(new Object[] {
-                b.getIdDatPhong(),
-                !b.getSoPhong().isEmpty() ? "P." + b.getSoPhong() : "---",
-                b.getTenLoaiPhong(),
-                b.getNgayNhanPhong(),
-                b.getNgayTraPhong(),
-                b.getSoNguoi(),
-                tt,
-                b.getGhiChu() != null ? b.getGhiChu() : ""
+            moHinhLichSu.addRow(new Object[] {
+                nut.getIdDatPhong(),
+                !nut.getSoPhong().isEmpty() ? "P." + nut.getSoPhong() : "---",
+                nut.getTenLoaiPhong(),
+                nut.getNgayNhanPhong(),
+                nut.getNgayTraPhong(),
+                nut.getSoNguoi(),
+                trangThai,
+                nut.getGhiChu() != null ? nut.getGhiChu() : ""
             });
         }
 
-        JTable tblLS = new JTable(modelLS);
-        tblLS.setRowHeight(32);
-        tblLS.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        JTable bangLichSu = new JTable(moHinhLichSu);
+        bangLichSu.setRowHeight(32);
+        bangLichSu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-        center.setHorizontalAlignment(SwingConstants.CENTER);
-        tblLS.getColumnModel().getColumn(0).setCellRenderer(center);
-        tblLS.getColumnModel().getColumn(1).setCellRenderer(center);
-        tblLS.getColumnModel().getColumn(3).setCellRenderer(center);
-        tblLS.getColumnModel().getColumn(4).setCellRenderer(center);
-        tblLS.getColumnModel().getColumn(5).setCellRenderer(center);
-        tblLS.getColumnModel().getColumn(6).setCellRenderer(center);
+        DefaultTableCellRenderer giua = new DefaultTableCellRenderer();
+        giua.setHorizontalAlignment(SwingConstants.CENTER);
+        bangLichSu.getColumnModel().getColumn(0).setCellRenderer(giua);
+        bangLichSu.getColumnModel().getColumn(1).setCellRenderer(giua);
+        bangLichSu.getColumnModel().getColumn(3).setCellRenderer(giua);
+        bangLichSu.getColumnModel().getColumn(4).setCellRenderer(giua);
+        bangLichSu.getColumnModel().getColumn(5).setCellRenderer(giua);
+        bangLichSu.getColumnModel().getColumn(6).setCellRenderer(giua);
 
-        dlg.add(new JScrollPane(tblLS), BorderLayout.CENTER);
+        hopThoai.add(new JScrollPane(bangLichSu), BorderLayout.CENTER);
 
-        JPanel pFoot = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnDong = new JButton("Đóng");
-        btnDong.addActionListener(ev -> dlg.dispose());
-        pFoot.add(btnDong);
-        dlg.add(pFoot, BorderLayout.SOUTH);
+        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton nutHang = new JButton("Đóng");
+        nutHang.addActionListener(suKien -> hopThoai.dispose());
+        khungChan.add(nutHang);
+        hopThoai.add(khungChan, BorderLayout.SOUTH);
 
-        dlg.setVisible(true);
+        hopThoai.setVisible(true);
     }
 
     // Thêm khách hàng bằng Modal Dialog
     void them() {
         try {
-            DialogThemSuaKhachHang dialog = new DialogThemSuaKhachHang(getParentWindow(), null);
-            dialog.setVisible(true);
+            DialogThemSuaKhachHang hopThoai = new DialogThemSuaKhachHang(getParentWindow(), null);
+            hopThoai.setVisible(true);
 
-            if (dialog.isSaved()) {
-                KhachHang k = dialog.getCustomer();
-                if (service.them(k) > 0) {
-                    JOptionPane.showMessageDialog(view, "Thêm khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            if (hopThoai.isSaved()) {
+                KhachHang khoa = hopThoai.getCustomer();
+                if (dichVu.them(khoa) > 0) {
+                    JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Thêm khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
                 } else {
-                    JOptionPane.showMessageDialog(view, "Thêm thất bại! Số CCCD có thể đã tồn tại trong hệ thống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Thêm thất bại! Số CCCD có thể đã tồn tại trong hệ thống.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception suKien) {
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Lỗi: " + suKien.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     // Sửa khách hàng bằng Modal Dialog
     void sua() {
-        int selectedRow = view.table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        int hangDaChon = viewQuanLyKhachHang.bang.getSelectedRow();
+        if (hangDaChon == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Vui lòng chọn một khách hàng trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
-            int modelRow = view.table.convertRowIndexToModel(selectedRow);
-            int maKH = (int) view.model.getValueAt(modelRow, 0);
+            int hangMoHinh = viewQuanLyKhachHang.bang.convertRowIndexToModel(hangDaChon);
+            int maKhachHang = (int) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 0);
 
-            KhachHang canSua = timTheoMa(maKH);
+            KhachHang canSua = timTheoMa(maKhachHang);
             if (canSua == null) {
-                JOptionPane.showMessageDialog(view, "Không tìm thấy thông tin khách hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Không tìm thấy thông tin khách hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            DialogThemSuaKhachHang dialog = new DialogThemSuaKhachHang(getParentWindow(), canSua);
-            dialog.setVisible(true);
+            DialogThemSuaKhachHang hopThoai = new DialogThemSuaKhachHang(getParentWindow(), canSua);
+            hopThoai.setVisible(true);
 
-            if (dialog.isSaved()) {
-                KhachHang capNhat = dialog.getCustomer();
-                if (service.sua(capNhat) > 0) {
-                    JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            if (hopThoai.isSaved()) {
+                KhachHang capNhat = hopThoai.getCustomer();
+                if (dichVu.sua(capNhat) > 0) {
+                    JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Cập nhật khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     taiDuLieu();
                 } else {
-                    JOptionPane.showMessageDialog(view, "Cập nhật khách hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Cập nhật khách hàng thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(view, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception suKien) {
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Lỗi: " + suKien.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     // Xóa khách hàng
     void xoa() {
-        int selectedRow = view.table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(view, "Vui lòng chọn một khách hàng trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        int hangDaChon = viewQuanLyKhachHang.bang.getSelectedRow();
+        if (hangDaChon == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Vui lòng chọn một khách hàng trong bảng để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int modelRow = view.table.convertRowIndexToModel(selectedRow);
-        int maKH = (int) view.model.getValueAt(modelRow, 0);
-        String hoTen = (String) view.model.getValueAt(modelRow, 1);
+        int hangMoHinh = viewQuanLyKhachHang.bang.convertRowIndexToModel(hangDaChon);
+        int maKhachHang = (int) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 0);
+        String hoTen = (String) viewQuanLyKhachHang.moHinh.getValueAt(hangMoHinh, 1);
 
         int chon = JOptionPane.showConfirmDialog(
-                view,
-                "Bạn có chắc muốn xóa khách hàng \"" + hoTen + "\" (Mã KH: " + maKH + ") không?\n"
+                viewQuanLyKhachHang,
+                "Bạn có chắc muốn xóa khách hàng \"" + hoTen + "\" (Mã KH: " + maKhachHang + ") không?\n"
                         + "Lưu ý: Không thể xóa nếu khách hàng đang có đơn đặt phòng hoặc hóa đơn liên quan.",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION,
@@ -309,12 +309,12 @@ public class KhachHangController {
 
         if (chon == JOptionPane.YES_OPTION) {
             KhachHang canXoa = new KhachHang();
-            canXoa.setIdKhachHang(maKH);
-            if (service.xoa(canXoa) > 0) {
-                JOptionPane.showMessageDialog(view, "Xóa khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            canXoa.setIdKhachHang(maKhachHang);
+            if (dichVu.xoa(canXoa) > 0) {
+                JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Xóa khách hàng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 taiDuLieu();
             } else {
-                JOptionPane.showMessageDialog(view, "Xóa thất bại! Khách hàng này có dữ liệu đặt phòng hoặc hóa đơn ràng buộc.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(viewQuanLyKhachHang, "Xóa thất bại! Khách hàng này có dữ liệu đặt phòng hoặc hóa đơn ràng buộc.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

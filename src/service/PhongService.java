@@ -7,68 +7,68 @@ import model.Phong;
 
 public class PhongService {
 
-	PhongDAO dao = new PhongDAO();
+	PhongDAO truyCapDuLieu = new PhongDAO();
 
 	// Them phong
-	public int them(Phong t) {
-		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+	public int them(Phong bangHienTai) {
+		if (bangHienTai.getSoPhong() == null || bangHienTai.getSoPhong().isEmpty()) {
 			return 0;
 		}
 
-		if (t.getGiaMoiDem() <= 0) {
+		if (bangHienTai.getGiaMoiDem() <= 0) {
 			return 0;
 		}
 
-		return dao.them(t);
+		return truyCapDuLieu.them(bangHienTai);
 	}
 
 	// Sua phong
-	public int sua(Phong t) {
-		if (t.getMaPhong() <= 0) {
+	public int sua(Phong bangHienTai) {
+		if (bangHienTai.getMaPhong() <= 0) {
 			return 0;
 		}
 
-		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+		if (bangHienTai.getSoPhong() == null || bangHienTai.getSoPhong().isEmpty()) {
 			return 0;
 		}
 
-		if (t.getGiaMoiDem() <= 0) {
+		if (bangHienTai.getGiaMoiDem() <= 0) {
 			return 0;
 		}
 
-		return dao.sua(t);
+		return truyCapDuLieu.sua(bangHienTai);
 	}
 
 	// Xoa phong
-	public int xoa(Phong r) {
-		if (r.getMaPhong() <= 0) {
+	public int xoa(Phong hangHienTai) {
+		if (hangHienTai.getMaPhong() <= 0) {
 			return 0;
 		}
 
-		return dao.xoa(r);
+		return truyCapDuLieu.xoa(hangHienTai);
 	}
 
 	// Xuat danh sach phong
 	public ArrayList<Phong> xuat() {
-		return dao.xuat();
+		return truyCapDuLieu.xuat();
 	}
 
 	// Tim kiem phong
-	public Phong timKiem(Phong t) {
-		if (t.getSoPhong() == null || t.getSoPhong().isEmpty()) {
+	public Phong timKiem(Phong bangHienTai) {
+		if (bangHienTai.getSoPhong() == null || bangHienTai.getSoPhong().isEmpty()) {
 			return null;
 		}
 
-		return dao.timKiem(t);
+		return truyCapDuLieu.timKiem(bangHienTai);
 	}
 
 	// Doi trang thai phong
-	public int doiTrangThai(int roomId, String trangThai) {
-		return dao.doiTrangThai(roomId, trangThai);
+	public int doiTrangThai(int maPhong, String trangThai) {
+		return truyCapDuLieu.doiTrangThai(maPhong, trangThai);
 	}
 
 	// Lay thong tin khach dang o
-	public ThongTinPhongDangO layThongTinKhachDangO(int roomId) {
-		return dao.layThongTinKhachDangO(roomId);
+	public ThongTinPhongDangO layThongTinKhachDangO(int maPhong) {
+		return truyCapDuLieu.layThongTinKhachDangO(maPhong);
 	}
 }

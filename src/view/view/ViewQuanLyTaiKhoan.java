@@ -18,43 +18,43 @@ import model.NguoiDung;
 public class ViewQuanLyTaiKhoan extends JFrame {
 
     // ── Bảng dữ liệu ──────────────────────────────────────────────────────────
-    public JTable table;
-    public DefaultTableModel model;
-    public TableRowSorter<DefaultTableModel> sorter;
+    public JTable bang;
+    public DefaultTableModel moHinh;
+    public TableRowSorter<DefaultTableModel> boSapXep;
 
     // ── Thanh tìm kiếm & Lọc ──────────────────────────────────────────────────
-    public JTextField         txtTimKiem;
-    public JComboBox<String>  cboLocVaiTro;
-    public JComboBox<String>  cboLocTrangThai;
-    public JButton            btnTimKiem;
-    public JButton            btnLamMoiTim;
-    public JLabel             lblThongKe;
+    public JTextField         oNhapTimKiem;
+    public JComboBox<String>  hopChonLocVaiTro;
+    public JComboBox<String>  hopChonLocTrangThai;
+    public JButton            nutTimKiem;
+    public JButton            nutLamMoiTim;
+    public JLabel             nhanThongKe;
 
     // ── Nút chức năng ─────────────────────────────────────────────────────────
-    public JButton btnThem;
-    public JButton btnSua;
-    public JButton btnXoa;
-    public JButton btnKhoaMoKhoa;
-    public JButton btnDatLaiMatKhau;
-    public JButton btnLamMoi;
-    public JButton btnQuayLai;
+    public JButton nutThem;
+    public JButton nutSua;
+    public JButton nutXoa;
+    public JButton nutKhoaMoKhoa;
+    public JButton nutDatLaiMatKhau;
+    public JButton nutLamMoi;
+    public JButton nutQuayLai;
 
     // ── Field compat cũ (vẫn cần cho controller cũ) ───────────────────────────
-    public JTextField      txtMaNguoiDung  = new JTextField();
-    public JTextField      txtTenDangNhap  = new JTextField();
-    public JPasswordField  txtMatKhau      = new JPasswordField();
-    public JTextField      txtHoTen        = new JTextField();
-    public JComboBox<String> cboVaiTro     = new JComboBox<>(new String[]{"STAFF","ADMIN"});
-    public JComboBox<String> cboTrangThai  = new JComboBox<>(new String[]{"1 - Hoạt động","0 - Đã khóa"});
+    public JTextField      oNhapMaNguoiDung  = new JTextField();
+    public JTextField      oNhapTenDangNhap  = new JTextField();
+    public JPasswordField  oNhapMatKhau      = new JPasswordField();
+    public JTextField      oNhapHoTen        = new JTextField();
+    public JComboBox<String> hopChonVaiTro     = new JComboBox<>(new String[]{"STAFF","ADMIN"});
+    public JComboBox<String> hopChonTrangThai  = new JComboBox<>(new String[]{"1 - Hoạt động","0 - Đã khóa"});
 
-    private NguoiDung currentUser;
+    private NguoiDung nguoiDungHienTai;
 
     public ViewQuanLyTaiKhoan() {
         this(new NguoiDung(1, "admin", "123456", "Quản trị viên", "ADMIN", true));
     }
 
-    public ViewQuanLyTaiKhoan(NguoiDung currentUser) {
-        this.currentUser = currentUser;
+    public ViewQuanLyTaiKhoan(NguoiDung nguoiDungHienTai) {
+        this.nguoiDungHienTai = nguoiDungHienTai;
         setTitle("Quản lý khách sạn - Quản lý tài khoản");
         AppWindowIcon.apply(this);
         setSize(1050, 680);
@@ -65,149 +65,149 @@ public class ViewQuanLyTaiKhoan extends JFrame {
     }
 
     private void initUI() {
-        JPanel pMain = new JPanel(new BorderLayout(0, 10));
-        pMain.setBackground(new Color(245, 247, 250));
-        pMain.setBorder(new EmptyBorder(15, 15, 15, 15));
+        JPanel khungChinh = new JPanel(new BorderLayout(0, 10));
+        khungChinh.setBackground(new Color(245, 247, 250));
+        khungChinh.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // ── TOP: Tiêu đề + Thanh tìm kiếm ────────────────────────────────────
-        JPanel pTop = new JPanel();
-        pTop.setLayout(new BoxLayout(pTop, BoxLayout.Y_AXIS));
-        pTop.setBackground(new Color(245, 247, 250));
+        JPanel khungTren = new JPanel();
+        khungTren.setLayout(new BoxLayout(khungTren, BoxLayout.Y_AXIS));
+        khungTren.setBackground(new Color(245, 247, 250));
 
         // 1. Tiêu đề + Thống kê
-        JPanel pTieuDe = new JPanel(new BorderLayout());
-        pTieuDe.setOpaque(false);
+        JPanel khungTieuDe = new JPanel(new BorderLayout());
+        khungTieuDe.setOpaque(false);
 
-        JLabel lblTieuDe = new JLabel("DANH SÁCH QUẢN LÝ TÀI KHOẢN");
-        lblTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTieuDe.setForeground(new Color(30, 41, 59));
+        JLabel nhanTieuDe = new JLabel("DANH SÁCH QUẢN LÝ TÀI KHOẢN");
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        nhanTieuDe.setForeground(new Color(30, 41, 59));
 
-        lblThongKe = new JLabel("Tổng số: 0 tài khoản | Admin: 0 | Nhân viên: 0");
-        lblThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblThongKe.setForeground(new Color(100, 116, 139));
+        nhanThongKe = new JLabel("Tổng số: 0 tài khoản | Admin: 0 | Nhân viên: 0");
+        nhanThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nhanThongKe.setForeground(new Color(100, 116, 139));
 
-        pTieuDe.add(lblTieuDe, BorderLayout.WEST);
-        pTieuDe.add(lblThongKe, BorderLayout.EAST);
-        pTop.add(pTieuDe);
-        pTop.add(Box.createVerticalStrut(12));
+        khungTieuDe.add(nhanTieuDe, BorderLayout.WEST);
+        khungTieuDe.add(nhanThongKe, BorderLayout.EAST);
+        khungTren.add(khungTieuDe);
+        khungTren.add(Box.createVerticalStrut(12));
 
         // 2. Thanh tìm kiếm & lọc
-        JPanel pTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        pTimKiem.setOpaque(false);
+        JPanel khungTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        khungTimKiem.setOpaque(false);
 
-        Font fLabel = new Font("Segoe UI", Font.BOLD, 13);
-        Font fInput = new Font("Segoe UI", Font.PLAIN, 13);
+        Font truongNhan = new Font("Segoe UI", Font.BOLD, 13);
+        Font truongNhap = new Font("Segoe UI", Font.PLAIN, 13);
 
-        JLabel lTim = new JLabel("Tìm kiếm:");
-        lTim.setFont(fLabel);
-        lTim.setForeground(new Color(51, 65, 85));
+        JLabel nhanTim = new JLabel("Tìm kiếm:");
+        nhanTim.setFont(truongNhan);
+        nhanTim.setForeground(new Color(51, 65, 85));
 
-        txtTimKiem = new JTextField(16);
-        txtTimKiem.setFont(fInput);
-        txtTimKiem.setPreferredSize(new Dimension(210, 34));
-        txtTimKiem.putClientProperty("JTextField.placeholderText", "Tên đăng nhập, họ tên...");
+        oNhapTimKiem = new JTextField(16);
+        oNhapTimKiem.setFont(truongNhap);
+        oNhapTimKiem.setPreferredSize(new Dimension(210, 34));
+        oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Tên đăng nhập, họ tên...");
 
-        btnTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(btnTimKiem, "timkiem.png");
-        btnTimKiem.setFont(fInput);
-        btnTimKiem.setPreferredSize(new Dimension(110, 34));
-        btnTimKiem.setFocusPainted(false);
+        nutTimKiem = new JButton("Tìm kiếm");
+        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
+        nutTimKiem.setFont(truongNhap);
+        nutTimKiem.setPreferredSize(new Dimension(110, 34));
+        nutTimKiem.setFocusPainted(false);
 
-        JLabel lVaiTro = new JLabel("Vai trò:");
-        lVaiTro.setFont(fLabel);
-        lVaiTro.setForeground(new Color(51, 65, 85));
+        JLabel nhanVaiTro = new JLabel("Vai trò:");
+        nhanVaiTro.setFont(truongNhan);
+        nhanVaiTro.setForeground(new Color(51, 65, 85));
 
-        cboLocVaiTro = new JComboBox<>(new String[]{"Tất cả vai trò", "ADMIN", "STAFF"});
-        cboLocVaiTro.setFont(fInput);
-        cboLocVaiTro.setPreferredSize(new Dimension(155, 34));
+        hopChonLocVaiTro = new JComboBox<>(new String[]{"Tất cả vai trò", "ADMIN", "STAFF"});
+        hopChonLocVaiTro.setFont(truongNhap);
+        hopChonLocVaiTro.setPreferredSize(new Dimension(155, 34));
 
-        JLabel lTrangThai = new JLabel("Trạng thái:");
-        lTrangThai.setFont(fLabel);
-        lTrangThai.setForeground(new Color(51, 65, 85));
+        JLabel nhanTrangThai = new JLabel("Trạng thái:");
+        nhanTrangThai.setFont(truongNhan);
+        nhanTrangThai.setForeground(new Color(51, 65, 85));
 
-        cboLocTrangThai = new JComboBox<>(new String[]{"Tất cả trạng thái", "Hoạt động", "Khóa"});
-        cboLocTrangThai.setFont(fInput);
-        cboLocTrangThai.setPreferredSize(new Dimension(165, 34));
+        hopChonLocTrangThai = new JComboBox<>(new String[]{"Tất cả trạng thái", "Hoạt động", "Khóa"});
+        hopChonLocTrangThai.setFont(truongNhap);
+        hopChonLocTrangThai.setPreferredSize(new Dimension(165, 34));
 
-        btnLamMoiTim = new JButton("Xóa lọc");
-        UIStyle.setButtonIcon(btnLamMoiTim, "load.png");
-        btnLamMoiTim.setFont(fInput);
-        btnLamMoiTim.setPreferredSize(new Dimension(90, 34));
-        btnLamMoiTim.setFocusPainted(false);
+        nutLamMoiTim = new JButton("Xóa lọc");
+        UIStyle.setButtonIcon(nutLamMoiTim, "load.png");
+        nutLamMoiTim.setFont(truongNhap);
+        nutLamMoiTim.setPreferredSize(new Dimension(90, 34));
+        nutLamMoiTim.setFocusPainted(false);
 
-        pTimKiem.add(lTim);
-        pTimKiem.add(txtTimKiem);
-        pTimKiem.add(btnTimKiem);
-        pTimKiem.add(Box.createHorizontalStrut(12));
-        pTimKiem.add(lVaiTro);
-        pTimKiem.add(cboLocVaiTro);
-        pTimKiem.add(lTrangThai);
-        pTimKiem.add(cboLocTrangThai);
-        pTimKiem.add(btnLamMoiTim);
+        khungTimKiem.add(nhanTim);
+        khungTimKiem.add(oNhapTimKiem);
+        khungTimKiem.add(nutTimKiem);
+        khungTimKiem.add(Box.createHorizontalStrut(12));
+        khungTimKiem.add(nhanVaiTro);
+        khungTimKiem.add(hopChonLocVaiTro);
+        khungTimKiem.add(nhanTrangThai);
+        khungTimKiem.add(hopChonLocTrangThai);
+        khungTimKiem.add(nutLamMoiTim);
 
-        pTop.add(pTimKiem);
-        pMain.add(pTop, BorderLayout.NORTH);
+        khungTren.add(khungTimKiem);
+        khungChinh.add(khungTren, BorderLayout.NORTH);
 
         // ── CENTER: Bảng danh sách tài khoản ─────────────────────────────────
-        model = new DefaultTableModel(
+        moHinh = new DefaultTableModel(
                 new String[]{"Mã ID", "Tên đăng nhập", "Họ và tên", "Vai trò", "Trạng thái"}, 0) {
-            @Override public boolean isCellEditable(int row, int column) { return false; }
-            @Override public Class<?> getColumnClass(int column) {
-                return column == 0 ? Integer.class : String.class;
+            @Override public boolean isCellEditable(int hang, int chiSoCot) { return false; }
+            @Override public Class<?> getColumnClass(int chiSoCot) {
+                return chiSoCot == 0 ? Integer.class : String.class;
             }
         };
 
-        table = new JTable(model);
-        table.setRowHeight(36);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setGridColor(new Color(230, 235, 240));
-        table.setShowVerticalLines(false);
-        table.setShowHorizontalLines(true);
-        table.setSelectionBackground(new Color(225, 238, 255));
-        table.setSelectionForeground(new Color(15, 23, 42));
+        bang = new JTable(moHinh);
+        bang.setRowHeight(36);
+        bang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        bang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        bang.setGridColor(new Color(230, 235, 240));
+        bang.setShowVerticalLines(false);
+        bang.setShowHorizontalLines(true);
+        bang.setSelectionBackground(new Color(225, 238, 255));
+        bang.setSelectionForeground(new Color(15, 23, 42));
 
-        JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        header.setBackground(new Color(238, 242, 246));
-        header.setForeground(new Color(30, 41, 59));
-        header.setPreferredSize(new Dimension(header.getWidth(), 38));
+        JTableHeader tieuDe = bang.getTableHeader();
+        tieuDe.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        tieuDe.setBackground(new Color(238, 242, 246));
+        tieuDe.setForeground(new Color(30, 41, 59));
+        tieuDe.setPreferredSize(new Dimension(tieuDe.getWidth(), 38));
 
-        sorter = new TableRowSorter<>(model);
-        table.setRowSorter(sorter);
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-        sorter.setSortKeys(sortKeys);
+        boSapXep = new TableRowSorter<>(moHinh);
+        bang.setRowSorter(boSapXep);
+        List<RowSorter.SortKey> cacKhoaSapXep = new ArrayList<>();
+        cacKhoaSapXep.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+        boSapXep.setSortKeys(cacKhoaSapXep);
 
         // Căn chỉnh cột
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        DefaultTableCellRenderer boKetXuatGiua = new DefaultTableCellRenderer();
+        boKetXuatGiua.setHorizontalAlignment(SwingConstants.CENTER);
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(60);
-        table.getColumnModel().getColumn(0).setMaxWidth(80);
-        table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        bang.getColumnModel().getColumn(0).setPreferredWidth(60);
+        bang.getColumnModel().getColumn(0).setMaxWidth(80);
+        bang.getColumnModel().getColumn(0).setCellRenderer(boKetXuatGiua);
 
-        table.getColumnModel().getColumn(1).setPreferredWidth(160);
-        DefaultTableCellRenderer boldRenderer = new DefaultTableCellRenderer() {
-            @Override public Component getTableCellRendererComponent(JTable t, Object v, boolean s, boolean f, int r, int c) {
-                Component comp = super.getTableCellRendererComponent(t, v, s, f, r, c);
+        bang.getColumnModel().getColumn(1).setPreferredWidth(160);
+        DefaultTableCellRenderer boKetXuatDam = new DefaultTableCellRenderer() {
+            @Override public Component getTableCellRendererComponent(JTable bangHienTai, Object giaTriHienTai, boolean chuoi, boolean tieuDiem, int hangHienTai, int chiSoCot) {
+                Component thanhPhan = super.getTableCellRendererComponent(bangHienTai, giaTriHienTai, chuoi, tieuDiem, hangHienTai, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
-                return comp;
+                return thanhPhan;
             }
         };
-        table.getColumnModel().getColumn(1).setCellRenderer(boldRenderer);
+        bang.getColumnModel().getColumn(1).setCellRenderer(boKetXuatDam);
 
-        table.getColumnModel().getColumn(2).setPreferredWidth(200);
+        bang.getColumnModel().getColumn(2).setPreferredWidth(200);
 
         // Cột Vai trò – badge
-        table.getColumnModel().getColumn(3).setPreferredWidth(130);
-        table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override public Component getTableCellRendererComponent(JTable t, Object v, boolean sel, boolean f, int r, int c) {
-                super.getTableCellRendererComponent(t, v, sel, f, r, c);
+        bang.getColumnModel().getColumn(3).setPreferredWidth(130);
+        bang.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override public Component getTableCellRendererComponent(JTable bangHienTai, Object giaTriHienTai, boolean duocChon, boolean tieuDiem, int hangHienTai, int chiSoCot) {
+                super.getTableCellRendererComponent(bangHienTai, giaTriHienTai, duocChon, tieuDiem, hangHienTai, chiSoCot);
                 setHorizontalAlignment(CENTER);
                 setFont(new Font("Segoe UI", Font.BOLD, 12));
-                if (!sel && v != null) {
-                    if ("ADMIN".equalsIgnoreCase(v.toString())) {
+                if (!duocChon && giaTriHienTai != null) {
+                    if ("ADMIN".equalsIgnoreCase(giaTriHienTai.toString())) {
                         setBackground(new Color(224, 231, 255));
                         setForeground(new Color(79, 70, 229));
                     } else {
@@ -215,23 +215,23 @@ public class ViewQuanLyTaiKhoan extends JFrame {
                         setForeground(new Color(51, 65, 85));
                     }
                 } else {
-                    setBackground(t.getSelectionBackground());
-                    setForeground(t.getSelectionForeground());
+                    setBackground(bangHienTai.getSelectionBackground());
+                    setForeground(bangHienTai.getSelectionForeground());
                 }
                 return this;
             }
         });
 
         // Cột Trạng thái – badge
-        table.getColumnModel().getColumn(4).setPreferredWidth(140);
-        table.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override public Component getTableCellRendererComponent(JTable t, Object v, boolean sel, boolean f, int r, int c) {
-                super.getTableCellRendererComponent(t, v, sel, f, r, c);
+        bang.getColumnModel().getColumn(4).setPreferredWidth(140);
+        bang.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override public Component getTableCellRendererComponent(JTable bangHienTai, Object giaTriHienTai, boolean duocChon, boolean tieuDiem, int hangHienTai, int chiSoCot) {
+                super.getTableCellRendererComponent(bangHienTai, giaTriHienTai, duocChon, tieuDiem, hangHienTai, chiSoCot);
                 setHorizontalAlignment(CENTER);
                 setFont(new Font("Segoe UI", Font.BOLD, 12));
-                if (!sel && v != null) {
-                    String s = v.toString();
-                    if (s.contains("Hoạt động") || s.contains("Đang")) {
+                if (!duocChon && giaTriHienTai != null) {
+                    String chuoi = giaTriHienTai.toString();
+                    if (chuoi.contains("Hoạt động") || chuoi.contains("Đang")) {
                         setText("Hoạt động");
                         setBackground(new Color(209, 231, 221));
                         setForeground(new Color(15, 81, 50));
@@ -241,93 +241,93 @@ public class ViewQuanLyTaiKhoan extends JFrame {
                         setForeground(new Color(132, 32, 41));
                     }
                 } else {
-                    setBackground(t.getSelectionBackground());
-                    setForeground(t.getSelectionForeground());
+                    setBackground(bangHienTai.getSelectionBackground());
+                    setForeground(bangHienTai.getSelectionForeground());
                 }
                 return this;
             }
         });
 
         // Double-click mở modal sửa
-        table.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                    btnSua.doClick();
+        bang.addMouseListener(new MouseAdapter() {
+            @Override public void mouseClicked(MouseEvent suKien) {
+                if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
+                    nutSua.doClick();
                 }
             }
         });
 
         // Khi chọn dòng, ghi vào các field compat cũ (vẫn dùng trong NguoiDungController)
-        table.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
-                int modelRow = table.convertRowIndexToModel(table.getSelectedRow());
-                txtMaNguoiDung.setText(model.getValueAt(modelRow, 0).toString());
-                txtTenDangNhap.setText(model.getValueAt(modelRow, 1).toString());
-                txtHoTen.setText(model.getValueAt(modelRow, 2).toString());
-                cboVaiTro.setSelectedItem(model.getValueAt(modelRow, 3).toString());
-                String status = model.getValueAt(modelRow, 4).toString();
-                cboTrangThai.setSelectedIndex(status.contains("Hoạt động") ? 0 : 1);
-                txtMatKhau.setText("");
+        bang.getSelectionModel().addListSelectionListener(suKien -> {
+            if (!suKien.getValueIsAdjusting() && bang.getSelectedRow() != -1) {
+                int hangMoHinh = bang.convertRowIndexToModel(bang.getSelectedRow());
+                oNhapMaNguoiDung.setText(moHinh.getValueAt(hangMoHinh, 0).toString());
+                oNhapTenDangNhap.setText(moHinh.getValueAt(hangMoHinh, 1).toString());
+                oNhapHoTen.setText(moHinh.getValueAt(hangMoHinh, 2).toString());
+                hopChonVaiTro.setSelectedItem(moHinh.getValueAt(hangMoHinh, 3).toString());
+                String trangThai = moHinh.getValueAt(hangMoHinh, 4).toString();
+                hopChonTrangThai.setSelectedIndex(trangThai.contains("Hoạt động") ? 0 : 1);
+                oNhapMatKhau.setText("");
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 226, 235), 1));
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        pMain.add(scrollPane, BorderLayout.CENTER);
+        JScrollPane cuonPane = new JScrollPane(bang);
+        cuonPane.setBorder(BorderFactory.createLineBorder(new Color(220, 226, 235), 1));
+        cuonPane.getViewport().setBackground(Color.WHITE);
+        khungChinh.add(cuonPane, BorderLayout.CENTER);
 
         // ── BOTTOM: Nút thao tác ──────────────────────────────────────────────
-        JPanel pBottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-        pBottom.setOpaque(false);
+        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        khungDuoi.setOpaque(false);
 
-        btnThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.BLACK, 165);
-        UIStyle.setButtonIcon(btnThem, "them.png");
-        btnSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7), Color.BLACK, 150);
-        UIStyle.setButtonIcon(btnSua, "sua.png");
-        btnXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.BLACK, 150);
-        UIStyle.setButtonIcon(btnXoa, "xoa.png");
-        btnKhoaMoKhoa    = makeBtn("Khóa / Mở khóa", new Color(108, 117, 125), Color.WHITE, 155);
-        btnDatLaiMatKhau = makeBtn("Đặt lại mật khẩu", new Color(52, 58, 64),  Color.WHITE, 165);
-        btnLamMoi        = makeBtn("Làm mới", null, null, 130);
-        UIStyle.setButtonIcon(btnLamMoi, "load.png");
-        btnLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.BLACK, 165);
+        UIStyle.setButtonIcon(nutThem, "them.png");
+        nutSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7), Color.BLACK, 150);
+        UIStyle.setButtonIcon(nutSua, "sua.png");
+        nutXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.BLACK, 150);
+        UIStyle.setButtonIcon(nutXoa, "xoa.png");
+        nutKhoaMoKhoa    = makeBtn("Khóa / Mở khóa", new Color(108, 117, 125), Color.WHITE, 155);
+        nutDatLaiMatKhau = makeBtn("Đặt lại mật khẩu", new Color(52, 58, 64),  Color.WHITE, 165);
+        nutLamMoi        = makeBtn("Làm mới", null, null, 130);
+        UIStyle.setButtonIcon(nutLamMoi, "load.png");
+        nutLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        pBottom.add(btnThem);
-        pBottom.add(btnSua);
-        pBottom.add(btnXoa);
-        pBottom.add(btnKhoaMoKhoa);
-        pBottom.add(btnDatLaiMatKhau);
-        pBottom.add(btnLamMoi);
+        khungDuoi.add(nutThem);
+        khungDuoi.add(nutSua);
+        khungDuoi.add(nutXoa);
+        khungDuoi.add(nutKhoaMoKhoa);
+        khungDuoi.add(nutDatLaiMatKhau);
+        khungDuoi.add(nutLamMoi);
 
-        pMain.add(pBottom, BorderLayout.SOUTH);
-        setContentPane(pMain);
+        khungChinh.add(khungDuoi, BorderLayout.SOUTH);
+        setContentPane(khungChinh);
 
         // btnQuayLai chỉ tạo để tránh NPE khi ViewTrangChu set action listener
-        btnQuayLai = new JButton("Quay lại");
+        nutQuayLai = new JButton("Quay lại");
     }
 
-    private JButton makeBtn(String text, Color bg, Color fg, int width) {
-        JButton b = new JButton(text);
-        b.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        if (bg != null) { b.setBackground(bg); b.setForeground(fg); }
-        b.setPreferredSize(new Dimension(width, 36));
-        b.setFocusPainted(false);
-        return b;
+    private JButton makeBtn(String vanBan, Color mauNen, Color mauChu, int chieuRong) {
+        JButton nut = new JButton(vanBan);
+        nut.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        if (mauNen != null) { nut.setBackground(mauNen); nut.setForeground(mauChu); }
+        nut.setPreferredSize(new Dimension(chieuRong, 36));
+        nut.setFocusPainted(false);
+        return nut;
     }
 
     public void lamMoiForm() {
-        txtMaNguoiDung.setText("");
-        txtTenDangNhap.setText("");
-        txtMatKhau.setText("");
-        txtHoTen.setText("");
-        cboVaiTro.setSelectedIndex(0);
-        cboTrangThai.setSelectedIndex(0);
-        table.clearSelection();
+        oNhapMaNguoiDung.setText("");
+        oNhapTenDangNhap.setText("");
+        oNhapMatKhau.setText("");
+        oNhapHoTen.setText("");
+        hopChonVaiTro.setSelectedIndex(0);
+        hopChonTrangThai.setSelectedIndex(0);
+        bang.clearSelection();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] thamSo) {
         SwingUtilities.invokeLater(() -> {
-            try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception ignored) {}
+            try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception biBoQua) {}
             new ViewQuanLyTaiKhoan().setVisible(true);
         });
     }

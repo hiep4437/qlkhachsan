@@ -14,44 +14,44 @@ import view.view.ViewQuanLyTaiKhoan;
 
 public class NguoiDungController {
 
-    private ViewQuanLyTaiKhoan view;
-    private NguoiDungService service = new NguoiDungService();
-    private NguoiDung currentUser;
+    private ViewQuanLyTaiKhoan viewQuanLyTaiKhoan;
+    private NguoiDungService dichVu = new NguoiDungService();
+    private NguoiDung nguoiDungHienTai;
 
-    public NguoiDungController(ViewQuanLyTaiKhoan view) {
-        this(view, null);
+    public NguoiDungController(ViewQuanLyTaiKhoan viewQuanLyTaiKhoan) {
+        this(viewQuanLyTaiKhoan, null);
     }
 
-    public NguoiDungController(ViewQuanLyTaiKhoan view, NguoiDung currentUser) {
-        this.view = view;
-        this.currentUser = (currentUser != null)
-                ? currentUser
+    public NguoiDungController(ViewQuanLyTaiKhoan viewQuanLyTaiKhoan, NguoiDung nguoiDungHienTai) {
+        this.viewQuanLyTaiKhoan = viewQuanLyTaiKhoan;
+        this.nguoiDungHienTai = (nguoiDungHienTai != null)
+                ? nguoiDungHienTai
                 : new NguoiDung(1, "admin", "123456", "Quản trị viên", "ADMIN", true);
 
         taiDuLieu();
 
         // ── Nút thao tác ──────────────────────────────────────────────────────
-        view.btnThem.addActionListener(e -> them());
-        view.btnSua.addActionListener(e -> sua());
-        view.btnXoa.addActionListener(e -> xoa());
-        view.btnKhoaMoKhoa.addActionListener(e -> doiTrangThai());
-        view.btnDatLaiMatKhau.addActionListener(e -> datLaiMatKhau());
+        viewQuanLyTaiKhoan.nutThem.addActionListener(suKien -> them());
+        viewQuanLyTaiKhoan.nutSua.addActionListener(suKien -> sua());
+        viewQuanLyTaiKhoan.nutXoa.addActionListener(suKien -> xoa());
+        viewQuanLyTaiKhoan.nutKhoaMoKhoa.addActionListener(suKien -> doiTrangThai());
+        viewQuanLyTaiKhoan.nutDatLaiMatKhau.addActionListener(suKien -> datLaiMatKhau());
 
         // ── Tìm kiếm & lọc ────────────────────────────────────────────────────
-        view.btnTimKiem.addActionListener(e -> apDungBoLoc());
-        view.txtTimKiem.addActionListener(e -> apDungBoLoc());
-        view.cboLocVaiTro.addActionListener(e -> apDungBoLoc());
-        view.cboLocTrangThai.addActionListener(e -> apDungBoLoc());
+        viewQuanLyTaiKhoan.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyTaiKhoan.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyTaiKhoan.hopChonLocVaiTro.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyTaiKhoan.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
 
-        view.btnLamMoiTim.addActionListener(e -> {
-            view.txtTimKiem.setText("");
-            view.cboLocVaiTro.setSelectedIndex(0);
-            view.cboLocTrangThai.setSelectedIndex(0);
+        viewQuanLyTaiKhoan.nutLamMoiTim.addActionListener(suKien -> {
+            viewQuanLyTaiKhoan.oNhapTimKiem.setText("");
+            viewQuanLyTaiKhoan.hopChonLocVaiTro.setSelectedIndex(0);
+            viewQuanLyTaiKhoan.hopChonLocTrangThai.setSelectedIndex(0);
             apDungBoLoc();
         });
 
-        view.btnLamMoi.addActionListener(e -> {
-            view.lamMoiForm();
+        viewQuanLyTaiKhoan.nutLamMoi.addActionListener(suKien -> {
+            viewQuanLyTaiKhoan.lamMoiForm();
             taiDuLieu();
         });
     }
@@ -60,29 +60,29 @@ public class NguoiDungController {
     // Tải dữ liệu toàn bộ lên bảng
     // ─────────────────────────────────────────────────────────────────────────
     public void taiDuLieu() {
-        view.model.setRowCount(0);
+        viewQuanLyTaiKhoan.moHinh.setRowCount(0);
 
-        ArrayList<NguoiDung> ds = service.xuat();
-        int tong  = ds.size();
-        int admin = 0;
-        int nv    = 0;
+        ArrayList<NguoiDung> danhSach = dichVu.xuat();
+        int chung  = danhSach.size();
+        int quanTri = 0;
+        int nguoiDung    = 0;
 
-        for (NguoiDung u : ds) {
-            if ("ADMIN".equalsIgnoreCase(u.getVaiTro())) admin++;
-            else nv++;
+        for (NguoiDung doiTuong : danhSach) {
+            if ("ADMIN".equalsIgnoreCase(doiTuong.getVaiTro())) quanTri++;
+            else nguoiDung++;
 
-            String trangThaiHienThi = u.isTrangThai() ? "Hoạt động" : "Đã khóa";
-            view.model.addRow(new Object[]{
-                u.getIdNguoiDung(),
-                u.getTenDangNhap(),
-                u.getHoTen(),
-                u.getVaiTro(),
+            String trangThaiHienThi = doiTuong.isTrangThai() ? "Hoạt động" : "Đã khóa";
+            viewQuanLyTaiKhoan.moHinh.addRow(new Object[]{
+                doiTuong.getIdNguoiDung(),
+                doiTuong.getTenDangNhap(),
+                doiTuong.getHoTen(),
+                doiTuong.getVaiTro(),
                 trangThaiHienThi
             });
         }
 
-        view.lblThongKe.setText(String.format(
-                "Tổng số: %d tài khoản  |  Admin: %d  |  Nhân viên: %d", tong, admin, nv));
+        viewQuanLyTaiKhoan.nhanThongKe.setText(String.format(
+                "Tổng số: %d tài khoản  |  Admin: %d  |  Nhân viên: %d", chung, quanTri, nguoiDung));
 
         apDungBoLoc();
     }
@@ -91,76 +91,76 @@ public class NguoiDungController {
     // Lọc RowFilter kết hợp từ khóa + vai trò + trạng thái
     // ─────────────────────────────────────────────────────────────────────────
     void apDungBoLoc() {
-        String tuKhoa = view.txtTimKiem.getText().trim().toLowerCase();
-        String locVT  = (String) view.cboLocVaiTro.getSelectedItem();
-        String locTT  = (String) view.cboLocTrangThai.getSelectedItem();
+        String tuKhoa = viewQuanLyTaiKhoan.oNhapTimKiem.getText().trim().toLowerCase();
+        String locVaiTro  = (String) viewQuanLyTaiKhoan.hopChonLocVaiTro.getSelectedItem();
+        String locTrangThai  = (String) viewQuanLyTaiKhoan.hopChonLocTrangThai.getSelectedItem();
 
-        if (view.sorter == null) return;
+        if (viewQuanLyTaiKhoan.boSapXep == null) return;
 
-        List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
+        List<RowFilter<DefaultTableModel, Object>> cacBoLoc = new ArrayList<>();
 
         if (!tuKhoa.isEmpty()) {
-            filters.add(new RowFilter<DefaultTableModel, Object>() {
-                @Override public boolean include(Entry<? extends DefaultTableModel, ?> entry) {
-                    for (int i = 0; i < entry.getValueCount(); i++) {
-                        Object val = entry.getValue(i);
-                        if (val != null && val.toString().toLowerCase().contains(tuKhoa)) return true;
+            cacBoLoc.add(new RowFilter<DefaultTableModel, Object>() {
+                @Override public boolean include(Entry<? extends DefaultTableModel, ?> phanTu) {
+                    for (int chiSo = 0; chiSo < phanTu.getValueCount(); chiSo++) {
+                        Object giaTri = phanTu.getValue(chiSo);
+                        if (giaTri != null && giaTri.toString().toLowerCase().contains(tuKhoa)) return true;
                     }
                     return false;
                 }
             });
         }
 
-        if (locVT != null && !locVT.equals("Tất cả vai trò")) {
-            filters.add(RowFilter.regexFilter("(?i)^" + locVT + "$", 3));
+        if (locVaiTro != null && !locVaiTro.equals("Tất cả vai trò")) {
+            cacBoLoc.add(RowFilter.regexFilter("(?i)^" + locVaiTro + "$", 3));
         }
 
-        if (locTT != null && !locTT.equals("Tất cả trạng thái")) {
-            filters.add(RowFilter.regexFilter("(?i)" + locTT, 4));
+        if (locTrangThai != null && !locTrangThai.equals("Tất cả trạng thái")) {
+            cacBoLoc.add(RowFilter.regexFilter("(?i)" + locTrangThai, 4));
         }
 
-        view.sorter.setRowFilter(filters.isEmpty() ? null : RowFilter.andFilter(filters));
+        viewQuanLyTaiKhoan.boSapXep.setRowFilter(cacBoLoc.isEmpty() ? null : RowFilter.andFilter(cacBoLoc));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Helper: cửa sổ cha cho dialog
     // ─────────────────────────────────────────────────────────────────────────
     private Window getParentWindow() {
-        Window w = SwingUtilities.getWindowAncestor(view.getContentPane());
-        return w != null ? w : view;
+        Window chieuRong = SwingUtilities.getWindowAncestor(viewQuanLyTaiKhoan.getContentPane());
+        return chieuRong != null ? chieuRong : viewQuanLyTaiKhoan;
     }
 
     // Helper: lấy ID từ dòng đang chọn trong bảng
     private int getSelectedId() {
-        int viewRow = view.table.getSelectedRow();
-        if (viewRow == -1) return -1;
-        int modelRow = view.table.convertRowIndexToModel(viewRow);
-        return (int) view.model.getValueAt(modelRow, 0);
+        int hangHienThi = viewQuanLyTaiKhoan.bang.getSelectedRow();
+        if (hangHienThi == -1) return -1;
+        int hangMoHinh = viewQuanLyTaiKhoan.bang.convertRowIndexToModel(hangHienThi);
+        return (int) viewQuanLyTaiKhoan.moHinh.getValueAt(hangMoHinh, 0);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Thêm tài khoản – mở Modal Dialog
     // ─────────────────────────────────────────────────────────────────────────
     private void them() {
-        DialogThemSuaTaiKhoan dialog = new DialogThemSuaTaiKhoan(getParentWindow(), null);
-        dialog.setVisible(true);
+        DialogThemSuaTaiKhoan hopThoai = new DialogThemSuaTaiKhoan(getParentWindow(), null);
+        hopThoai.setVisible(true);
 
-        if (!dialog.isSaved()) return;
+        if (!hopThoai.isSaved()) return;
 
-        NguoiDung u = dialog.getUser();
-        int kq  = service.themNguoiDung(u);
+        NguoiDung doiTuong = hopThoai.getUser();
+        int ketQua  = dichVu.themNguoiDung(doiTuong);
 
-        if (kq == -1) {
-            JOptionPane.showMessageDialog(view,
-                    "Tên đăng nhập '" + u.getTenDangNhap() + "' đã tồn tại! Vui lòng chọn tên khác.",
+        if (ketQua == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
+                    "Tên đăng nhập '" + doiTuong.getTenDangNhap() + "' đã tồn tại! Vui lòng chọn tên khác.",
                     "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-        } else if (kq > 0) {
-            JOptionPane.showMessageDialog(view,
+        } else if (ketQua > 0) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Thêm tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             taiDuLieu();
-            view.lamMoiForm();
+            viewQuanLyTaiKhoan.lamMoiForm();
         } else {
-            JOptionPane.showMessageDialog(view, "Thêm tài khoản thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Thêm tài khoản thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -168,52 +168,52 @@ public class NguoiDungController {
     // Sửa tài khoản – mở Modal Dialog (cũng kích hoạt bởi double-click)
     // ─────────────────────────────────────────────────────────────────────────
     private void sua() {
-        int id = getSelectedId();
-        if (id == -1) {
-            JOptionPane.showMessageDialog(view,
+        int ma = getSelectedId();
+        if (ma == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Vui lòng chọn tài khoản trong bảng để sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        NguoiDung u = service.timTheoId(id);
-        if (u == null) {
-            JOptionPane.showMessageDialog(view, "Không tìm thấy tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        NguoiDung doiTuong = dichVu.timTheoId(ma);
+        if (doiTuong == null) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Không tìm thấy tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        DialogThemSuaTaiKhoan dialog = new DialogThemSuaTaiKhoan(getParentWindow(), u);
-        dialog.setVisible(true);
+        DialogThemSuaTaiKhoan hopThoai = new DialogThemSuaTaiKhoan(getParentWindow(), doiTuong);
+        hopThoai.setVisible(true);
 
-        if (!dialog.isSaved()) return;
+        if (!hopThoai.isSaved()) return;
 
-        NguoiDung capNhat = dialog.getUser();
+        NguoiDung capNhat = hopThoai.getUser();
 
         // Không cho tự khóa tài khoản đang đăng nhập
-        if (capNhat.getIdNguoiDung() == currentUser.getIdNguoiDung() && !capNhat.isTrangThai()) {
-            JOptionPane.showMessageDialog(view,
+        if (capNhat.getIdNguoiDung() == nguoiDungHienTai.getIdNguoiDung() && !capNhat.isTrangThai()) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Bạn không thể tự khóa tài khoản của chính mình!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int kq = service.suaNguoiDung(capNhat);
-        if (kq == -1) {
-            JOptionPane.showMessageDialog(view,
+        int ketQua = dichVu.suaNguoiDung(capNhat);
+        if (ketQua == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Tên đăng nhập '" + capNhat.getTenDangNhap() + "' đã được tài khoản khác sử dụng!",
                     "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-        } else if (kq > 0) {
+        } else if (ketQua > 0) {
             // Cập nhật currentUser nếu sửa chính mình
-            if (id == currentUser.getIdNguoiDung()) {
-                currentUser.setTenDangNhap(capNhat.getTenDangNhap());
-                currentUser.setHoTen(capNhat.getHoTen());
-                currentUser.setVaiTro(capNhat.getVaiTro());
+            if (ma == nguoiDungHienTai.getIdNguoiDung()) {
+                nguoiDungHienTai.setTenDangNhap(capNhat.getTenDangNhap());
+                nguoiDungHienTai.setHoTen(capNhat.getHoTen());
+                nguoiDungHienTai.setVaiTro(capNhat.getVaiTro());
                 if (capNhat.getMatKhau() != null && !capNhat.getMatKhau().isEmpty()) {
-                    currentUser.setMatKhau(capNhat.getMatKhau());
+                    nguoiDungHienTai.setMatKhau(capNhat.getMatKhau());
                 }
             }
-            JOptionPane.showMessageDialog(view, "Cập nhật tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Cập nhật tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             taiDuLieu();
         } else {
-            JOptionPane.showMessageDialog(view, "Cập nhật tài khoản thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Cập nhật tài khoản thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -221,35 +221,35 @@ public class NguoiDungController {
     // Xóa tài khoản
     // ─────────────────────────────────────────────────────────────────────────
     private void xoa() {
-        int id = getSelectedId();
-        if (id == -1) {
-            JOptionPane.showMessageDialog(view,
+        int ma = getSelectedId();
+        if (ma == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Vui lòng chọn tài khoản trong bảng cần xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        if (id == currentUser.getIdNguoiDung()) {
-            JOptionPane.showMessageDialog(view,
+        if (ma == nguoiDungHienTai.getIdNguoiDung()) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Bạn không thể tự xóa tài khoản đang đăng nhập!", "Không thể thực hiện", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int viewRow  = view.table.getSelectedRow();
-        int modelRow = view.table.convertRowIndexToModel(viewRow);
-        String username = view.model.getValueAt(modelRow, 1).toString();
+        int hangHienThi  = viewQuanLyTaiKhoan.bang.getSelectedRow();
+        int hangMoHinh = viewQuanLyTaiKhoan.bang.convertRowIndexToModel(hangHienThi);
+        String tenDangNhap = viewQuanLyTaiKhoan.moHinh.getValueAt(hangMoHinh, 1).toString();
 
-        int xacNhan = JOptionPane.showConfirmDialog(view,
-                "Bạn có chắc muốn xóa vĩnh viễn tài khoản: '" + username + "' (ID: " + id + ") không?",
+        int xacNhan = JOptionPane.showConfirmDialog(viewQuanLyTaiKhoan,
+                "Bạn có chắc muốn xóa vĩnh viễn tài khoản: '" + tenDangNhap + "' (ID: " + ma + ") không?",
                 "Xác nhận xóa tài khoản", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
         if (xacNhan == JOptionPane.YES_OPTION) {
-            int kq = service.xoaNguoiDung(id, currentUser.getIdNguoiDung());
-            if (kq > 0) {
-                JOptionPane.showMessageDialog(view, "Xóa tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            int ketQua = dichVu.xoaNguoiDung(ma, nguoiDungHienTai.getIdNguoiDung());
+            if (ketQua > 0) {
+                JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Xóa tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 taiDuLieu();
-                view.lamMoiForm();
+                viewQuanLyTaiKhoan.lamMoiForm();
             } else {
-                JOptionPane.showMessageDialog(view, "Không thể xóa tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Không thể xóa tài khoản!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -258,40 +258,40 @@ public class NguoiDungController {
     // Khóa / Mở khóa tài khoản
     // ─────────────────────────────────────────────────────────────────────────
     private void doiTrangThai() {
-        int id = getSelectedId();
-        if (id == -1) {
-            JOptionPane.showMessageDialog(view,
+        int ma = getSelectedId();
+        if (ma == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Vui lòng chọn tài khoản trong bảng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        NguoiDung u = service.timTheoId(id);
-        if (u == null) {
-            JOptionPane.showMessageDialog(view, "Không tìm thấy người dùng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        NguoiDung doiTuong = dichVu.timTheoId(ma);
+        if (doiTuong == null) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Không tìm thấy người dùng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        boolean trangThaiMoi = !u.isTrangThai();
+        boolean trangThaiMoi = !doiTuong.isTrangThai();
 
-        if (id == currentUser.getIdNguoiDung() && !trangThaiMoi) {
-            JOptionPane.showMessageDialog(view,
+        if (ma == nguoiDungHienTai.getIdNguoiDung() && !trangThaiMoi) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Bạn không thể tự khóa tài khoản của chính mình!", "Không thể thực hiện", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String hanhDong = trangThaiMoi ? "MỞ KHÓA" : "KHÓA";
-        int xacNhan = JOptionPane.showConfirmDialog(view,
-                "Bạn có muốn " + hanhDong + " tài khoản '" + u.getTenDangNhap() + "' không?",
+        String hanhHang = trangThaiMoi ? "MỞ KHÓA" : "KHÓA";
+        int xacNhan = JOptionPane.showConfirmDialog(viewQuanLyTaiKhoan,
+                "Bạn có muốn " + hanhHang + " tài khoản '" + doiTuong.getTenDangNhap() + "' không?",
                 "Xác nhận đổi trạng thái", JOptionPane.YES_NO_OPTION);
 
         if (xacNhan == JOptionPane.YES_OPTION) {
-            int kq = service.doiTrangThai(id, currentUser.getIdNguoiDung(), trangThaiMoi);
-            if (kq > 0) {
-                JOptionPane.showMessageDialog(view,
-                        "Đã " + hanhDong.toLowerCase() + " tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            int ketQua = dichVu.doiTrangThai(ma, nguoiDungHienTai.getIdNguoiDung(), trangThaiMoi);
+            if (ketQua > 0) {
+                JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
+                        "Đã " + hanhHang.toLowerCase() + " tài khoản thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 taiDuLieu();
             } else {
-                JOptionPane.showMessageDialog(view, "Thao tác thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Thao tác thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -300,52 +300,52 @@ public class NguoiDungController {
     // Đặt lại mật khẩu
     // ─────────────────────────────────────────────────────────────────────────
     private void datLaiMatKhau() {
-        int id = getSelectedId();
-        if (id == -1) {
-            JOptionPane.showMessageDialog(view,
+        int ma = getSelectedId();
+        if (ma == -1) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
                     "Vui lòng chọn tài khoản cần đặt lại mật khẩu!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int viewRow  = view.table.getSelectedRow();
-        int modelRow = view.table.convertRowIndexToModel(viewRow);
-        String username = view.model.getValueAt(modelRow, 1).toString();
+        int hangHienThi  = viewQuanLyTaiKhoan.bang.getSelectedRow();
+        int hangMoHinh = viewQuanLyTaiKhoan.bang.convertRowIndexToModel(hangHienThi);
+        String tenDangNhap = viewQuanLyTaiKhoan.moHinh.getValueAt(hangMoHinh, 1).toString();
 
-        JPasswordField pf1 = new JPasswordField(16);
-        JPasswordField pf2 = new JPasswordField(16);
-        JPanel pInput = new JPanel(new GridLayout(4, 1, 0, 6));
-        pInput.add(new JLabel("Mật khẩu mới cho tài khoản: '" + username + "'"));
-        pInput.add(pf1);
-        pInput.add(new JLabel("Xác nhận mật khẩu mới:"));
-        pInput.add(pf2);
+        JPasswordField truongMatKhau1 = new JPasswordField(16);
+        JPasswordField truongMatKhau2 = new JPasswordField(16);
+        JPanel khungNhap = new JPanel(new GridLayout(4, 1, 0, 6));
+        khungNhap.add(new JLabel("Mật khẩu mới cho tài khoản: '" + tenDangNhap + "'"));
+        khungNhap.add(truongMatKhau1);
+        khungNhap.add(new JLabel("Xác nhận mật khẩu mới:"));
+        khungNhap.add(truongMatKhau2);
 
-        int opt = JOptionPane.showConfirmDialog(view, pInput, "Đặt lại mật khẩu",
+        int tuyChon = JOptionPane.showConfirmDialog(viewQuanLyTaiKhoan, khungNhap, "Đặt lại mật khẩu",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (opt != JOptionPane.OK_OPTION) return;
+        if (tuyChon != JOptionPane.OK_OPTION) return;
 
-        String passMoi = new String(pf1.getPassword()).trim();
-        String passXn  = new String(pf2.getPassword()).trim();
+        String matKhauMoi = new String(truongMatKhau1.getPassword()).trim();
+        String matKhauXacNhan  = new String(truongMatKhau2.getPassword()).trim();
 
-        if (passMoi.isEmpty()) {
-            JOptionPane.showMessageDialog(view, "Mật khẩu không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        if (matKhauMoi.isEmpty()) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Mật khẩu không được để trống!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (passMoi.length() < 4) {
-            JOptionPane.showMessageDialog(view, "Mật khẩu phải có ít nhất 4 ký tự!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        if (matKhauMoi.length() < 4) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Mật khẩu phải có ít nhất 4 ký tự!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (!passMoi.equals(passXn)) {
-            JOptionPane.showMessageDialog(view, "Mật khẩu xác nhận không khớp!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        if (!matKhauMoi.equals(matKhauXacNhan)) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Mật khẩu xác nhận không khớp!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int kq = service.datLaiMatKhau(id, passMoi);
-        if (kq > 0) {
-            JOptionPane.showMessageDialog(view,
-                    "Đặt lại mật khẩu thành công cho tài khoản '" + username + "'!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            if (id == currentUser.getIdNguoiDung()) currentUser.setMatKhau(passMoi);
+        int ketQua = dichVu.datLaiMatKhau(ma, matKhauMoi);
+        if (ketQua > 0) {
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan,
+                    "Đặt lại mật khẩu thành công cho tài khoản '" + tenDangNhap + "'!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            if (ma == nguoiDungHienTai.getIdNguoiDung()) nguoiDungHienTai.setMatKhau(matKhauMoi);
         } else {
-            JOptionPane.showMessageDialog(view, "Đặt lại mật khẩu thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(viewQuanLyTaiKhoan, "Đặt lại mật khẩu thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -12,18 +12,18 @@ import model.Phong;
 public class PhongDAO {
 
 	// Chuyen doi chuoi trang thai sang ma so TINYINT (0, 1, 2, 3)
-	public static int chuyenTrangThaiSangSo(String st) {
-		if (st == null) return 0;
-		st = st.trim().toUpperCase();
-		if (st.equals("1") || st.contains("OCCUPIED") || st.contains("CÓ KHÁCH") || st.contains("CO KHACH")) return 1;
-		if (st.equals("2") || st.contains("CLEANING") || st.contains("ĐANG DỌN") || st.contains("DỌN")) return 2;
-		if (st.equals("3") || st.contains("MAINTENANCE") || st.contains("BẢO TRÌ")) return 3;
+	public static int chuyenTrangThaiSangSo(String luongTrinh) {
+		if (luongTrinh == null) return 0;
+		luongTrinh = luongTrinh.trim().toUpperCase();
+		if (luongTrinh.equals("1") || luongTrinh.contains("OCCUPIED") || luongTrinh.contains("CÓ KHÁCH") || luongTrinh.contains("CO KHACH")) return 1;
+		if (luongTrinh.equals("2") || luongTrinh.contains("CLEANING") || luongTrinh.contains("ĐANG DỌN") || luongTrinh.contains("DỌN")) return 2;
+		if (luongTrinh.equals("3") || luongTrinh.contains("MAINTENANCE") || luongTrinh.contains("BẢO TRÌ")) return 3;
 		return 0; // 0: AVAILABLE / TRONG
 	}
 
 	// Chuyen doi ma so TINYINT sang chuoi trang thai chuan
-	public static String chuyenSoSangTrangThai(int num) {
-		switch (num) {
+	public static String chuyenSoSangTrangThai(int soLuong) {
+		switch (soLuong) {
 			case 1: return "OCCUPIED";
 			case 2: return "CLEANING";
 			case 3: return "MAINTENANCE";
@@ -36,191 +36,191 @@ public class PhongDAO {
 	private int tinhTangTuSoPhong(String soPhong, int tangHienTai) {
 		if (tangHienTai > 0) return tangHienTai;
 		if (soPhong != null && !soPhong.trim().isEmpty()) {
-			char c = soPhong.trim().charAt(0);
-			if (Character.isDigit(c)) {
-				return Character.getNumericValue(c);
+			char thanhPhan = soPhong.trim().charAt(0);
+			if (Character.isDigit(thanhPhan)) {
+				return Character.getNumericValue(thanhPhan);
 			}
 		}
 		return 1;
 	}
 
 	// Them phong
-	public int them(Phong t) {
-		Phong p = timKiem(t);
-		if (p != null) {
+	public int them(Phong bangHienTai) {
+		Phong khung = timKiem(bangHienTai);
+		if (khung != null) {
 			System.out.println("So phong da ton tai!");
 			return 0;
 		}
 
-		int tang = tinhTangTuSoPhong(t.getSoPhong(), t.getTang());
-		int trangThaiSo = chuyenTrangThaiSangSo(t.getTrangThai());
+		int tang = tinhTangTuSoPhong(bangHienTai.getSoPhong(), bangHienTai.getTang());
+		int trangThaiSo = chuyenTrangThaiSangSo(bangHienTai.getTrangThai());
 
-		String sql = "INSERT INTO phong (so_phong, ma_loai_phong, tang, gia_moi_dem, trang_thai, mo_ta) "
+		String cauLenhSQL = "INSERT INTO phong (so_phong, ma_loai_phong, tang, gia_moi_dem, trang_thai, mo_ta) "
 				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-			ps.setString(1, t.getSoPhong().trim());
-			ps.setInt(2, t.getMaLoaiPhong());
-			ps.setInt(3, tang);
-			ps.setDouble(4, t.getGiaMoiDem());
-			ps.setInt(5, trangThaiSo);
-			ps.setString(6, t.getMoTa());
+			luongIn.setString(1, bangHienTai.getSoPhong().trim());
+			luongIn.setInt(2, bangHienTai.getMaLoaiPhong());
+			luongIn.setInt(3, tang);
+			luongIn.setDouble(4, bangHienTai.getGiaMoiDem());
+			luongIn.setInt(5, trangThaiSo);
+			luongIn.setString(6, bangHienTai.getMoTa());
 
-			int kq = ps.executeUpdate();
-			if (kq > 0) {
-				try (ResultSet rs = ps.getGeneratedKeys()) {
-					if (rs.next()) {
-						t.setMaPhong(rs.getInt(1));
+			int ketQua = luongIn.executeUpdate();
+			if (ketQua > 0) {
+				try (ResultSet ketQuaTruyVan = luongIn.getGeneratedKeys()) {
+					if (ketQuaTruyVan.next()) {
+						bangHienTai.setMaPhong(ketQuaTruyVan.getInt(1));
 					}
 				}
 			}
-			return kq;
-		} catch (Exception e) {
-			e.printStackTrace();
+			return ketQua;
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 			return 0;
 		}
 	}
 
 	// Sua phong
-	public int sua(Phong t) {
-		int tang = tinhTangTuSoPhong(t.getSoPhong(), t.getTang());
-		int trangThaiSo = chuyenTrangThaiSangSo(t.getTrangThai());
+	public int sua(Phong bangHienTai) {
+		int tang = tinhTangTuSoPhong(bangHienTai.getSoPhong(), bangHienTai.getTang());
+		int trangThaiSo = chuyenTrangThaiSangSo(bangHienTai.getTrangThai());
 
-		String sql = "UPDATE phong SET so_phong = ?, ma_loai_phong = ?, tang = ?, gia_moi_dem = ?, trang_thai = ?, mo_ta = ? "
+		String cauLenhSQL = "UPDATE phong SET so_phong = ?, ma_loai_phong = ?, tang = ?, gia_moi_dem = ?, trang_thai = ?, mo_ta = ? "
 				+ "WHERE ma_phong = ?";
 
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
-			ps.setString(1, t.getSoPhong().trim());
-			ps.setInt(2, t.getMaLoaiPhong());
-			ps.setInt(3, tang);
-			ps.setDouble(4, t.getGiaMoiDem());
-			ps.setInt(5, trangThaiSo);
-			ps.setString(6, t.getMoTa());
-			ps.setInt(7, t.getMaPhong());
+			luongIn.setString(1, bangHienTai.getSoPhong().trim());
+			luongIn.setInt(2, bangHienTai.getMaLoaiPhong());
+			luongIn.setInt(3, tang);
+			luongIn.setDouble(4, bangHienTai.getGiaMoiDem());
+			luongIn.setInt(5, trangThaiSo);
+			luongIn.setString(6, bangHienTai.getMoTa());
+			luongIn.setInt(7, bangHienTai.getMaPhong());
 
-			return ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
+			return luongIn.executeUpdate();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 			return 0;
 		}
 	}
 
 	// Doi trang thai phong
-	public int doiTrangThai(int roomId, String trangThai) {
-		int ttSo = chuyenTrangThaiSangSo(trangThai);
-		String sql = "UPDATE phong SET trang_thai = ? WHERE ma_phong = ?";
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, ttSo);
-			ps.setInt(2, roomId);
-			return ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
+	public int doiTrangThai(int maPhong, String trangThai) {
+		int trangThaiSo = chuyenTrangThaiSangSo(trangThai);
+		String cauLenhSQL = "UPDATE phong SET trang_thai = ? WHERE ma_phong = ?";
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+			luongIn.setInt(1, trangThaiSo);
+			luongIn.setInt(2, maPhong);
+			return luongIn.executeUpdate();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 			return 0;
 		}
 	}
 
 	// Xoa phong
-	public int xoa(Phong r) {
-		String sql = "DELETE FROM phong WHERE ma_phong = ?";
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, r.getMaPhong());
-			return ps.executeUpdate();
-		} catch (java.sql.SQLIntegrityConstraintViolationException e) {
+	public int xoa(Phong hangHienTai) {
+		String cauLenhSQL = "DELETE FROM phong WHERE ma_phong = ?";
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+			luongIn.setInt(1, hangHienTai.getMaPhong());
+			return luongIn.executeUpdate();
+		} catch (java.sql.SQLIntegrityConstraintViolationException suKien) {
 			JOptionPane.showMessageDialog(
 					null,
 					"Không thể xóa phòng vì phòng đã có dữ liệu đặt phòng!"
 			);
 			return 0;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 			return 0;
 		}
 	}
 
 	// Xuat danh sach phong (kem ten loai phong)
 	public ArrayList<Phong> xuat() {
-		ArrayList<Phong> ds = new ArrayList<>();
-		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
+		ArrayList<Phong> danhSach = new ArrayList<>();
+		String cauLenhSQL = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
 				+ "COALESCE(lp.suc_chua, 1) AS suc_chua "
 				+ "FROM phong p "
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "ORDER BY p.so_phong ASC";
 
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     Statement st = conn.createStatement();
-		     ResultSet rs = st.executeQuery(sql)) {
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     Statement luongTrinh = ketNoi.createStatement();
+		     ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
-			while (rs.next()) {
-				int tt = rs.getInt("trang_thai");
-				Phong t = new Phong(
-						rs.getInt("ma_phong"),
-						rs.getString("so_phong"),
-						rs.getInt("ma_loai_phong"),
-						rs.getInt("tang"),
-						rs.getFloat("gia_moi_dem"),
-						chuyenSoSangTrangThai(tt),
-						rs.getString("mo_ta"),
-						rs.getString("ten_loai_phong")
+			while (ketQuaTruyVan.next()) {
+				int trangThai = ketQuaTruyVan.getInt("trang_thai");
+				Phong bangHienTai = new Phong(
+						ketQuaTruyVan.getInt("ma_phong"),
+						ketQuaTruyVan.getString("so_phong"),
+						ketQuaTruyVan.getInt("ma_loai_phong"),
+						ketQuaTruyVan.getInt("tang"),
+						ketQuaTruyVan.getFloat("gia_moi_dem"),
+						chuyenSoSangTrangThai(trangThai),
+						ketQuaTruyVan.getString("mo_ta"),
+						ketQuaTruyVan.getString("ten_loai_phong")
 				);
-				t.setSucChua(rs.getInt("suc_chua"));
-				ds.add(t);
+				bangHienTai.setSucChua(ketQuaTruyVan.getInt("suc_chua"));
+				danhSach.add(bangHienTai);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 		}
 
-		return ds;
+		return danhSach;
 	}
 
 	// Tim kiem phong theo so phong
-	public Phong timKiem(Phong t) {
-		if (t == null || t.getSoPhong() == null || t.getSoPhong().trim().isEmpty()) {
+	public Phong timKiem(Phong bangHienTai) {
+		if (bangHienTai == null || bangHienTai.getSoPhong() == null || bangHienTai.getSoPhong().trim().isEmpty()) {
 			return null;
 		}
 
-		String sql = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
+		String cauLenhSQL = "SELECT p.*, COALESCE(lp.ten_loai_phong, 'Phòng tiêu chuẩn') AS ten_loai_phong, "
 				+ "COALESCE(lp.suc_chua, 1) AS suc_chua "
 				+ "FROM phong p "
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "WHERE p.so_phong = ?";
 
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
-			ps.setString(1, t.getSoPhong().trim());
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					int tt = rs.getInt("trang_thai");
-					Phong room = new Phong(
-							rs.getInt("ma_phong"),
-							rs.getString("so_phong"),
-							rs.getInt("ma_loai_phong"),
-							rs.getInt("tang"),
-							rs.getFloat("gia_moi_dem"),
-							chuyenSoSangTrangThai(tt),
-							rs.getString("mo_ta"),
-							rs.getString("ten_loai_phong")
+			luongIn.setString(1, bangHienTai.getSoPhong().trim());
+			try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
+				if (ketQuaTruyVan.next()) {
+					int trangThai = ketQuaTruyVan.getInt("trang_thai");
+					Phong phong = new Phong(
+							ketQuaTruyVan.getInt("ma_phong"),
+							ketQuaTruyVan.getString("so_phong"),
+							ketQuaTruyVan.getInt("ma_loai_phong"),
+							ketQuaTruyVan.getInt("tang"),
+							ketQuaTruyVan.getFloat("gia_moi_dem"),
+							chuyenSoSangTrangThai(trangThai),
+							ketQuaTruyVan.getString("mo_ta"),
+							ketQuaTruyVan.getString("ten_loai_phong")
 					);
-					room.setSucChua(rs.getInt("suc_chua"));
-					return room;
+					phong.setSucChua(ketQuaTruyVan.getInt("suc_chua"));
+					return phong;
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 		}
 
 		return null;
 	}
 
 	// Lay thong tin khach va dat phong dang o
-	public ThongTinPhongDangO layThongTinKhachDangO(int roomId) {
-		String sql = "SELECT b.ma_dat_phong, b.ma_khach_hang, c.ho_ten, c.so_cccd, c.so_dien_thoai, "
+	public ThongTinPhongDangO layThongTinKhachDangO(int maPhong) {
+		String cauLenhSQL = "SELECT b.ma_dat_phong, b.ma_khach_hang, c.ho_ten, c.so_cccd, c.so_dien_thoai, "
 				+ "b.ngay_nhan_phong, b.ngay_tra_phong, b.trang_thai AS b_status, b.ghi_chu, "
 				+ "br.gia_moi_dem, "
 				+ "i.ma_hoa_don, i.tien_phong, i.phu_thu, i.giam_gia, i.tong_tien, i.phuong_thuc_thanh_toan, i.trang_thai_thanh_toan "
@@ -232,40 +232,40 @@ public class PhongDAO {
 				+ "ORDER BY (CASE WHEN b.trang_thai = 1 THEN 1 WHEN b.trang_thai = 0 THEN 2 ELSE 3 END), b.ma_dat_phong DESC "
 				+ "LIMIT 1";
 
-		try (Connection conn = KetNoiCSDL.getConnection();
-		     PreparedStatement ps = conn.prepareStatement(sql)) {
-			ps.setInt(1, roomId);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					ThongTinPhongDangO info = new ThongTinPhongDangO();
-					info.setBookingId(rs.getInt("ma_dat_phong"));
-					info.setCustomerId(rs.getInt("ma_khach_hang"));
-					info.setTenKhachHang(rs.getString("ho_ten"));
-					info.setCccd(rs.getString("so_cccd"));
-					info.setSoDienThoai(rs.getString("so_dien_thoai"));
-					info.setNgayNhan(rs.getDate("ngay_nhan_phong"));
-					info.setNgayTra(rs.getDate("ngay_tra_phong"));
+		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
+			luongIn.setInt(1, maPhong);
+			try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
+				if (ketQuaTruyVan.next()) {
+					ThongTinPhongDangO thongTin = new ThongTinPhongDangO();
+					thongTin.setBookingId(ketQuaTruyVan.getInt("ma_dat_phong"));
+					thongTin.setCustomerId(ketQuaTruyVan.getInt("ma_khach_hang"));
+					thongTin.setTenKhachHang(ketQuaTruyVan.getString("ho_ten"));
+					thongTin.setCccd(ketQuaTruyVan.getString("so_cccd"));
+					thongTin.setSoDienThoai(ketQuaTruyVan.getString("so_dien_thoai"));
+					thongTin.setNgayNhan(ketQuaTruyVan.getDate("ngay_nhan_phong"));
+					thongTin.setNgayTra(ketQuaTruyVan.getDate("ngay_tra_phong"));
 
-					int bStatus = rs.getInt("b_status");
-					String bStatusStr = (bStatus == 1) ? "CHECKED_IN" : (bStatus == 0 ? "BOOKED" : (bStatus == 2 ? "CHECKED_OUT" : "CANCELLED"));
-					info.setBookingStatus(bStatusStr);
+					int nutTrangThai = ketQuaTruyVan.getInt("b_status");
+					String chuoiTrangThaiNut = (nutTrangThai == 1) ? "CHECKED_IN" : (nutTrangThai == 0 ? "BOOKED" : (nutTrangThai == 2 ? "CHECKED_OUT" : "CANCELLED"));
+					thongTin.setBookingStatus(chuoiTrangThaiNut);
 
-					info.setGhiChu(rs.getString("ghi_chu"));
-					info.setGiaMoiDem(rs.getDouble("gia_moi_dem"));
-					info.setInvoiceId(rs.getInt("ma_hoa_don"));
-					info.setTienPhong(rs.getDouble("tien_phong"));
-					info.setPhuThu(rs.getDouble("phu_thu"));
-					info.setGiamGia(rs.getDouble("giam_gia"));
-					info.setTongTien(rs.getDouble("tong_tien"));
-					info.setPaymentMethod(rs.getString("phuong_thuc_thanh_toan"));
+					thongTin.setGhiChu(ketQuaTruyVan.getString("ghi_chu"));
+					thongTin.setGiaMoiDem(ketQuaTruyVan.getDouble("gia_moi_dem"));
+					thongTin.setInvoiceId(ketQuaTruyVan.getInt("ma_hoa_don"));
+					thongTin.setTienPhong(ketQuaTruyVan.getDouble("tien_phong"));
+					thongTin.setPhuThu(ketQuaTruyVan.getDouble("phu_thu"));
+					thongTin.setGiamGia(ketQuaTruyVan.getDouble("giam_gia"));
+					thongTin.setTongTien(ketQuaTruyVan.getDouble("tong_tien"));
+					thongTin.setPaymentMethod(ketQuaTruyVan.getString("phuong_thuc_thanh_toan"));
 
-					int pStatus = rs.getInt("trang_thai_thanh_toan");
-					info.setPaymentStatus((pStatus == 1) ? "PAID" : (pStatus == 2 ? "REFUNDED" : "UNPAID"));
-					return info;
+					int khungTrangThai = ketQuaTruyVan.getInt("trang_thai_thanh_toan");
+					thongTin.setPaymentStatus((khungTrangThai == 1) ? "PAID" : (khungTrangThai == 2 ? "REFUNDED" : "UNPAID"));
+					return thongTin;
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception suKien) {
+			suKien.printStackTrace();
 		}
 		return null;
 	}

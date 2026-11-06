@@ -18,166 +18,166 @@ import view.view.ViewBaoCaoThongKe;
 
 public class StatisticController {
 
-    private ViewBaoCaoThongKe view;
-    private StatisticService service = new StatisticService();
-    private DecimalFormat df = new DecimalFormat("#,### đ");
-    private DecimalFormat dfTyLe = new DecimalFormat("0.0'%'");
+    private ViewBaoCaoThongKe viewBaoCaoThongKe;
+    private StatisticService dichVu = new StatisticService();
+    private DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,### đ");
+    private DecimalFormat dinhDangTyLe = new DecimalFormat("0.0'%'");
 
-    public StatisticController(ViewBaoCaoThongKe view) {
-        this.view = view;
+    public StatisticController(ViewBaoCaoThongKe viewBaoCaoThongKe) {
+        this.viewBaoCaoThongKe = viewBaoCaoThongKe;
 
         caiDatRenderers();
         taiDuLieu();
 
-        view.btnLoc.addActionListener(e -> taiDuLieu());
+        viewBaoCaoThongKe.nutLoc.addActionListener(suKien -> taiDuLieu());
     }
 
     private void caiDatRenderers() {
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-        center.setHorizontalAlignment(SwingConstants.CENTER);
+        DefaultTableCellRenderer giua = new DefaultTableCellRenderer();
+        giua.setHorizontalAlignment(SwingConstants.CENTER);
 
-        DefaultTableCellRenderer right = new DefaultTableCellRenderer();
-        right.setHorizontalAlignment(SwingConstants.RIGHT);
+        DefaultTableCellRenderer phai = new DefaultTableCellRenderer();
+        phai.setHorizontalAlignment(SwingConstants.RIGHT);
 
         // Bảng Phòng
-        view.tblPhong.getColumnModel().getColumn(0).setPreferredWidth(80);
-        view.tblPhong.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(0).setPreferredWidth(80);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(0).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
+                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
+                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
                 setHorizontalAlignment(CENTER);
-                setForeground(isSelected ? table.getSelectionForeground() : new Color(31, 78, 121));
-                return c;
+                setForeground(dangChon ? bang.getSelectionForeground() : new Color(31, 78, 121));
+                return thanhPhan;
             }
         });
-        view.tblPhong.getColumnModel().getColumn(1).setPreferredWidth(140);
-        view.tblPhong.getColumnModel().getColumn(2).setPreferredWidth(80);
-        view.tblPhong.getColumnModel().getColumn(2).setCellRenderer(center);
-        view.tblPhong.getColumnModel().getColumn(3).setPreferredWidth(100);
-        view.tblPhong.getColumnModel().getColumn(3).setCellRenderer(center);
-        view.tblPhong.getColumnModel().getColumn(4).setPreferredWidth(140);
-        view.tblPhong.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(1).setPreferredWidth(140);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(2).setPreferredWidth(80);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(2).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(3).setPreferredWidth(100);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(3).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(4).setPreferredWidth(140);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
+                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
+                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
                 setHorizontalAlignment(RIGHT);
-                setForeground(isSelected ? table.getSelectionForeground() : new Color(192, 57, 43));
-                return c;
+                setForeground(dangChon ? bang.getSelectionForeground() : new Color(192, 57, 43));
+                return thanhPhan;
             }
         });
-        view.tblPhong.getColumnModel().getColumn(5).setPreferredWidth(90);
-        view.tblPhong.getColumnModel().getColumn(5).setCellRenderer(center);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(5).setPreferredWidth(90);
+        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(5).setCellRenderer(giua);
 
         // Bảng Hóa đơn
-        view.tblHoaDon.getColumnModel().getColumn(0).setPreferredWidth(60);
-        view.tblHoaDon.getColumnModel().getColumn(0).setCellRenderer(center);
-        view.tblHoaDon.getColumnModel().getColumn(1).setPreferredWidth(130);
-        view.tblHoaDon.getColumnModel().getColumn(1).setCellRenderer(center);
-        view.tblHoaDon.getColumnModel().getColumn(2).setPreferredWidth(80);
-        view.tblHoaDon.getColumnModel().getColumn(2).setCellRenderer(center);
-        view.tblHoaDon.getColumnModel().getColumn(3).setPreferredWidth(140);
-        view.tblHoaDon.getColumnModel().getColumn(4).setPreferredWidth(100);
-        view.tblHoaDon.getColumnModel().getColumn(4).setCellRenderer(center);
-        view.tblHoaDon.getColumnModel().getColumn(5).setPreferredWidth(95);
-        view.tblHoaDon.getColumnModel().getColumn(5).setCellRenderer(right);
-        view.tblHoaDon.getColumnModel().getColumn(6).setPreferredWidth(80);
-        view.tblHoaDon.getColumnModel().getColumn(6).setCellRenderer(right);
-        view.tblHoaDon.getColumnModel().getColumn(7).setPreferredWidth(80);
-        view.tblHoaDon.getColumnModel().getColumn(7).setCellRenderer(right);
-        view.tblHoaDon.getColumnModel().getColumn(8).setPreferredWidth(110);
-        view.tblHoaDon.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(0).setPreferredWidth(60);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(0).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(1).setPreferredWidth(130);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(1).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(2).setPreferredWidth(80);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(2).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(3).setPreferredWidth(140);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(4).setPreferredWidth(100);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(4).setCellRenderer(giua);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(5).setPreferredWidth(95);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(5).setCellRenderer(phai);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(6).setPreferredWidth(80);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(6).setCellRenderer(phai);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(7).setPreferredWidth(80);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(7).setCellRenderer(phai);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(8).setPreferredWidth(110);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                           boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
+                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
+                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
                 setHorizontalAlignment(RIGHT);
-                setForeground(isSelected ? table.getSelectionForeground() : new Color(39, 174, 96));
-                return c;
+                setForeground(dangChon ? bang.getSelectionForeground() : new Color(39, 174, 96));
+                return thanhPhan;
             }
         });
-        view.tblHoaDon.getColumnModel().getColumn(9).setPreferredWidth(100);
-        view.tblHoaDon.getColumnModel().getColumn(9).setCellRenderer(center);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(9).setPreferredWidth(100);
+        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(9).setCellRenderer(giua);
     }
 
     public void taiDuLieu() {
-        if (view.getDenNgay().isBefore(view.getTuNgay())) {
+        if (viewBaoCaoThongKe.getDenNgay().isBefore(viewBaoCaoThongKe.getTuNgay())) {
             JOptionPane.showMessageDialog(
-                    view,
+                    viewBaoCaoThongKe,
                     "Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.",
                     "Khoảng ngày không hợp lệ",
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        Date tuNgay = Date.valueOf(view.getTuNgay());
-        Date denNgay = Date.valueOf(view.getDenNgay());
+        Date tuNgay = Date.valueOf(viewBaoCaoThongKe.getTuNgay());
+        Date denNgay = Date.valueOf(viewBaoCaoThongKe.getDenNgay());
         try {
-            ArrayList<ThongKeDAO.ChiTietHoaDonBaoCao> dsHD = service.layHoaDonTheoKhoang(tuNgay, denNgay);
-            ArrayList<ThongKeDAO.ThongKePhong> dsPhong = service.thongKeTheoKhoang(tuNgay, denNgay);
-            double tongDoanhThuKy = 0;
+            ArrayList<ThongKeDAO.ChiTietHoaDonBaoCao> danhSachHoaDon = dichVu.layHoaDonTheoKhoang(tuNgay, denNgay);
+            ArrayList<ThongKeDAO.ThongKePhong> danhSachPhong = dichVu.thongKeTheoKhoang(tuNgay, denNgay);
+            double chungDoanhThuKy = 0;
 
-            for (ThongKeDAO.ChiTietHoaDonBaoCao h : dsHD) {
-                tongDoanhThuKy += h.tongTien;
+            for (ThongKeDAO.ChiTietHoaDonBaoCao chieuCao : danhSachHoaDon) {
+                chungDoanhThuKy += chieuCao.chungTien;
             }
 
-            int tongLuotThue = 0;
-            for (ThongKeDAO.ThongKePhong phong : dsPhong) {
-                tongLuotThue += phong.soLuotThue;
+            int chungLuotThue = 0;
+            for (ThongKeDAO.ThongKePhong phong : danhSachPhong) {
+                chungLuotThue += phong.soLuotThue;
             }
 
-            view.lblValTongDoanhThu.setText(df.format(tongDoanhThuKy));
-            view.lblValDoanhThuThang.setText(Integer.toString(dsHD.size()));
-            view.lblValDoanhThuNgay.setText(Integer.toString(tongLuotThue));
-            String khoangNgay = view.getTuNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                    + " – " + view.getDenNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            view.lblThongKeKy.setText("Thực thu " + khoangNgay + ": " + df.format(tongDoanhThuKy));
+            viewBaoCaoThongKe.nhanGiaTriChungDoanhThu.setText(dinhDangTienTeChinh.format(chungDoanhThuKy));
+            viewBaoCaoThongKe.nhanGiaTriDoanhThuThang.setText(Integer.toString(danhSachHoaDon.size()));
+            viewBaoCaoThongKe.nhanGiaTriDoanhThuNgay.setText(Integer.toString(chungLuotThue));
+            String khoangNgay = viewBaoCaoThongKe.getTuNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                    + " – " + viewBaoCaoThongKe.getDenNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            viewBaoCaoThongKe.nhanThongKeKy.setText("Thực thu " + khoangNgay + ": " + dinhDangTienTeChinh.format(chungDoanhThuKy));
 
-            view.modelHoaDon.setRowCount(0);
-            for (ThongKeDAO.ChiTietHoaDonBaoCao h : dsHD) {
-                view.modelHoaDon.addRow(new Object[] {
-                    h.maHoaDon,
-                    h.ngayLap,
-                    h.soPhong,
-                    h.hoTen,
-                    h.sdt,
-                    df.format(h.tienPhong),
-                    df.format(h.phuThu),
-                    df.format(h.giamGia),
-                    df.format(h.tongTien),
-                    h.phuongThuc
+            viewBaoCaoThongKe.moHinhHoaDon.setRowCount(0);
+            for (ThongKeDAO.ChiTietHoaDonBaoCao chieuCao : danhSachHoaDon) {
+                viewBaoCaoThongKe.moHinhHoaDon.addRow(new Object[] {
+                    chieuCao.maHoaDon,
+                    chieuCao.ngayLap,
+                    chieuCao.soPhong,
+                    chieuCao.hoTen,
+                    chieuCao.sdt,
+                    dinhDangTienTeChinh.format(chieuCao.tienPhong),
+                    dinhDangTienTeChinh.format(chieuCao.phuThu),
+                    dinhDangTienTeChinh.format(chieuCao.giamGia),
+                    dinhDangTienTeChinh.format(chieuCao.chungTien),
+                    chieuCao.phuongThuc
                 });
             }
 
-            view.modelPhong.setRowCount(0);
-            ArrayList<String> tenPhongBieuDo = new ArrayList<>();
+            viewBaoCaoThongKe.moHinhPhong.setRowCount(0);
+            ArrayList<String> tenPhongBieuThucHien = new ArrayList<>();
             ArrayList<String> chiTietBieuDo = new ArrayList<>();
             ArrayList<Double> doanhThuBieuDo = new ArrayList<>();
-            for (ThongKeDAO.ThongKePhong p : dsPhong) {
-                double tyTrong = (tongDoanhThuKy > 0) ? (p.tongDoanhThu / tongDoanhThuKy * 100) : 0;
-                String tangStr = p.tang > 0 ? "Tầng " + p.tang : "---";
-                tenPhongBieuDo.add("Phòng " + p.soPhong);
-                chiTietBieuDo.add(p.soLuotThue + " lượt thuê · " + p.tenLoaiPhong);
-                doanhThuBieuDo.add(p.tongDoanhThu);
+            for (ThongKeDAO.ThongKePhong khung : danhSachPhong) {
+                double tyTrong = (chungDoanhThuKy > 0) ? (khung.tongDoanhThuKy / chungDoanhThuKy * 100) : 0;
+                String tangStr = khung.tang > 0 ? "Tầng " + khung.tang : "---";
+                tenPhongBieuThucHien.add("Phòng " + khung.soPhong);
+                chiTietBieuDo.add(khung.soLuotThue + " lượt thuê · " + khung.tenLoaiPhong);
+                doanhThuBieuDo.add(khung.tongDoanhThuKy);
 
-                view.modelPhong.addRow(new Object[] {
-                    "P." + p.soPhong,
-                    p.tenLoaiPhong,
+                viewBaoCaoThongKe.moHinhPhong.addRow(new Object[] {
+                    "P." + khung.soPhong,
+                    khung.tenLoaiPhong,
                     tangStr,
-                    p.soLuotThue + " lượt",
-                    df.format(p.tongDoanhThu),
-                    dfTyLe.format(tyTrong)
+                    khung.soLuotThue + " lượt",
+                    dinhDangTienTeChinh.format(khung.tongDoanhThuKy),
+                    dinhDangTyLe.format(tyTrong)
                 });
             }
-            view.capNhatBieuDoPhong(tenPhongBieuDo, chiTietBieuDo, doanhThuBieuDo);
-        } catch (Exception e) {
+            viewBaoCaoThongKe.capNhatBieuDoPhong(tenPhongBieuThucHien, chiTietBieuDo, doanhThuBieuDo);
+        } catch (Exception suKien) {
             JOptionPane.showMessageDialog(
-                    view,
-                    "Không thể xem thống kê: " + e.getMessage(),
+                    viewBaoCaoThongKe,
+                    "Không thể xem thống kê: " + suKien.getMessage(),
                     "Lỗi tải thống kê",
                     JOptionPane.ERROR_MESSAGE);
         }

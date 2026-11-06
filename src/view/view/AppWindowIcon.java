@@ -10,11 +10,11 @@ public final class AppWindowIcon {
     private AppWindowIcon() {
     }
 
-    public static void apply(JFrame frame) {
-        URL logoResource = AppWindowIcon.class.getResource("/img/loogo.png");
+    public static void apply(JFrame cuaSo) {
+        URL taiNguyenBieuTuong = AppWindowIcon.class.getResource("/img/loogo.png");
 
-        if (logoResource != null) {
-            frame.setIconImage(new ImageIcon(logoResource).getImage());
+        if (taiNguyenBieuTuong != null) {
+            cuaSo.setIconImage(new ImageIcon(taiNguyenBieuTuong).getImage());
         } else {
             System.err.println("Không tìm thấy logo: /img/loogo.png");
         }

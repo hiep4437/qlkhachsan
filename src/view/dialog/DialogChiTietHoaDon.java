@@ -11,152 +11,152 @@ import service.HoaDonService;
 
 public class DialogChiTietHoaDon extends JDialog {
 
-    private HoaDon invoice;
-    private HoaDonService invoiceService = new HoaDonService();
-    private DecimalFormat df = new DecimalFormat("#,### đ");
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private HoaDon hoaDon;
+    private HoaDonService dichVuHoaDon = new HoaDonService();
+    private DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,### đ");
+    private SimpleDateFormat dinhDangNgay = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private boolean daThanhToanXong = false;
 
-    public DialogChiTietHoaDon(Window parent, HoaDon inv) {
-        super(parent, "Chi tiết hóa đơn thanh toán #" + (inv != null ? inv.getIdHoaDon() : ""), ModalityType.APPLICATION_MODAL);
-        this.invoice = inv;
+    public DialogChiTietHoaDon(Window doiTuongCha, HoaDon hoaDon) {
+        super(doiTuongCha, "Chi tiết hóa đơn thanh toán #" + (hoaDon != null ? hoaDon.getIdHoaDon() : ""), ModalityType.APPLICATION_MODAL);
+        this.hoaDon = hoaDon;
 
         setSize(540, 620);
         setResizable(false);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(doiTuongCha);
         setLayout(new BorderLayout());
 
         initUI();
     }
 
     private void initUI() {
-        if (invoice == null) return;
+        if (hoaDon == null) return;
 
         // Top Header
-        JPanel pHead = new JPanel(new BorderLayout());
-        pHead.setBackground(new Color(24, 44, 97));
-        pHead.setBorder(new EmptyBorder(16, 20, 16, 20));
+        JPanel khungDau = new JPanel(new BorderLayout());
+        khungDau.setBackground(new Color(24, 44, 97));
+        khungDau.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel lblTitle = new JLabel("CHI TIẾT HÓA ĐƠN #" + invoice.getIdHoaDon());
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblTitle.setForeground(Color.WHITE);
+        JLabel nhanTieuDe = new JLabel("CHI TIẾT HÓA ĐƠN #" + hoaDon.getIdHoaDon());
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        nhanTieuDe.setForeground(Color.WHITE);
 
-        String st = invoice.getTrangThaiThanhToan();
-        String stText = (st != null && (st.contains("PAID") || st.contains("Đã thanh toán"))) ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN";
-        JLabel lblStatus = new JLabel(stText);
-        lblStatus.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblStatus.setForeground(stText.equals("ĐÃ THANH TOÁN") ? new Color(46, 204, 113) : new Color(241, 196, 15));
+        String luongTrinh = hoaDon.getTrangThaiThanhToan();
+        String luongChuoi = (luongTrinh != null && (luongTrinh.contains("PAID") || luongTrinh.contains("Đã thanh toán"))) ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN";
+        JLabel nhanTrangThai = new JLabel(luongChuoi);
+        nhanTrangThai.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        nhanTrangThai.setForeground(luongChuoi.equals("ĐÃ THANH TOÁN") ? new Color(46, 204, 113) : new Color(241, 196, 15));
 
-        pHead.add(lblTitle, BorderLayout.WEST);
-        pHead.add(lblStatus, BorderLayout.EAST);
-        add(pHead, BorderLayout.NORTH);
+        khungDau.add(nhanTieuDe, BorderLayout.WEST);
+        khungDau.add(nhanTrangThai, BorderLayout.EAST);
+        add(khungDau, BorderLayout.NORTH);
 
         // Center Content
-        JPanel pBody = new JPanel();
-        pBody.setLayout(new BoxLayout(pBody, BoxLayout.Y_AXIS));
-        pBody.setBackground(Color.WHITE);
-        pBody.setBorder(new EmptyBorder(20, 25, 20, 25));
+        JPanel khungNoiDung = new JPanel();
+        khungNoiDung.setLayout(new BoxLayout(khungNoiDung, BoxLayout.Y_AXIS));
+        khungNoiDung.setBackground(Color.WHITE);
+        khungNoiDung.setBorder(new EmptyBorder(20, 25, 20, 25));
 
         // Block 1: Thông tin phòng & khách
-        JPanel pInfo = new JPanel(new GridLayout(4, 2, 10, 8));
-        pInfo.setBackground(new Color(248, 249, 250));
-        pInfo.setBorder(BorderFactory.createCompoundBorder(
+        JPanel khungThongTin = new JPanel(new GridLayout(4, 2, 10, 8));
+        khungThongTin.setBackground(new Color(248, 249, 250));
+        khungThongTin.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(222, 226, 230)),
                 new EmptyBorder(12, 14, 12, 14)));
 
-        String soPhong = !invoice.getSoPhong().isEmpty() ? "Phòng " + invoice.getSoPhong() : "---";
-        String tenKhach = !invoice.getTenKhachHang().isEmpty() ? invoice.getTenKhachHang() : "---";
-        String sdt = !invoice.getSoDienThoai().isEmpty() ? invoice.getSoDienThoai() : "---";
-        String cccd = !invoice.getSoCCCD().isEmpty() ? invoice.getSoCCCD() : "---";
-        String ngayLap = invoice.getNgayLap() != null ? sdf.format(invoice.getNgayLap()) : "---";
+        String soPhong = !hoaDon.getSoPhong().isEmpty() ? "Phòng " + hoaDon.getSoPhong() : "---";
+        String tenKhach = !hoaDon.getTenKhachHang().isEmpty() ? hoaDon.getTenKhachHang() : "---";
+        String sdt = !hoaDon.getSoDienThoai().isEmpty() ? hoaDon.getSoDienThoai() : "---";
+        String cccd = !hoaDon.getSoCCCD().isEmpty() ? hoaDon.getSoCCCD() : "---";
+        String ngayLap = hoaDon.getNgayLap() != null ? dinhDangNgay.format(hoaDon.getNgayLap()) : "---";
 
-        pInfo.add(taoLabel("Phòng thanh toán:", true));
-        pInfo.add(taoLabel(soPhong + " (" + invoice.getTenLoaiPhong() + ")", false));
+        khungThongTin.add(taoLabel("Phòng thanh toán:", true));
+        khungThongTin.add(taoLabel(soPhong + " (" + hoaDon.getTenLoaiPhong() + ")", false));
 
-        pInfo.add(taoLabel("Khách hàng:", true));
-        pInfo.add(taoLabel(tenKhach + " (SĐT: " + sdt + ")", false));
+        khungThongTin.add(taoLabel("Khách hàng:", true));
+        khungThongTin.add(taoLabel(tenKhach + " (SĐT: " + sdt + ")", false));
 
-        pInfo.add(taoLabel("Số CCCD / CMND:", true));
-        pInfo.add(taoLabel(cccd, false));
+        khungThongTin.add(taoLabel("Số CCCD / CMND:", true));
+        khungThongTin.add(taoLabel(cccd, false));
 
-        pInfo.add(taoLabel("Thời gian lập HĐ:", true));
-        pInfo.add(taoLabel(ngayLap, false));
+        khungThongTin.add(taoLabel("Thời gian lập HĐ:", true));
+        khungThongTin.add(taoLabel(ngayLap, false));
 
-        pBody.add(pInfo);
-        pBody.add(Box.createVerticalStrut(15));
+        khungNoiDung.add(khungThongTin);
+        khungNoiDung.add(Box.createVerticalStrut(15));
 
         // Block 2: Chi tiết các khoản tiền
-        JPanel pMoney = new JPanel(new GridLayout(5, 2, 10, 10));
-        pMoney.setOpaque(false);
-        pMoney.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JPanel khungTien = new JPanel(new GridLayout(5, 2, 10, 10));
+        khungTien.setOpaque(false);
+        khungTien.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        pMoney.add(taoLabel("Tiền phòng:", false));
-        pMoney.add(taoMoneyLabel(df.format(invoice.getTienPhong())));
+        khungTien.add(taoLabel("Tiền phòng:", false));
+        khungTien.add(taoMoneyLabel(dinhDangTienTeChinh.format(hoaDon.getTienPhong())));
 
-        pMoney.add(taoLabel("Phụ thu (dịch vụ):", false));
-        pMoney.add(taoMoneyLabel(df.format(invoice.getPhuThu())));
+        khungTien.add(taoLabel("Phụ thu (dịch vụ):", false));
+        khungTien.add(taoMoneyLabel(dinhDangTienTeChinh.format(hoaDon.getPhuThu())));
 
-        pMoney.add(taoLabel("Giảm giá / Ưu đãi:", false));
-        pMoney.add(taoMoneyLabel("-" + df.format(invoice.getGiamGia())));
+        khungTien.add(taoLabel("Giảm giá / Ưu đãi:", false));
+        khungTien.add(taoMoneyLabel("-" + dinhDangTienTeChinh.format(hoaDon.getGiamGia())));
 
-        pMoney.add(taoLabel("Phương thức thanh toán:", false));
-        pMoney.add(taoLabel(invoice.getPhuongThucThanhToan() != null ? invoice.getPhuongThucThanhToan() : "Tiền mặt", true));
+        khungTien.add(taoLabel("Phương thức thanh toán:", false));
+        khungTien.add(taoLabel(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan() : "Tiền mặt", true));
 
-        JLabel lblTongTitle = new JLabel("TỔNG TIỀN THANH TOÁN:");
-        lblTongTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTongTitle.setForeground(new Color(192, 57, 43));
-        pMoney.add(lblTongTitle);
+        JLabel nhanTieuDeTong = new JLabel("TỔNG TIỀN THANH TOÁN:");
+        nhanTieuDeTong.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        nhanTieuDeTong.setForeground(new Color(192, 57, 43));
+        khungTien.add(nhanTieuDeTong);
 
-        JLabel lblTongVal = new JLabel(df.format(invoice.getTongTien()));
-        lblTongVal.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblTongVal.setForeground(new Color(192, 57, 43));
-        lblTongVal.setHorizontalAlignment(SwingConstants.RIGHT);
-        pMoney.add(lblTongVal);
+        JLabel nhanGiaTriTong = new JLabel(dinhDangTienTeChinh.format(hoaDon.getTongTien()));
+        nhanGiaTriTong.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        nhanGiaTriTong.setForeground(new Color(192, 57, 43));
+        nhanGiaTriTong.setHorizontalAlignment(SwingConstants.RIGHT);
+        khungTien.add(nhanGiaTriTong);
 
-        pBody.add(pMoney);
-        add(pBody, BorderLayout.CENTER);
+        khungNoiDung.add(khungTien);
+        add(khungNoiDung, BorderLayout.CENTER);
 
         // Bottom buttons
-        JPanel pBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        pBottom.setBackground(new Color(245, 247, 250));
-        pBottom.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(222, 226, 230)));
+        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        khungDuoi.setBackground(new Color(245, 247, 250));
+        khungDuoi.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(222, 226, 230)));
 
-        JButton btnIn = new JButton("In hóa đơn (Bill)");
-        btnIn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnIn.setFocusPainted(false);
+        JButton nutIn = new JButton("In hóa đơn (Bill)");
+        nutIn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutIn.setFocusPainted(false);
 
-        JButton btnThanhToanNgay = new JButton("Xác nhận thanh toán ngay");
-        btnThanhToanNgay.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnThanhToanNgay.setBackground(new Color(39, 174, 96));
-        btnThanhToanNgay.setForeground(Color.WHITE);
-        btnThanhToanNgay.setFocusPainted(false);
+        JButton nutThanhToanNgay = new JButton("Xác nhận thanh toán ngay");
+        nutThanhToanNgay.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nutThanhToanNgay.setBackground(new Color(39, 174, 96));
+        nutThanhToanNgay.setForeground(Color.WHITE);
+        nutThanhToanNgay.setFocusPainted(false);
 
-        JButton btnDong = new JButton("Đóng");
-        btnDong.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnDong.setFocusPainted(false);
+        JButton nutHang = new JButton("Đóng");
+        nutHang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutHang.setFocusPainted(false);
 
         // Ẩn nút "Thanh toán ngay" nếu đã thanh toán
-        if (stText.equals("ĐÃ THANH TOÁN")) {
-            btnThanhToanNgay.setVisible(false);
+        if (luongChuoi.equals("ĐÃ THANH TOÁN")) {
+            nutThanhToanNgay.setVisible(false);
         }
 
-        pBottom.add(btnIn);
-        if (btnThanhToanNgay.isVisible()) {
-            pBottom.add(btnThanhToanNgay);
+        khungDuoi.add(nutIn);
+        if (nutThanhToanNgay.isVisible()) {
+            khungDuoi.add(nutThanhToanNgay);
         }
-        pBottom.add(btnDong);
-        add(pBottom, BorderLayout.SOUTH);
+        khungDuoi.add(nutHang);
+        add(khungDuoi, BorderLayout.SOUTH);
 
-        btnDong.addActionListener(e -> dispose());
+        nutHang.addActionListener(suKien -> dispose());
 
-        btnThanhToanNgay.addActionListener(e -> {
-            int cf = JOptionPane.showConfirmDialog(
+        nutThanhToanNgay.addActionListener(suKien -> {
+            int tepCauHinh = JOptionPane.showConfirmDialog(
                     this,
-                    "Xác nhận đã nhận đủ " + df.format(invoice.getTongTien()) + " cho Hóa đơn #" + invoice.getIdHoaDon() + "?",
+                    "Xác nhận đã nhận đủ " + dinhDangTienTeChinh.format(hoaDon.getTongTien()) + " cho Hóa đơn #" + hoaDon.getIdHoaDon() + "?",
                     "Xác nhận thanh toán",
                     JOptionPane.YES_NO_OPTION);
-            if (cf == JOptionPane.YES_OPTION) {
-                if (invoiceService.capNhatTrangThai(invoice.getIdHoaDon(), "PAID", invoice.getPhuongThucThanhToan()) > 0) {
+            if (tepCauHinh == JOptionPane.YES_OPTION) {
+                if (dichVuHoaDon.capNhatTrangThai(hoaDon.getIdHoaDon(), "PAID", hoaDon.getPhuongThucThanhToan()) > 0) {
                     daThanhToanXong = true;
                     JOptionPane.showMessageDialog(this, "Hóa đơn đã được thanh toán thành công!");
                     dispose();
@@ -166,98 +166,98 @@ public class DialogChiTietHoaDon extends JDialog {
             }
         });
 
-        btnIn.addActionListener(e -> inHoaDon());
+        nutIn.addActionListener(suKien -> inHoaDon());
     }
 
     private void inHoaDon() {
-        hienThiXemTruocHoaDon(this, invoice);
+        hienThiXemTruocHoaDon(this, hoaDon);
     }
 
-    public static void hienThiXemTruocHoaDon(Window parent, HoaDon invoice) {
-        if (invoice == null) {
-            JOptionPane.showMessageDialog(parent, "Không tìm thấy hóa đơn để in.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    public static void hienThiXemTruocHoaDon(Window doiTuongCha, HoaDon hoaDon) {
+        if (hoaDon == null) {
+            JOptionPane.showMessageDialog(doiTuongCha, "Không tìm thấy hóa đơn để in.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        JDialog dlgIn = new JDialog(parent, "In hóa đơn #" + invoice.getIdHoaDon(), Dialog.ModalityType.APPLICATION_MODAL);
-        dlgIn.setSize(460, 520);
-        dlgIn.setLocationRelativeTo(parent);
-        dlgIn.setLayout(new BorderLayout());
+        JDialog hopThoaiIn = new JDialog(doiTuongCha, "In hóa đơn #" + hoaDon.getIdHoaDon(), Dialog.ModalityType.APPLICATION_MODAL);
+        hopThoaiIn.setSize(460, 520);
+        hopThoaiIn.setLocationRelativeTo(doiTuongCha);
+        hopThoaiIn.setLayout(new BorderLayout());
 
-        JTextArea txt = new JTextArea();
-        txt.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        txt.setEditable(false);
-        txt.setMargin(new Insets(15, 20, 15, 20));
+        JTextArea oNhap = new JTextArea();
+        oNhap.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        oNhap.setEditable(false);
+        oNhap.setMargin(new Insets(15, 20, 15, 20));
 
-        txt.setText(noiDungHoaDon(invoice));
-        dlgIn.add(new JScrollPane(txt), BorderLayout.CENTER);
+        oNhap.setText(noiDungHoaDon(hoaDon));
+        hopThoaiIn.add(new JScrollPane(oNhap), BorderLayout.CENTER);
 
-        JPanel pB = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnIn = new JButton("In");
-        btnIn.addActionListener(e -> thucHienIn(parent, txt));
-        JButton btnClose = new JButton("Đóng");
-        btnClose.addActionListener(ev -> dlgIn.dispose());
-        pB.add(btnIn);
-        pB.add(btnClose);
-        dlgIn.add(pB, BorderLayout.SOUTH);
+        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton nutIn = new JButton("In");
+        nutIn.addActionListener(suKien -> thucHienIn(doiTuongCha, oNhap));
+        JButton nutDong = new JButton("Đóng");
+        nutDong.addActionListener(suKien -> hopThoaiIn.dispose());
+        khungDuoi.add(nutIn);
+        khungDuoi.add(nutDong);
+        hopThoaiIn.add(khungDuoi, BorderLayout.SOUTH);
 
-        dlgIn.setVisible(true);
+        hopThoaiIn.setVisible(true);
     }
 
-    private static String noiDungHoaDon(HoaDon invoice) {
-        DecimalFormat df = new DecimalFormat("#,### đ");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        StringBuilder sb = new StringBuilder();
-        sb.append("==============================================\n");
-        sb.append("            KHÁCH SẠN HOTEL MANAGEMENT        \n");
-        sb.append("        Địa chỉ: 123 Đường ABC, TP. Hà Nội    \n");
-        sb.append("----------------------------------------------\n");
-        sb.append("            PHIẾU THANH TOÁN HÓA ĐƠN          \n");
-        sb.append("----------------------------------------------\n");
-        sb.append(String.format("Mã hóa đơn     : #%d\n", invoice.getIdHoaDon()));
-        sb.append(String.format("Mã đặt phòng   : #%d\n", invoice.getIdDatPhong()));
-        sb.append(String.format("Phòng          : %s (%s)\n", invoice.getSoPhong(), invoice.getTenLoaiPhong()));
-        sb.append(String.format("Khách hàng     : %s\n", invoice.getTenKhachHang()));
-        sb.append(String.format("Số CCCD        : %s\n", invoice.getSoCCCD()));
-        sb.append(String.format("Số điện thoại  : %s\n", invoice.getSoDienThoai()));
-        sb.append(String.format("Thời gian lập  : %s\n", invoice.getNgayLap() != null ? sdf.format(invoice.getNgayLap()) : ""));
-        sb.append("----------------------------------------------\n");
-        sb.append(String.format("Tiền phòng     : %15s\n", df.format(invoice.getTienPhong())));
-        sb.append(String.format("Phụ thu        : %15s\n", df.format(invoice.getPhuThu())));
-        sb.append(String.format("Giảm giá       : %15s\n", "-" + df.format(invoice.getGiamGia())));
-        sb.append("----------------------------------------------\n");
-        sb.append(String.format("TỔNG TIỀN      : %15s\n", df.format(invoice.getTongTien())));
-        sb.append(String.format("Phương thức TT : %s\n", invoice.getPhuongThucThanhToan()));
-        sb.append(String.format("Trạng thái     : %s\n", invoice.getTrangThaiThanhToan()));
-        sb.append("==============================================\n");
-        sb.append("      Xin cảm ơn Quý khách & Hẹn gặp lại!     \n");
-        return sb.toString();
+    private static String noiDungHoaDon(HoaDon hoaDon) {
+        DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,### đ");
+        SimpleDateFormat dinhDangNgay = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        StringBuilder boTaoChuoi = new StringBuilder();
+        boTaoChuoi.append("==============================================\n");
+        boTaoChuoi.append("            KHÁCH SẠN HOTEL MANAGEMENT        \n");
+        boTaoChuoi.append("        Địa chỉ: 123 Đường ABC, TP. Hà Nội    \n");
+        boTaoChuoi.append("----------------------------------------------\n");
+        boTaoChuoi.append("            PHIẾU THANH TOÁN HÓA ĐƠN          \n");
+        boTaoChuoi.append("----------------------------------------------\n");
+        boTaoChuoi.append(String.format("Mã hóa đơn     : #%d\n", hoaDon.getIdHoaDon()));
+        boTaoChuoi.append(String.format("Mã đặt phòng   : #%d\n", hoaDon.getIdDatPhong()));
+        boTaoChuoi.append(String.format("Phòng          : %s (%s)\n", hoaDon.getSoPhong(), hoaDon.getTenLoaiPhong()));
+        boTaoChuoi.append(String.format("Khách hàng     : %s\n", hoaDon.getTenKhachHang()));
+        boTaoChuoi.append(String.format("Số CCCD        : %s\n", hoaDon.getSoCCCD()));
+        boTaoChuoi.append(String.format("Số điện thoại  : %s\n", hoaDon.getSoDienThoai()));
+        boTaoChuoi.append(String.format("Thời gian lập  : %s\n", hoaDon.getNgayLap() != null ? dinhDangNgay.format(hoaDon.getNgayLap()) : ""));
+        boTaoChuoi.append("----------------------------------------------\n");
+        boTaoChuoi.append(String.format("Tiền phòng     : %15s\n", dinhDangTienTeChinh.format(hoaDon.getTienPhong())));
+        boTaoChuoi.append(String.format("Phụ thu        : %15s\n", dinhDangTienTeChinh.format(hoaDon.getPhuThu())));
+        boTaoChuoi.append(String.format("Giảm giá       : %15s\n", "-" + dinhDangTienTeChinh.format(hoaDon.getGiamGia())));
+        boTaoChuoi.append("----------------------------------------------\n");
+        boTaoChuoi.append(String.format("TỔNG TIỀN      : %15s\n", dinhDangTienTeChinh.format(hoaDon.getTongTien())));
+        boTaoChuoi.append(String.format("Phương thức TT : %s\n", hoaDon.getPhuongThucThanhToan()));
+        boTaoChuoi.append(String.format("Trạng thái     : %s\n", hoaDon.getTrangThaiThanhToan()));
+        boTaoChuoi.append("==============================================\n");
+        boTaoChuoi.append("      Xin cảm ơn Quý khách & Hẹn gặp lại!     \n");
+        return boTaoChuoi.toString();
     }
 
-    private static void thucHienIn(Window parent, JTextArea txt) {
+    private static void thucHienIn(Window doiTuongCha, JTextArea oNhap) {
         try {
-            if (!txt.print()) {
-                JOptionPane.showMessageDialog(parent, "Đã hủy in hóa đơn.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            if (!oNhap.print()) {
+                JOptionPane.showMessageDialog(doiTuongCha, "Đã hủy in hóa đơn.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
-        } catch (PrinterException ex) {
-            JOptionPane.showMessageDialog(parent, "Không thể in hóa đơn: " + ex.getMessage(), "Lỗi in hóa đơn",
+        } catch (PrinterException ngoaiLe) {
+            JOptionPane.showMessageDialog(doiTuongCha, "Không thể in hóa đơn: " + ngoaiLe.getMessage(), "Lỗi in hóa đơn",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private JLabel taoLabel(String text, boolean bold) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", bold ? Font.BOLD : Font.PLAIN, 13));
-        if (bold) lbl.setForeground(new Color(51, 65, 85));
-        return lbl;
+    private JLabel taoLabel(String vanBan, boolean inDam) {
+        JLabel nhan = new JLabel(vanBan);
+        nhan.setFont(new Font("Segoe UI", inDam ? Font.BOLD : Font.PLAIN, 13));
+        if (inDam) nhan.setForeground(new Color(51, 65, 85));
+        return nhan;
     }
 
-    private JLabel taoMoneyLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setHorizontalAlignment(SwingConstants.RIGHT);
-        lbl.setForeground(new Color(30, 41, 59));
-        return lbl;
+    private JLabel taoMoneyLabel(String vanBan) {
+        JLabel nhan = new JLabel(vanBan);
+        nhan.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nhan.setHorizontalAlignment(SwingConstants.RIGHT);
+        nhan.setForeground(new Color(30, 41, 59));
+        return nhan;
     }
 
     public boolean isDaThanhToanXong() {

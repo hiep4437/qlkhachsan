@@ -7,236 +7,236 @@ import model.NguoiDung;
 
 public class DialogThemSuaTaiKhoan extends JDialog {
 
-    private JTextField txtTenDangNhap;
-    private JPasswordField txtMatKhau;
-    private JPasswordField txtXacNhanMatKhau;
-    private JTextField txtHoTen;
-    private JComboBox<String> cboVaiTro;
-    private JComboBox<String> cboTrangThai;
-    private JLabel lblGhiChuPass;
+    private JTextField oNhapTenDangNhap;
+    private JPasswordField oNhapMatKhau;
+    private JPasswordField oNhapXacNhanMatKhau;
+    private JTextField oNhapHoTen;
+    private JComboBox<String> hopChonVaiTro;
+    private JComboBox<String> hopChonTrangThai;
+    private JLabel nhanGhiChuMatKhau;
 
-    private JButton btnLuu;
-    private JButton btnHuy;
+    private JButton nutLuu;
+    private JButton nutHuy;
 
-    private boolean saved = false;
-    private NguoiDung user;
-    private final boolean isEdit;
+    private boolean daLuu = false;
+    private NguoiDung nguoiDung;
+    private final boolean dangSua;
 
-    public DialogThemSuaTaiKhoan(Window parent, NguoiDung userToEdit) {
-        super(parent,
-              userToEdit == null ? "Thêm tài khoản người dùng mới" : "Chỉnh sửa tài khoản: " + userToEdit.getTenDangNhap(),
+    public DialogThemSuaTaiKhoan(Window doiTuongCha, NguoiDung nguoiDungCanSua) {
+        super(doiTuongCha,
+              nguoiDungCanSua == null ? "Thêm tài khoản người dùng mới" : "Chỉnh sửa tài khoản: " + nguoiDungCanSua.getTenDangNhap(),
               ModalityType.APPLICATION_MODAL);
 
-        this.user   = userToEdit != null ? userToEdit : new NguoiDung();
-        this.isEdit = (userToEdit != null && userToEdit.getIdNguoiDung() > 0);
+        this.nguoiDung   = nguoiDungCanSua != null ? nguoiDungCanSua : new NguoiDung();
+        this.dangSua = (nguoiDungCanSua != null && nguoiDungCanSua.getIdNguoiDung() > 0);
 
         setSize(500, 530);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(doiTuongCha);
         setResizable(false);
         setLayout(new BorderLayout());
 
         // ── Header ────────────────────────────────────────────────────────────
-        JPanel pHeader = new JPanel(new BorderLayout());
-        pHeader.setBackground(new Color(30, 60, 114));
-        pHeader.setBorder(new EmptyBorder(16, 20, 16, 20));
+        JPanel khungTieuDe = new JPanel(new BorderLayout());
+        khungTieuDe.setBackground(new Color(30, 60, 114));
+        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        JLabel lblTitle = new JLabel(isEdit ? "CHỈNH SỬA THÔNG TIN TÀI KHOẢN" : "TẠO TÀI KHOẢN NGƯỜI DÙNG MỚI");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        lblTitle.setForeground(Color.WHITE);
+        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA THÔNG TIN TÀI KHOẢN" : "TẠO TÀI KHOẢN NGƯỜI DÙNG MỚI");
+        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        nhanTieuDe.setForeground(Color.WHITE);
 
-        JLabel lblSub = new JLabel(isEdit
+        JLabel nhanPhu = new JLabel(dangSua
                 ? "Cập nhật họ tên, mật khẩu, vai trò hoặc trạng thái tài khoản"
                 : "Nhập thông tin đăng nhập và vai trò cho người dùng mới");
-        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSub.setForeground(new Color(220, 230, 242));
+        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nhanPhu.setForeground(new Color(220, 230, 242));
 
-        pHeader.add(lblTitle, BorderLayout.NORTH);
-        pHeader.add(lblSub,   BorderLayout.SOUTH);
-        add(pHeader, BorderLayout.NORTH);
+        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
+        khungTieuDe.add(nhanPhu,   BorderLayout.SOUTH);
+        add(khungTieuDe, BorderLayout.NORTH);
 
         // ── Form Body ─────────────────────────────────────────────────────────
-        JPanel pBody = new JPanel(new GridBagLayout());
-        pBody.setBorder(new EmptyBorder(20, 24, 15, 24));
-        pBody.setBackground(Color.WHITE);
+        JPanel khungNoiDung = new JPanel(new GridBagLayout());
+        khungNoiDung.setBorder(new EmptyBorder(20, 24, 15, 24));
+        khungNoiDung.setBackground(Color.WHITE);
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.fill    = GridBagConstraints.HORIZONTAL;
-        g.insets  = new Insets(8, 8, 8, 8);
+        GridBagConstraints gia = new GridBagConstraints();
+        gia.fill    = GridBagConstraints.HORIZONTAL;
+        gia.insets  = new Insets(8, 8, 8, 8);
 
-        Font fontLabel = new Font("Segoe UI", Font.BOLD, 13);
-        Font fontInput = new Font("Segoe UI", Font.PLAIN, 13);
+        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
+        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
 
         // 1. Họ và tên
-        g.gridx = 0; g.gridy = 0; g.weightx = 0;
-        JLabel l1 = new JLabel("Họ và tên (*):");
-        l1.setFont(fontLabel);
-        pBody.add(l1, g);
+        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
+        JLabel nhan1 = new JLabel("Họ và tên (*):");
+        nhan1.setFont(phongChuNhan);
+        khungNoiDung.add(nhan1, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtHoTen = new JTextField(18);
-        txtHoTen.setFont(fontInput);
-        txtHoTen.setPreferredSize(new Dimension(220, 32));
-        pBody.add(txtHoTen, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapHoTen = new JTextField(18);
+        oNhapHoTen.setFont(phongChuNhap);
+        oNhapHoTen.setPreferredSize(new Dimension(220, 32));
+        khungNoiDung.add(oNhapHoTen, gia);
 
         // 2. Tên đăng nhập
-        g.gridx = 0; g.gridy = 1; g.weightx = 0;
-        JLabel l2 = new JLabel("Tên đăng nhập (*):");
-        l2.setFont(fontLabel);
-        pBody.add(l2, g);
+        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
+        JLabel nhan2 = new JLabel("Tên đăng nhập (*):");
+        nhan2.setFont(phongChuNhan);
+        khungNoiDung.add(nhan2, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtTenDangNhap = new JTextField(18);
-        txtTenDangNhap.setFont(fontInput);
-        txtTenDangNhap.setPreferredSize(new Dimension(220, 32));
-        pBody.add(txtTenDangNhap, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapTenDangNhap = new JTextField(18);
+        oNhapTenDangNhap.setFont(phongChuNhap);
+        oNhapTenDangNhap.setPreferredSize(new Dimension(220, 32));
+        khungNoiDung.add(oNhapTenDangNhap, gia);
 
         // 3. Mật khẩu
-        g.gridx = 0; g.gridy = 2; g.weightx = 0;
-        JLabel l3 = new JLabel(isEdit ? "Mật khẩu mới:" : "Mật khẩu (*):");
-        l3.setFont(fontLabel);
-        pBody.add(l3, g);
+        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
+        JLabel nhan3 = new JLabel(dangSua ? "Mật khẩu mới:" : "Mật khẩu (*):");
+        nhan3.setFont(phongChuNhan);
+        khungNoiDung.add(nhan3, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        txtMatKhau = new JPasswordField(18);
-        txtMatKhau.setFont(fontInput);
-        txtMatKhau.setPreferredSize(new Dimension(220, 32));
-        pBody.add(txtMatKhau, g);
+        gia.gridx = 1; gia.weightx = 1;
+        oNhapMatKhau = new JPasswordField(18);
+        oNhapMatKhau.setFont(phongChuNhap);
+        oNhapMatKhau.setPreferredSize(new Dimension(220, 32));
+        khungNoiDung.add(oNhapMatKhau, gia);
 
         // 4. Xác nhận mật khẩu
-        g.gridx = 0; g.gridy = 3; g.weightx = 0;
-        JLabel l4 = new JLabel("Xác nhận mật khẩu:");
-        l4.setFont(fontLabel);
-        pBody.add(l4, g);
+        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
+        JLabel nhan4 = new JLabel("Xác nhận mật khẩu:");
+        nhan4.setFont(phongChuNhan);
+        khungNoiDung.add(nhan4, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        JPanel pPass2 = new JPanel(new BorderLayout(0, 2));
-        pPass2.setOpaque(false);
-        txtXacNhanMatKhau = new JPasswordField(18);
-        txtXacNhanMatKhau.setFont(fontInput);
-        txtXacNhanMatKhau.setPreferredSize(new Dimension(220, 32));
-        lblGhiChuPass = new JLabel(isEdit ? " (Để trống nếu không đổi mật khẩu)" : "");
-        lblGhiChuPass.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        lblGhiChuPass.setForeground(Color.GRAY);
-        pPass2.add(txtXacNhanMatKhau, BorderLayout.CENTER);
-        pPass2.add(lblGhiChuPass, BorderLayout.SOUTH);
-        pBody.add(pPass2, g);
+        gia.gridx = 1; gia.weightx = 1;
+        JPanel khungMatKhau2 = new JPanel(new BorderLayout(0, 2));
+        khungMatKhau2.setOpaque(false);
+        oNhapXacNhanMatKhau = new JPasswordField(18);
+        oNhapXacNhanMatKhau.setFont(phongChuNhap);
+        oNhapXacNhanMatKhau.setPreferredSize(new Dimension(220, 32));
+        nhanGhiChuMatKhau = new JLabel(dangSua ? " (Để trống nếu không đổi mật khẩu)" : "");
+        nhanGhiChuMatKhau.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+        nhanGhiChuMatKhau.setForeground(Color.GRAY);
+        khungMatKhau2.add(oNhapXacNhanMatKhau, BorderLayout.CENTER);
+        khungMatKhau2.add(nhanGhiChuMatKhau, BorderLayout.SOUTH);
+        khungNoiDung.add(khungMatKhau2, gia);
 
         // 5. Vai trò
-        g.gridx = 0; g.gridy = 4; g.weightx = 0;
-        JLabel l5 = new JLabel("Vai trò:");
-        l5.setFont(fontLabel);
-        pBody.add(l5, g);
+        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
+        JLabel nhan5 = new JLabel("Vai trò:");
+        nhan5.setFont(phongChuNhan);
+        khungNoiDung.add(nhan5, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboVaiTro = new JComboBox<>(new String[]{"STAFF", "ADMIN"});
-        cboVaiTro.setFont(fontInput);
-        cboVaiTro.setPreferredSize(new Dimension(220, 32));
-        cboVaiTro.setRenderer(new DefaultListCellRenderer() {
-            @Override public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                                    boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if ("ADMIN".equals(value)) setText("Quản trị viên (ADMIN)");
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonVaiTro = new JComboBox<>(new String[]{"STAFF", "ADMIN"});
+        hopChonVaiTro.setFont(phongChuNhap);
+        hopChonVaiTro.setPreferredSize(new Dimension(220, 32));
+        hopChonVaiTro.setRenderer(new DefaultListCellRenderer() {
+            @Override public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
+                                                                    boolean dangChon, boolean oDangChon) {
+                super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
+                if ("ADMIN".equals(giaTri)) setText("Quản trị viên (ADMIN)");
                 else setText("Nhân viên (STAFF)");
                 return this;
             }
         });
-        pBody.add(cboVaiTro, g);
+        khungNoiDung.add(hopChonVaiTro, gia);
 
         // 6. Trạng thái
-        g.gridx = 0; g.gridy = 5; g.weightx = 0;
-        JLabel l6 = new JLabel("Trạng thái:");
-        l6.setFont(fontLabel);
-        pBody.add(l6, g);
+        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
+        JLabel nhan6 = new JLabel("Trạng thái:");
+        nhan6.setFont(phongChuNhan);
+        khungNoiDung.add(nhan6, gia);
 
-        g.gridx = 1; g.weightx = 1;
-        cboTrangThai = new JComboBox<>(new String[]{"Hoạt động", "Đã khóa"});
-        cboTrangThai.setFont(fontInput);
-        cboTrangThai.setPreferredSize(new Dimension(220, 32));
-        pBody.add(cboTrangThai, g);
+        gia.gridx = 1; gia.weightx = 1;
+        hopChonTrangThai = new JComboBox<>(new String[]{"Hoạt động", "Đã khóa"});
+        hopChonTrangThai.setFont(phongChuNhap);
+        hopChonTrangThai.setPreferredSize(new Dimension(220, 32));
+        khungNoiDung.add(hopChonTrangThai, gia);
 
-        add(pBody, BorderLayout.CENTER);
+        add(khungNoiDung, BorderLayout.CENTER);
 
         // Điền dữ liệu khi là Edit
-        if (isEdit) {
-            txtHoTen.setText(this.user.getHoTen() != null ? this.user.getHoTen() : "");
-            txtTenDangNhap.setText(this.user.getTenDangNhap() != null ? this.user.getTenDangNhap() : "");
-            cboVaiTro.setSelectedItem("ADMIN".equalsIgnoreCase(this.user.getVaiTro()) ? "ADMIN" : "STAFF");
-            cboTrangThai.setSelectedIndex(this.user.isTrangThai() ? 0 : 1);
+        if (dangSua) {
+            oNhapHoTen.setText(this.nguoiDung.getHoTen() != null ? this.nguoiDung.getHoTen() : "");
+            oNhapTenDangNhap.setText(this.nguoiDung.getTenDangNhap() != null ? this.nguoiDung.getTenDangNhap() : "");
+            hopChonVaiTro.setSelectedItem("ADMIN".equalsIgnoreCase(this.nguoiDung.getVaiTro()) ? "ADMIN" : "STAFF");
+            hopChonTrangThai.setSelectedIndex(this.nguoiDung.isTrangThai() ? 0 : 1);
         }
 
         // ── Footer Buttons ────────────────────────────────────────────────────
-        JPanel pFooter = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        pFooter.setBackground(new Color(245, 247, 250));
-        pFooter.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
+        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
+        khungChan.setBackground(new Color(245, 247, 250));
+        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        btnHuy = new JButton("Hủy bỏ");
-        btnHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnHuy.setPreferredSize(new Dimension(100, 34));
-        btnHuy.setFocusPainted(false);
-        btnHuy.addActionListener(e -> dispose());
+        nutHuy = new JButton("Hủy bỏ");
+        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        nutHuy.setPreferredSize(new Dimension(100, 34));
+        nutHuy.setFocusPainted(false);
+        nutHuy.addActionListener(suKien -> dispose());
 
-        btnLuu = new JButton(isEdit ? "Cập nhật" : "Tạo tài khoản");
-        view.view.UIStyle.setButtonIcon(btnLuu, isEdit ? "sua.png" : "them.png");
-        btnLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnLuu.setBackground(new Color(13, 110, 253));
-        btnLuu.setForeground(Color.WHITE);
-        btnLuu.setPreferredSize(new Dimension(145, 34));
-        btnLuu.setFocusPainted(false);
-        btnLuu.addActionListener(e -> xuLyLuu());
+        nutLuu = new JButton(dangSua ? "Cập nhật" : "Tạo tài khoản");
+        view.view.UIStyle.setButtonIcon(nutLuu, dangSua ? "sua.png" : "them.png");
+        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nutLuu.setBackground(new Color(13, 110, 253));
+        nutLuu.setForeground(Color.WHITE);
+        nutLuu.setPreferredSize(new Dimension(145, 34));
+        nutLuu.setFocusPainted(false);
+        nutLuu.addActionListener(suKien -> xuLyLuu());
 
-        pFooter.add(btnHuy);
-        pFooter.add(btnLuu);
-        add(pFooter, BorderLayout.SOUTH);
+        khungChan.add(nutHuy);
+        khungChan.add(nutLuu);
+        add(khungChan, BorderLayout.SOUTH);
     }
 
     private void xuLyLuu() {
-        String hoTen      = txtHoTen.getText().trim();
-        String tenDangNhap = txtTenDangNhap.getText().trim();
-        String matKhau    = new String(txtMatKhau.getPassword()).trim();
-        String xacNhan    = new String(txtXacNhanMatKhau.getPassword()).trim();
-        boolean hoatDong  = cboTrangThai.getSelectedIndex() == 0;
-        String vaiTro     = (String) cboVaiTro.getSelectedItem();
+        String hoTen      = oNhapHoTen.getText().trim();
+        String tenDangNhap = oNhapTenDangNhap.getText().trim();
+        String matKhau    = new String(oNhapMatKhau.getPassword()).trim();
+        String xacNhan    = new String(oNhapXacNhanMatKhau.getPassword()).trim();
+        boolean hoatHang  = hopChonTrangThai.getSelectedIndex() == 0;
+        String vaiTro     = (String) hopChonVaiTro.getSelectedItem();
 
         if (hoTen.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập họ và tên!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            txtHoTen.requestFocus(); return;
+            oNhapHoTen.requestFocus(); return;
         }
         if (tenDangNhap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            txtTenDangNhap.requestFocus(); return;
+            oNhapTenDangNhap.requestFocus(); return;
         }
 
         // Khi thêm mới, bắt buộc có mật khẩu
-        if (!isEdit && matKhau.isEmpty()) {
+        if (!dangSua && matKhau.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            txtMatKhau.requestFocus(); return;
+            oNhapMatKhau.requestFocus(); return;
         }
 
         // Nếu có nhập mật khẩu thì phải khớp xác nhận
         if (!matKhau.isEmpty()) {
             if (matKhau.length() < 4) {
                 JOptionPane.showMessageDialog(this, "Mật khẩu phải có ít nhất 4 ký tự!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                txtMatKhau.requestFocus(); return;
+                oNhapMatKhau.requestFocus(); return;
             }
             if (!matKhau.equals(xacNhan)) {
                 JOptionPane.showMessageDialog(this, "Mật khẩu xác nhận không khớp!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                txtXacNhanMatKhau.requestFocus(); return;
+                oNhapXacNhanMatKhau.requestFocus(); return;
             }
         }
 
-        this.user.setHoTen(hoTen);
-        this.user.setTenDangNhap(tenDangNhap);
-        this.user.setVaiTro(vaiTro);
-        this.user.setTrangThai(hoatDong);
+        this.nguoiDung.setHoTen(hoTen);
+        this.nguoiDung.setTenDangNhap(tenDangNhap);
+        this.nguoiDung.setVaiTro(vaiTro);
+        this.nguoiDung.setTrangThai(hoatHang);
         // Chỉ set mật khẩu nếu user có nhập (khi sửa, trống = giữ nguyên)
         if (!matKhau.isEmpty()) {
-            this.user.setMatKhau(matKhau);
+            this.nguoiDung.setMatKhau(matKhau);
         }
 
-        saved = true;
+        daLuu = true;
         dispose();
     }
 
-    public boolean isSaved()   { return saved; }
-    public NguoiDung   getUser()   { return user;  }
+    public boolean isSaved()   { return daLuu; }
+    public NguoiDung   getUser()   { return nguoiDung;  }
 }

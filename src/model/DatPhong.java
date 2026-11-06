@@ -3,8 +3,8 @@ package model;
 import java.sql.Date;
 
 public class DatPhong {
-	private int idDatPhong;
-	private int idKhachHang;
+	private int maDatPhong;
+	private int maKhachHang;
 	private Date ngayNhanPhong;
 	private Date ngayTraPhong;
 	private String trangThai;
@@ -23,16 +23,16 @@ public class DatPhong {
 	private String soDienThoai;
 
 	public int getIdDatPhong() {
-		return idDatPhong;
+		return maDatPhong;
 	}
-	public void setIdDatPhong(int idDatPhong) {
-		this.idDatPhong = idDatPhong;
+	public void setIdDatPhong(int maDatPhong) {
+		this.maDatPhong = maDatPhong;
 	}
 	public int getIdKhachHang() {
-		return idKhachHang;
+		return maKhachHang;
 	}
-	public void setIdKhachHang(int idKhachHang) {
-		this.idKhachHang = idKhachHang;
+	public void setIdKhachHang(int maKhachHang) {
+		this.maKhachHang = maKhachHang;
 	}
 	public Date getNgayNhanPhong() {
 		return ngayNhanPhong;
@@ -121,10 +121,10 @@ public class DatPhong {
 		this.soDienThoai = soDienThoai;
 	}
 
-	public DatPhong(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
+	public DatPhong(int maDatPhong, int maKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
 			Date ngayTao, String ghiChu) {
-		this.idDatPhong = idDatPhong;
-		this.idKhachHang = idKhachHang;
+		this.maDatPhong = maDatPhong;
+		this.maKhachHang = maKhachHang;
 		this.ngayNhanPhong = ngayNhanPhong;
 		this.ngayTraPhong = ngayTraPhong;
 		this.trangThai = trangThai;
@@ -132,19 +132,19 @@ public class DatPhong {
 		this.ghiChu = ghiChu;
 	}
 
-	public DatPhong(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
+	public DatPhong(int maDatPhong, int maKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
 			Date ngayTao, String ghiChu, String cccd, String tang, int soNguoi, String soPhong) {
-		this(idDatPhong, idKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu);
+		this(maDatPhong, maKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu);
 		this.cccd = cccd;
 		this.tang = tang;
 		this.soNguoi = soNguoi;
 		this.soPhong = soPhong;
 	}
 
-	public DatPhong(int idDatPhong, int idKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
+	public DatPhong(int maDatPhong, int maKhachHang, Date ngayNhanPhong, Date ngayTraPhong, String trangThai,
 			Date ngayTao, String ghiChu, String cccd, String tang, int soNguoi, String soPhong,
 			int maPhong, double giaMoiDem, String tenLoaiPhong, String tenKhachHang, String soDienThoai) {
-		this(idDatPhong, idKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu, cccd, tang, soNguoi, soPhong);
+		this(maDatPhong, maKhachHang, ngayNhanPhong, ngayTraPhong, trangThai, ngayTao, ghiChu, cccd, tang, soNguoi, soPhong);
 		this.maPhong = maPhong;
 		this.giaMoiDem = giaMoiDem;
 		this.tenLoaiPhong = tenLoaiPhong;

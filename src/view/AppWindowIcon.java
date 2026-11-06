@@ -9,18 +9,18 @@ public final class AppWindowIcon {
     private AppWindowIcon() {
     }
 
-    public static void apply(JFrame frame) {
-        URL logoResource = AppWindowIcon.class.getResource("/img/loogo.png");
-        if (logoResource != null) {
-            frame.setIconImage(new ImageIcon(logoResource).getImage());
+    public static void apply(JFrame cuaSo) {
+        URL taiNguyenBieuTuong = AppWindowIcon.class.getResource("/img/loogo.png");
+        if (taiNguyenBieuTuong != null) {
+            cuaSo.setIconImage(new ImageIcon(taiNguyenBieuTuong).getImage());
             return;
         }
 
-        File logoFile = new File("img", "loogo.png");
-        if (logoFile.isFile()) {
-            frame.setIconImage(new ImageIcon(logoFile.getPath()).getImage());
+        File tepBieuTuong = new File("img", "loogo.png");
+        if (tepBieuTuong.isFile()) {
+            cuaSo.setIconImage(new ImageIcon(tepBieuTuong.getPath()).getImage());
         } else {
-            System.err.println("Không tìm thấy logo cửa sổ: /img/loogo.png hoặc " + logoFile.getPath());
+            System.err.println("Không tìm thấy logo cửa sổ: /img/loogo.png hoặc " + tepBieuTuong.getPath());
         }
     }
 }
