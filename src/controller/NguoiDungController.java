@@ -31,26 +31,26 @@ public class NguoiDungController {
         taiDuLieu();
 
         // ── Nút thao tác ──────────────────────────────────────────────────────
-        viewQuanLyTaiKhoan.nutThem.addActionListener(suKien -> them());
-        viewQuanLyTaiKhoan.nutSua.addActionListener(suKien -> sua());
-        viewQuanLyTaiKhoan.nutXoa.addActionListener(suKien -> xoa());
-        viewQuanLyTaiKhoan.nutKhoaMoKhoa.addActionListener(suKien -> doiTrangThai());
-        viewQuanLyTaiKhoan.nutDatLaiMatKhau.addActionListener(suKien -> datLaiMatKhau());
+        viewQuanLyTaiKhoan.btThem.addActionListener(ac -> them());
+        viewQuanLyTaiKhoan.btSua.addActionListener(ac -> sua());
+        viewQuanLyTaiKhoan.btXoa.addActionListener(ac -> xoa());
+        viewQuanLyTaiKhoan.btKhoaMoKhoa.addActionListener(ac -> doiTrangThai());
+        viewQuanLyTaiKhoan.btDatLaiMatKhau.addActionListener(ac -> datLaiMatKhau());
 
         // ── Tìm kiếm & lọc ────────────────────────────────────────────────────
-        viewQuanLyTaiKhoan.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyTaiKhoan.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyTaiKhoan.hopChonLocVaiTro.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyTaiKhoan.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyTaiKhoan.btTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyTaiKhoan.oNhapTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyTaiKhoan.hopChonLocVaiTro.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyTaiKhoan.hopChonLocTrangThai.addActionListener(ac -> apDungBoLoc());
 
-        viewQuanLyTaiKhoan.nutLamMoiTim.addActionListener(suKien -> {
+        viewQuanLyTaiKhoan.btLamMoiTim.addActionListener(ac -> {
             viewQuanLyTaiKhoan.oNhapTimKiem.setText("");
             viewQuanLyTaiKhoan.hopChonLocVaiTro.setSelectedIndex(0);
             viewQuanLyTaiKhoan.hopChonLocTrangThai.setSelectedIndex(0);
             apDungBoLoc();
         });
 
-        viewQuanLyTaiKhoan.nutLamMoi.addActionListener(suKien -> {
+        viewQuanLyTaiKhoan.btLamMoi.addActionListener(ac -> {
             viewQuanLyTaiKhoan.lamMoiForm();
             taiDuLieu();
         });

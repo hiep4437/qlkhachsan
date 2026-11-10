@@ -14,25 +14,24 @@ import model.DatPhong;
 import model.KhachHang;
 import model.Phong;
 import service.DatPhongService;
-import view.view.DatePickerCalendar;
-import view.view.DatePickerField;
+import view.ChonNgay;
 
 public class DialogThemSuaDatPhong extends JDialog {
 
     private JTextField oNhapCCCD;
     private JTextField oNhapHoTen;
     private JTextField oNhapSDT;
-    private JButton nutKiemTraCCCD;
+    private JButton btKiemTraCCCD;
 
     private JComboBox<Phong> hopChonPhong;
-    private DatePickerField oNhapNgayNhan;
-    private DatePickerField oNhapNgayTra;
+    private ChonNgay oNhapNgayNhan;
+    private ChonNgay oNhapNgayTra;
     private JSpinner vongQuaySoNguoi;
     private JComboBox<String> hopChonTrangThai;
     private JTextField oNhapGhiChu;
 
-    private JButton nutLuu;
-    private JButton nutHuy;
+    private JButton btLuu;
+    private JButton btHuy;
 
     private boolean daLuu = false;
     private DatPhong datPhong;
@@ -98,12 +97,11 @@ public class DialogThemSuaDatPhong extends JDialog {
         oNhapCCCD = new JTextField();
         oNhapCCCD.setFont(phongChuNhap);
         oNhapCCCD.setPreferredSize(new Dimension(160, 32));
-        nutKiemTraCCCD = new JButton("Tìm");
-        view.view.UIStyle.setButtonIcon(nutKiemTraCCCD, "timkiem.png");
-        nutKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nutKiemTraCCCD.setFocusPainted(false);
+        btKiemTraCCCD = new JButton("Tìm");
+        btKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btKiemTraCCCD.setFocusPainted(false);
         khungCCCD.add(oNhapCCCD, BorderLayout.CENTER);
-        khungCCCD.add(nutKiemTraCCCD, BorderLayout.EAST);
+        khungCCCD.add(btKiemTraCCCD, BorderLayout.EAST);
         khungNoiDung.add(khungCCCD, gia);
 
         // 2. Tên khách hàng & SDT
@@ -173,8 +171,8 @@ public class DialogThemSuaDatPhong extends JDialog {
         khungNoiDung.add(nhanNhan, gia);
 
         gia.gridx = 1; gia.weightx = 1;
-        oNhapNgayNhan = new DatePickerField(homNay, homNay);
-        oNhapNgayNhan.setPreferredSize(new Dimension(200, 32));
+        oNhapNgayNhan = new ChonNgay(homNay, homNay);
+        oNhapNgayNhan.setPreferredSize(new Dimension(324, 32));
         khungNoiDung.add(oNhapNgayNhan, gia);
 
         gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
@@ -183,8 +181,8 @@ public class DialogThemSuaDatPhong extends JDialog {
         khungNoiDung.add(nhanTra, gia);
 
         gia.gridx = 1; gia.weightx = 1;
-        oNhapNgayTra = new DatePickerField(ngayMai, ngayMai);
-        oNhapNgayTra.setPreferredSize(new Dimension(200, 32));
+        oNhapNgayTra = new ChonNgay(ngayMai, ngayMai);
+        oNhapNgayTra.setPreferredSize(new Dimension(324, 32));
         khungNoiDung.add(oNhapNgayTra, gia);
 
         // 5. Số lượng người
@@ -200,7 +198,7 @@ public class DialogThemSuaDatPhong extends JDialog {
         vongQuaySoNguoi.setFont(phongChuNhap);
         vongQuaySoNguoi.setPreferredSize(new Dimension(200, 32));
         khungNoiDung.add(vongQuaySoNguoi, gia);
-        hopChonPhong.addActionListener(suKien -> capNhatSucChuaPhong());
+        hopChonPhong.addActionListener(ac -> capNhatSucChuaPhong());
 
         // 6. Trạng thái
         gia.gridx = 0; gia.gridy = 7; gia.weightx = 0;
@@ -245,7 +243,7 @@ public class DialogThemSuaDatPhong extends JDialog {
         add(khungNoiDung, BorderLayout.CENTER);
 
         // Xử lý tìm kiếm CCCD
-        nutKiemTraCCCD.addActionListener(suKien -> {
+        btKiemTraCCCD.addActionListener(ac -> {
             String cccd = oNhapCCCD.getText().trim();
             if (cccd.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD để tìm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -312,7 +310,7 @@ public class DialogThemSuaDatPhong extends JDialog {
         }
 
         oNhapNgayTra.setMinimumDate(oNhapNgayNhan.getDate().plusDays(1));
-        oNhapNgayNhan.addDateChangeListener(suKien -> {
+        oNhapNgayNhan.addDateChangeListener(ac -> {
             LocalDate earliestTraPhong = oNhapNgayNhan.getDate().plusDays(1);
             oNhapNgayTra.setMinimumDate(earliestTraPhong);
             if (oNhapNgayTra.getDate().isBefore(earliestTraPhong)) {
@@ -325,23 +323,22 @@ public class DialogThemSuaDatPhong extends JDialog {
         khungChan.setBackground(new Color(245, 247, 250));
         khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        nutHuy = new JButton("Hủy bỏ");
-        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutHuy.setPreferredSize(new Dimension(100, 34));
-        nutHuy.setFocusPainted(false);
-        nutHuy.addActionListener(suKien -> dispose());
+        btHuy = new JButton("Hủy bỏ");
+        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btHuy.setPreferredSize(new Dimension(100, 34));
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(ac -> dispose());
 
-        nutLuu = new JButton(dangSua ? "Cập nhật" : "Đặt phòng");
-        view.view.UIStyle.setButtonIcon(nutLuu, dangSua ? "sua.png" : "them.png");
-        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutLuu.setBackground(new Color(13, 110, 253));
-        nutLuu.setForeground(Color.WHITE);
-        nutLuu.setPreferredSize(new Dimension(130, 34));
-        nutLuu.setFocusPainted(false);
-        nutLuu.addActionListener(suKien -> xuLyLuu());
+        btLuu = new JButton(dangSua ? "Cập nhật" : "Đặt phòng");
+        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btLuu.setBackground(new Color(13, 110, 253));
+        btLuu.setForeground(Color.WHITE);
+        btLuu.setPreferredSize(new Dimension(130, 34));
+        btLuu.setFocusPainted(false);
+        btLuu.addActionListener(ac -> xuLyLuu());
 
-        khungChan.add(nutHuy);
-        khungChan.add(nutLuu);
+        khungChan.add(btHuy);
+        khungChan.add(btLuu);
         add(khungChan, BorderLayout.SOUTH);
     }
 

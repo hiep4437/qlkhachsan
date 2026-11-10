@@ -25,19 +25,19 @@ public class DatPhongController {
         taiDuLieu();
 
         // Nút thêm, sửa, check-in, check-out, hủy
-        viewDatPhong.nutThem.addActionListener(suKien -> them());
-        viewDatPhong.nutSua.addActionListener(suKien -> sua());
-        viewDatPhong.nutKiemTraIn.addActionListener(suKien -> checkIn());
-        viewDatPhong.nutKiemTraOut.addActionListener(suKien -> checkOut());
-        viewDatPhong.nutHuyDat.addActionListener(suKien -> huyDat());
+        viewDatPhong.btThem.addActionListener(ac -> them());
+        viewDatPhong.btSua.addActionListener(ac -> sua());
+        viewDatPhong.btKiemTraIn.addActionListener(ac -> checkIn());
+        viewDatPhong.btKiemTraOut.addActionListener(ac -> checkOut());
+        viewDatPhong.btHuyDat.addActionListener(ac -> huyDat());
 
         // Tìm kiếm & Lọc
-        viewDatPhong.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewDatPhong.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewDatPhong.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
-        viewDatPhong.hopChonLocThoiGian.addActionListener(suKien -> apDungBoLoc());
+        viewDatPhong.btTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewDatPhong.oNhapTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewDatPhong.hopChonLocTrangThai.addActionListener(ac -> apDungBoLoc());
+        viewDatPhong.hopChonLocThoiGian.addActionListener(ac -> apDungBoLoc());
 
-        viewDatPhong.nutLamMoi.addActionListener(suKien -> {
+        viewDatPhong.btLamMoi.addActionListener(ac -> {
             viewDatPhong.lamMoi();
             taiDuLieu();
         });

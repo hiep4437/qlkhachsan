@@ -18,7 +18,7 @@ public class LoaiPhongDAO {
 		}
 
 		String cauLenhSQL = "INSERT INTO loai_phong (ten_loai_phong, suc_chua, mo_ta) VALUES (?, ?, ?)";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 			luongIn.setString(1, bangHienTai.getTenLoaiPhong().trim());
@@ -43,7 +43,7 @@ public class LoaiPhongDAO {
 	// Sua loai phong
 	public int sua(LoaiPhong bangHienTai) {
 		String cauLenhSQL = "UPDATE loai_phong SET ten_loai_phong = ?, suc_chua = ?, mo_ta = ? WHERE ma_loai_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setString(1, bangHienTai.getTenLoaiPhong().trim());
@@ -61,7 +61,7 @@ public class LoaiPhongDAO {
 	// Xoa loai phong
 	public int xoa(LoaiPhong bangHienTai) {
 		String cauLenhSQL = "DELETE FROM loai_phong WHERE ma_loai_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, bangHienTai.getMaLoaiPhong());
@@ -77,7 +77,7 @@ public class LoaiPhongDAO {
 		ArrayList<LoaiPhong> danhSach = new ArrayList<>();
 		String cauLenhSQL = "SELECT * FROM loai_phong ORDER BY ma_loai_phong ASC";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     Statement luongTrinh = ketNoi.createStatement();
 		     ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
@@ -104,7 +104,7 @@ public class LoaiPhongDAO {
 		}
 
 		String cauLenhSQL = "SELECT * FROM loai_phong WHERE ten_loai_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setString(1, bangHienTai.getTenLoaiPhong().trim());

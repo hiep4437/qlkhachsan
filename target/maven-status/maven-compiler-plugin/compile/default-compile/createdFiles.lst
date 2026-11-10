@@ -47,12 +47,9 @@ dao\PhongDAO.class
 model\LoaiPhong.class
 dao\ThongKeDAO.class
 view\view\ViewHoaDon$1.class
-view\view\AppWindowIcon.class
 view\view\ViewBaoCaoThongKe$3.class
-view\view\DatePickerCalendar.class
 controller\LoginController$1.class
 view\view\ViewQuanLyPhong$4.class
-view\view\UIStyle$RoundedBorder.class
 model\NguoiDung.class
 view\view\ViewQuanLyTaiKhoan.class
 model\ThongTinPhongDangO.class
@@ -77,7 +74,6 @@ view\dialog\DialogThemSuaDatPhong.class
 dao\LoaiPhongDAO.class
 view\dialog\DialogTraPhongThanhToan$2.class
 view\view\ViewHoaDon$3.class
-view\AppWindowIcon.class
 controller\HoaDonController$1.class
 view\view\ViewQuanLyKhachHang$3.class
 controller\DatPhongController$2.class
@@ -85,7 +81,6 @@ controller\PhongController.class
 service\DatPhongService.class
 view\view\ViewDatPhong$3.class
 controller\StatisticController$2.class
-view\view\DatePickerField.class
 view\view\ViewBaoCaoThongKe$1.class
 view\view\ViewBaoCaoThongKe$DongBieuDo.class
 controller\KhachHangController$2.class
@@ -98,12 +93,8 @@ controller\DatPhongController$3.class
 dao\HoaDonDAO.class
 service\StatisticService.class
 view\dialog\DialogChiTietHoaDon.class
-dao\KetNoiCSDL.class
-view\view\UIStyle.class
 controller\NguoiDungController.class
 view\view\ViewDatPhong$2.class
-view\view\UIStyle$1.class
 view\dialog\DialogTraPhongThanhToan$1.class
 dao\KhachHangDAO.class
 controller\StatisticController$3.class
-view\view\UIStyle$ScaledIcon.class

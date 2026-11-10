@@ -83,11 +83,11 @@ public class DialogThongTinTaiKhoan extends JDialog {
         khungDuoi.setBackground(new Color(245, 247, 250));
         khungDuoi.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        JButton nutDong = new JButton("Đóng");
-        nutDong.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutDong.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutDong.addActionListener(suKien -> dispose());
-        khungDuoi.add(nutDong);
+        JButton btDong = new JButton("Đóng");
+        btDong.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btDong.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btDong.addActionListener(ac -> dispose());
+        khungDuoi.add(btDong);
 
         add(khungDuoi, BorderLayout.SOUTH);
     }
@@ -154,19 +154,19 @@ public class DialogThongTinTaiKhoan extends JDialog {
 
         khung.add(bieuMau, BorderLayout.CENTER);
 
-        JPanel nutKhung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-        nutKhung.setOpaque(false);
+        JPanel btKhung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
+        btKhung.setOpaque(false);
 
-        JButton nutLuu = new JButton("Lưu họ tên mới");
-        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutLuu.setBackground(new Color(37, 99, 235));
-        nutLuu.setForeground(Color.WHITE);
-        nutLuu.setFocusPainted(false);
-        nutLuu.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutLuu.addActionListener(suKien -> capNhatHoTen());
-        nutKhung.add(nutLuu);
+        JButton btLuu = new JButton("Lưu họ tên mới");
+        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btLuu.setBackground(new Color(37, 99, 235));
+        btLuu.setForeground(Color.WHITE);
+        btLuu.setFocusPainted(false);
+        btLuu.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btLuu.addActionListener(ac -> capNhatHoTen());
+        btKhung.add(btLuu);
 
-        khung.add(nutKhung, BorderLayout.SOUTH);
+        khung.add(btKhung, BorderLayout.SOUTH);
 
         return khung;
     }
@@ -206,19 +206,19 @@ public class DialogThongTinTaiKhoan extends JDialog {
 
         khung.add(bieuMau, BorderLayout.CENTER);
 
-        JPanel nutKhung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
-        nutKhung.setOpaque(false);
+        JPanel btKhung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 5));
+        btKhung.setOpaque(false);
 
-        JButton nutDoiMatKhau = new JButton("Đổi mật khẩu");
-        nutDoiMatKhau.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutDoiMatKhau.setBackground(new Color(16, 185, 129));
-        nutDoiMatKhau.setForeground(Color.WHITE);
-        nutDoiMatKhau.setFocusPainted(false);
-        nutDoiMatKhau.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutDoiMatKhau.addActionListener(suKien -> thucHienDoiMatKhau());
-        nutKhung.add(nutDoiMatKhau);
+        JButton btDoiMatKhau = new JButton("Đổi mật khẩu");
+        btDoiMatKhau.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btDoiMatKhau.setBackground(new Color(16, 185, 129));
+        btDoiMatKhau.setForeground(Color.WHITE);
+        btDoiMatKhau.setFocusPainted(false);
+        btDoiMatKhau.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btDoiMatKhau.addActionListener(ac -> thucHienDoiMatKhau());
+        btKhung.add(btDoiMatKhau);
 
-        khung.add(nutKhung, BorderLayout.SOUTH);
+        khung.add(btKhung, BorderLayout.SOUTH);
 
         return khung;
     }

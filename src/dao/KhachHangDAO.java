@@ -18,7 +18,7 @@ public class KhachHangDAO {
         }
 
         String cauLenhSQL = "INSERT INTO khach_hang (ho_ten, so_cccd, so_dien_thoai, email, dia_chi) VALUES (?, ?, ?, ?, ?)";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
             luongIn.setString(1, bangHienTai.getNameKhachHang().trim());
@@ -45,7 +45,7 @@ public class KhachHangDAO {
     // Sua khach hang
     public int sua(KhachHang bangHienTai) {
         String cauLenhSQL = "UPDATE khach_hang SET ho_ten = ?, so_cccd = ?, so_dien_thoai = ?, email = ?, dia_chi = ? WHERE ma_khach_hang = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
             luongIn.setString(1, bangHienTai.getNameKhachHang().trim());
@@ -65,7 +65,7 @@ public class KhachHangDAO {
     // Xoa khach hang
     public int xoa(KhachHang bangHienTai) {
         String cauLenhSQL = "DELETE FROM khach_hang WHERE ma_khach_hang = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
             luongIn.setInt(1, bangHienTai.getIdKhachHang());
@@ -81,7 +81,7 @@ public class KhachHangDAO {
         ArrayList<KhachHang> danhSach = new ArrayList<>();
         String cauLenhSQL = "SELECT * FROM khach_hang ORDER BY ma_khach_hang DESC";
 
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              Statement luongTrinh = ketNoi.createStatement();
              ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
@@ -106,7 +106,7 @@ public class KhachHangDAO {
     // Dem so lan dat phong cua khach hang
     public int demSoLanDatPhong(int maKhachHang) {
         String cauLenhSQL = "SELECT COUNT(*) FROM dat_phong WHERE ma_khach_hang = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setInt(1, maKhachHang);
             try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
@@ -126,7 +126,7 @@ public class KhachHangDAO {
         if (bangHienTai == null) return null;
 
         String cauLenhSQL = "SELECT * FROM khach_hang WHERE ma_khach_hang = ? OR (so_cccd IS NOT NULL AND so_cccd = ?)";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
             luongIn.setInt(1, bangHienTai.getIdKhachHang());

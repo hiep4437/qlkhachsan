@@ -14,6 +14,7 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import model.NguoiDung;
+import view.IConn;
 
 public class ViewQuanLyTaiKhoan extends JFrame {
 
@@ -26,18 +27,18 @@ public class ViewQuanLyTaiKhoan extends JFrame {
     public JTextField         oNhapTimKiem;
     public JComboBox<String>  hopChonLocVaiTro;
     public JComboBox<String>  hopChonLocTrangThai;
-    public JButton            nutTimKiem;
-    public JButton            nutLamMoiTim;
+    public JButton         btTimKiem;
+    public JButton         btLamMoiTim;
     public JLabel             nhanThongKe;
 
     // ── Nút chức năng ─────────────────────────────────────────────────────────
-    public JButton nutThem;
-    public JButton nutSua;
-    public JButton nutXoa;
-    public JButton nutKhoaMoKhoa;
-    public JButton nutDatLaiMatKhau;
-    public JButton nutLamMoi;
-    public JButton nutQuayLai;
+    public JButton btThem;
+    public JButton btSua;
+    public JButton btXoa;
+    public JButton btKhoaMoKhoa;
+    public JButton btDatLaiMatKhau;
+    public JButton btLamMoi;
+    public JButton btQuayLai;
 
     // ── Field compat cũ (vẫn cần cho controller cũ) ───────────────────────────
     public JTextField      oNhapMaNguoiDung  = new JTextField();
@@ -56,7 +57,7 @@ public class ViewQuanLyTaiKhoan extends JFrame {
     public ViewQuanLyTaiKhoan(NguoiDung nguoiDungHienTai) {
         this.nguoiDungHienTai = nguoiDungHienTai;
         setTitle("Quản lý khách sạn - Quản lý tài khoản");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         setSize(1050, 680);
         setMinimumSize(new Dimension(900, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,11 +108,10 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         oNhapTimKiem.setPreferredSize(new Dimension(210, 34));
         oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Tên đăng nhập, họ tên...");
 
-        nutTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
-        nutTimKiem.setFont(truongNhap);
-        nutTimKiem.setPreferredSize(new Dimension(110, 34));
-        nutTimKiem.setFocusPainted(false);
+        btTimKiem = new JButton("Tìm kiếm");
+        btTimKiem.setFont(truongNhap);
+        btTimKiem.setPreferredSize(new Dimension(110, 34));
+        btTimKiem.setFocusPainted(false);
 
         JLabel nhanVaiTro = new JLabel("Vai trò:");
         nhanVaiTro.setFont(truongNhan);
@@ -129,21 +129,20 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         hopChonLocTrangThai.setFont(truongNhap);
         hopChonLocTrangThai.setPreferredSize(new Dimension(165, 34));
 
-        nutLamMoiTim = new JButton("Xóa lọc");
-        UIStyle.setButtonIcon(nutLamMoiTim, "load.png");
-        nutLamMoiTim.setFont(truongNhap);
-        nutLamMoiTim.setPreferredSize(new Dimension(90, 34));
-        nutLamMoiTim.setFocusPainted(false);
+        btLamMoiTim = new JButton("Xóa lọc");
+        btLamMoiTim.setFont(truongNhap);
+        btLamMoiTim.setPreferredSize(new Dimension(90, 34));
+        btLamMoiTim.setFocusPainted(false);
 
         khungTimKiem.add(nhanTim);
         khungTimKiem.add(oNhapTimKiem);
-        khungTimKiem.add(nutTimKiem);
+        khungTimKiem.add(btTimKiem);
         khungTimKiem.add(Box.createHorizontalStrut(12));
         khungTimKiem.add(nhanVaiTro);
         khungTimKiem.add(hopChonLocVaiTro);
         khungTimKiem.add(nhanTrangThai);
         khungTimKiem.add(hopChonLocTrangThai);
-        khungTimKiem.add(nutLamMoiTim);
+        khungTimKiem.add(btLamMoiTim);
 
         khungTren.add(khungTimKiem);
         khungChinh.add(khungTren, BorderLayout.NORTH);
@@ -252,14 +251,14 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         bang.addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent suKien) {
                 if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
-                    nutSua.doClick();
+                    btSua.doClick();
                 }
             }
         });
 
         // Khi chọn dòng, ghi vào các field compat cũ (vẫn dùng trong NguoiDungController)
-        bang.getSelectionModel().addListSelectionListener(suKien -> {
-            if (!suKien.getValueIsAdjusting() && bang.getSelectedRow() != -1) {
+        bang.getSelectionModel().addListSelectionListener(ac -> {
+            if (!ac.getValueIsAdjusting() && bang.getSelectedRow() != -1) {
                 int hangMoHinh = bang.convertRowIndexToModel(bang.getSelectedRow());
                 oNhapMaNguoiDung.setText(moHinh.getValueAt(hangMoHinh, 0).toString());
                 oNhapTenDangNhap.setText(moHinh.getValueAt(hangMoHinh, 1).toString());
@@ -280,39 +279,35 @@ public class ViewQuanLyTaiKhoan extends JFrame {
         JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         khungDuoi.setOpaque(false);
 
-        nutThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.BLACK, 165);
-        UIStyle.setButtonIcon(nutThem, "them.png");
-        nutSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7), Color.BLACK, 150);
-        UIStyle.setButtonIcon(nutSua, "sua.png");
-        nutXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.BLACK, 150);
-        UIStyle.setButtonIcon(nutXoa, "xoa.png");
-        nutKhoaMoKhoa    = makeBtn("Khóa / Mở khóa", new Color(108, 117, 125), Color.WHITE, 155);
-        nutDatLaiMatKhau = makeBtn("Đặt lại mật khẩu", new Color(52, 58, 64),  Color.WHITE, 165);
-        nutLamMoi        = makeBtn("Làm mới", null, null, 130);
-        UIStyle.setButtonIcon(nutLamMoi, "load.png");
-        nutLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btThem = makeBtn("Thêm tài khoản", new Color(13, 110, 253), Color.BLACK, 165);
+        btSua  = makeBtn("Sửa tài khoản",  new Color(255, 193, 7), Color.BLACK, 150);
+        btXoa  = makeBtn("Xóa tài khoản",  new Color(220, 53, 69), Color.BLACK, 150);
+        btKhoaMoKhoa    = makeBtn("Khóa / Mở khóa", new Color(108, 117, 125), Color.WHITE, 155);
+        btDatLaiMatKhau = makeBtn("Đặt lại mật khẩu", new Color(52, 58, 64),  Color.WHITE, 165);
+        btLamMoi        = makeBtn("Làm mới", null, null, 130);
+        btLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        khungDuoi.add(nutThem);
-        khungDuoi.add(nutSua);
-        khungDuoi.add(nutXoa);
-        khungDuoi.add(nutKhoaMoKhoa);
-        khungDuoi.add(nutDatLaiMatKhau);
-        khungDuoi.add(nutLamMoi);
+        khungDuoi.add(btThem);
+        khungDuoi.add(btSua);
+        khungDuoi.add(btXoa);
+        khungDuoi.add(btKhoaMoKhoa);
+        khungDuoi.add(btDatLaiMatKhau);
+        khungDuoi.add(btLamMoi);
 
         khungChinh.add(khungDuoi, BorderLayout.SOUTH);
         setContentPane(khungChinh);
 
         // btnQuayLai chỉ tạo để tránh NPE khi ViewTrangChu set action listener
-        nutQuayLai = new JButton("Quay lại");
+        btQuayLai = new JButton("Quay lại");
     }
 
     private JButton makeBtn(String vanBan, Color mauNen, Color mauChu, int chieuRong) {
-        JButton nut = new JButton(vanBan);
-        nut.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        if (mauNen != null) { nut.setBackground(mauNen); nut.setForeground(mauChu); }
-        nut.setPreferredSize(new Dimension(chieuRong, 36));
-        nut.setFocusPainted(false);
-        return nut;
+        JButton bt = new JButton(vanBan);
+        bt.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        if (mauNen != null) { bt.setBackground(mauNen); bt.setForeground(mauChu); }
+        bt.setPreferredSize(new Dimension(chieuRong, 36));
+        bt.setFocusPainted(false);
+        return bt;
     }
 
     public void lamMoiForm() {

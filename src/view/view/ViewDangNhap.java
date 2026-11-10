@@ -1,19 +1,20 @@
 package view.view;
 
-import dao.KetNoiCSDL;
+import dao.DBConecter;
 import java.awt.*;
 import javax.swing.*;
+import view.IConn;
 
 public class ViewDangNhap extends JFrame {
     public JTextField oNhapTenDangNhap;
     public JPasswordField oNhapMatKhau;
-    public JButton nutDangNhap, nutThoat;
-    public JButton nutCauHinhServer;
+    public JButton btDangNhap, btThoat;
+    public JButton btCauHinhServer;
     public JLabel nhanThongBaoServer;
 
     public ViewDangNhap() {
         setTitle("Đăng nhập - Quản lý khách sạn");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         setSize(420, 360);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,46 +85,46 @@ public class ViewDangNhap extends JFrame {
         khungBieuMau.add(oNhapMatKhau, ranhGioi);
 
         // Buttons Panel
-        JPanel nutKhung = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        nutKhung.setOpaque(false);
+        JPanel btKhung = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        btKhung.setOpaque(false);
 
-        nutDangNhap = new JButton("Đăng nhập");
-        nutDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutDangNhap.setBackground(new Color(41, 128, 185));
-        nutDangNhap.setForeground(Color.WHITE);
-        nutDangNhap.setFocusPainted(false);
-        nutDangNhap.setPreferredSize(new Dimension(120, 34));
+        btDangNhap = new JButton("Đăng nhập");
+        btDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btDangNhap.setBackground(new Color(41, 128, 185));
+        btDangNhap.setForeground(Color.WHITE);
+        btDangNhap.setFocusPainted(false);
+        btDangNhap.setPreferredSize(new Dimension(120, 34));
 
-        nutThoat = new JButton("Thoát");
-        nutThoat.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutThoat.setPreferredSize(new Dimension(90, 34));
+        btThoat = new JButton("Thoát");
+        btThoat.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btThoat.setPreferredSize(new Dimension(90, 34));
 
-        nutKhung.add(nutDangNhap);
-        nutKhung.add(nutThoat);
+        btKhung.add(btDangNhap);
+        btKhung.add(btThoat);
 
         // Bottom config panel
         JPanel khungDuoi = new JPanel(new BorderLayout());
         khungDuoi.setOpaque(false);
         khungDuoi.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        nutCauHinhServer = new JButton(" Cấu hình máy chủ");
-        nutCauHinhServer.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        nutCauHinhServer.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutCauHinhServer.setFocusPainted(false);
+        btCauHinhServer = new JButton(" Cấu hình máy chủ");
+        btCauHinhServer.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btCauHinhServer.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btCauHinhServer.setFocusPainted(false);
 
         nhanThongBaoServer = new JLabel(
-                "CSDL: " + KetNoiCSDL.getHost() + ":" + KetNoiCSDL.getPort() + "/" + KetNoiCSDL.getDatabase());
+                "CSDL: " + DBConecter.getHost() + ":" + DBConecter.getPort() + "/" + DBConecter.getDatabase());
         nhanThongBaoServer.setFont(new Font("Segoe UI", Font.ITALIC, 11));
         nhanThongBaoServer.setForeground(new Color(100, 100, 100));
 
         khungDuoi.add(nhanThongBaoServer, BorderLayout.WEST);
-        khungDuoi.add(nutCauHinhServer, BorderLayout.EAST);
+        khungDuoi.add(btCauHinhServer, BorderLayout.EAST);
 
         // Center container
         JPanel khungGiua = new JPanel(new BorderLayout());
         khungGiua.setOpaque(false);
         khungGiua.add(khungBieuMau, BorderLayout.CENTER);
-        khungGiua.add(nutKhung, BorderLayout.SOUTH);
+        khungGiua.add(btKhung, BorderLayout.SOUTH);
 
         khungChinh.add(khungDauTrang, BorderLayout.NORTH);
         khungChinh.add(khungGiua, BorderLayout.CENTER);
@@ -132,16 +133,15 @@ public class ViewDangNhap extends JFrame {
         add(khungChinh);
 
         // Events
-        nutThoat.addActionListener(suKien -> System.exit(0));
-        nutCauHinhServer.addActionListener(suKien -> hienThiDialogCauHinhServer());
+        btThoat.addActionListener(ac -> System.exit(0));
+        btCauHinhServer.addActionListener(ac -> hienThiDialogCauHinhServer());
 
         // Phím Enter đăng nhập
-        getRootPane().setDefaultButton(nutDangNhap);
+        getRootPane().setDefaultButton(btDangNhap);
     }
 
     public void capNhatThongTinServer() {
-        nhanThongBaoServer.setText(
-                "CSDL: " + KetNoiCSDL.getHost() + ":" + KetNoiCSDL.getPort() + "/" + KetNoiCSDL.getDatabase());
+        nhanThongBaoServer.setText("CSDL: " + DBConecter.getHost() + ":" + DBConecter.getPort() + "/" + DBConecter.getDatabase());
     }
 
     public void hienThiDialogCauHinhServer() {
@@ -156,11 +156,11 @@ public class ViewDangNhap extends JFrame {
         gia.fill = GridBagConstraints.HORIZONTAL;
         gia.insets = new Insets(6, 6, 6, 6);
 
-        JTextField oNhapMayChu = new JTextField(KetNoiCSDL.getHost(), 15);
-        JTextField oNhapCong = new JTextField(KetNoiCSDL.getPort(), 15);
-        JTextField oNhapCoSoDuLieu = new JTextField(KetNoiCSDL.getDatabase(), 15);
-        JTextField oNhapNguoiDung = new JTextField(KetNoiCSDL.getUser(), 15);
-        JPasswordField oNhapMatKhau = new JPasswordField(KetNoiCSDL.getPass(), 15);
+        JTextField oNhapMayChu = new JTextField(DBConecter.getHost(), 15);
+        JTextField oNhapCong = new JTextField(DBConecter.getPort(), 15);
+        JTextField oNhapCoSoDuLieu = new JTextField(DBConecter.getDatabase(), 15);
+        JTextField oNhapNguoiDung = new JTextField(DBConecter.getUser(), 15);
+        JPasswordField oNhapMatKhau = new JPasswordField(DBConecter.getPass(), 15);
 
         gia.gridx = 0;
         gia.gridy = 0;
@@ -202,21 +202,21 @@ public class ViewDangNhap extends JFrame {
         nhanTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
 
         JPanel khungCacNut = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton nutTest = new JButton("Kiểm tra kết nối");
-        JButton nutLuu = new JButton("Lưu cấu hình");
-        JButton nutMacDinh = new JButton("Mặc định");
-        JButton nutHang = new JButton("Đóng");
+        JButton btTest = new JButton("Kiểm tra kết nối");
+        JButton btLuu = new JButton("Lưu cấu hình");
+        JButton btMacDinh = new JButton("Mặc định");
+        JButton btHang = new JButton("Đóng");
 
-        khungCacNut.add(nutTest);
-        khungCacNut.add(nutLuu);
-        khungCacNut.add(nutMacDinh);
-        khungCacNut.add(nutHang);
+        khungCacNut.add(btTest);
+        khungCacNut.add(btLuu);
+        khungCacNut.add(btMacDinh);
+        khungCacNut.add(btHang);
 
-        nutTest.addActionListener(suKien -> {
+        btTest.addActionListener(ac -> {
             String chuoiMatKhau = new String(oNhapMatKhau.getPassword());
             nhanTrangThai.setText("Đang kiểm tra kết nối...");
             nhanTrangThai.setForeground(Color.BLUE);
-            String loi = KetNoiCSDL.testConnection(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
+            String loi = DBConecter.testConnection(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
                     oNhapNguoiDung.getText(), chuoiMatKhau);
             if (loi == null) {
                 nhanTrangThai.setText("Kết nối thành công tới CSDL MySQL!");
@@ -227,9 +227,9 @@ public class ViewDangNhap extends JFrame {
             }
         });
 
-        nutLuu.addActionListener(suKien -> {
+        btLuu.addActionListener(ac -> {
             String chuoiMatKhau = new String(oNhapMatKhau.getPassword());
-            boolean thanhCong = KetNoiCSDL.saveConfig(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
+            boolean thanhCong = DBConecter.saveConfig(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
                     oNhapNguoiDung.getText(), chuoiMatKhau);
             if (thanhCong) {
                 capNhatThongTinServer();
@@ -241,7 +241,7 @@ public class ViewDangNhap extends JFrame {
             }
         });
 
-        nutMacDinh.addActionListener(suKien -> {
+        btMacDinh.addActionListener(ac -> {
             oNhapMayChu.setText("localhost");
             oNhapCong.setText("3306");
             oNhapCoSoDuLieu.setText("hotel_management");
@@ -251,7 +251,7 @@ public class ViewDangNhap extends JFrame {
             nhanTrangThai.setForeground(Color.DARK_GRAY);
         });
 
-        nutHang.addActionListener(suKien -> hopThoai.dispose());
+        btHang.addActionListener(ac -> hopThoai.dispose());
 
         JPanel khungGiua = new JPanel(new BorderLayout());
         khungGiua.add(khungBieuMau, BorderLayout.CENTER);
@@ -271,7 +271,7 @@ public class ViewDangNhap extends JFrame {
     }
 
     public JButton getBtnDangNhap() {
-        return nutDangNhap;
+        return btDangNhap;
     }
 
     public static void main(String[] thamSo) {

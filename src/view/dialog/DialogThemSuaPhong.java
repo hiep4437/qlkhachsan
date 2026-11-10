@@ -16,8 +16,8 @@ public class DialogThemSuaPhong extends JDialog {
     private JTextField oNhapGiaMoiDem;
     private JComboBox<String> hopChonTrangThai;
     private JTextArea oNhapMoTa;
-    private JButton nutLuu;
-    private JButton nutHuy;
+    private JButton btLuu;
+    private JButton btHuy;
 
     private boolean daLuu = false;
     private Phong phong;
@@ -218,23 +218,22 @@ public class DialogThemSuaPhong extends JDialog {
         khungChan.setBackground(new Color(245, 247, 250));
         khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
 
-        nutHuy = new JButton("Hủy bỏ");
-        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutHuy.setPreferredSize(new Dimension(100, 34));
-        nutHuy.setFocusPainted(false);
-        nutHuy.addActionListener(suKien -> dispose());
+        btHuy = new JButton("Hủy bỏ");
+        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btHuy.setPreferredSize(new Dimension(100, 34));
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(ac -> dispose());
 
-        nutLuu = new JButton(dangSua ? "Cập nhật" : "Thêm mới");
-        view.view.UIStyle.setButtonIcon(nutLuu, dangSua ? "sua.png" : "them.png");
-        nutLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutLuu.setBackground(new Color(13, 110, 253));
-        nutLuu.setForeground(Color.WHITE);
-        nutLuu.setPreferredSize(new Dimension(120, 34));
-        nutLuu.setFocusPainted(false);
-        nutLuu.addActionListener(suKien -> xuLyLuu());
+        btLuu = new JButton(dangSua ? "Cập nhật" : "Thêm mới");
+        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btLuu.setBackground(new Color(13, 110, 253));
+        btLuu.setForeground(Color.WHITE);
+        btLuu.setPreferredSize(new Dimension(120, 34));
+        btLuu.setFocusPainted(false);
+        btLuu.addActionListener(ac -> xuLyLuu());
 
-        khungChan.add(nutHuy);
-        khungChan.add(nutLuu);
+        khungChan.add(btHuy);
+        khungChan.add(btLuu);
         add(khungChan, BorderLayout.SOUTH);
     }
 

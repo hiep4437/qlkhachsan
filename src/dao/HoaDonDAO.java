@@ -29,7 +29,7 @@ public class HoaDonDAO {
 	public int them(HoaDon bangHienTai) {
 		String cauLenhSQL = "INSERT INTO hoa_don (ma_dat_phong, ngay_lap, tien_phong, phu_thu, giam_gia, "
 				+ "tong_tien, phuong_thuc_thanh_toan, trang_thai_thanh_toan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			float tong = bangHienTai.getTongTien();
@@ -57,7 +57,7 @@ public class HoaDonDAO {
 	public int sua(HoaDon bangHienTai) {
 		String cauLenhSQL = "UPDATE hoa_don SET ma_dat_phong = ?, tien_phong = ?, phu_thu = ?, giam_gia = ?, "
 				+ "tong_tien = ?, phuong_thuc_thanh_toan = ?, trang_thai_thanh_toan = ? WHERE ma_hoa_don = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			float tong = bangHienTai.getTongTien();
@@ -84,7 +84,7 @@ public class HoaDonDAO {
 	// Xac nhan thanh toan nhanh hoa don
 	public int capNhatTrangThai(int maHoaDon, String trangThai, String phuongThuc) {
 		String cauLenhSQL = "UPDATE hoa_don SET trang_thai_thanh_toan = ?, phuong_thuc_thanh_toan = ?, ngay_lap = NOW() WHERE ma_hoa_don = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, parseStatusToInt(trangThai));
 			luongIn.setString(2, phuongThuc);
@@ -99,7 +99,7 @@ public class HoaDonDAO {
 	// Xoa hoa don
 	public int xoa(HoaDon bangHienTai) {
 		String cauLenhSQL = "DELETE FROM hoa_don WHERE ma_hoa_don = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, bangHienTai.getIdHoaDon());
 			return luongIn.executeUpdate();
@@ -124,7 +124,7 @@ public class HoaDonDAO {
 				+ "LEFT JOIN khach_hang kh ON dp.ma_khach_hang = kh.ma_khach_hang "
 				+ "ORDER BY h.ma_hoa_don DESC";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL);
 			 ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
 
@@ -171,7 +171,7 @@ public class HoaDonDAO {
 				+ "LEFT JOIN khach_hang kh ON dp.ma_khach_hang = kh.ma_khach_hang "
 				+ "WHERE h.ma_hoa_don = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, bangHienTai.getIdHoaDon());
@@ -219,7 +219,7 @@ public class HoaDonDAO {
 				+ "LEFT JOIN khach_hang kh ON dp.ma_khach_hang = kh.ma_khach_hang "
 				+ "WHERE h.ma_dat_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, maDatPhong);

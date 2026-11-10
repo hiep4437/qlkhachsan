@@ -13,6 +13,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import view.IConn;
 
 public class ViewQuanLyKhachHang extends JFrame {
 
@@ -23,12 +24,12 @@ public class ViewQuanLyKhachHang extends JFrame {
 
     // Tìm kiếm & Thống kê
     public JTextField oNhapTimKiem;
-    public JButton nutTimKiem;
+    public JButton btTimKiem;
     public JLabel nhanThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton nutThem, nutSua, nutLichSu, nutXoa, nutLamMoi;
-    public JButton nutQuayLai = new JButton("Quay lại");
+    public JButton btThem, btSua, btLichSu, btXoa, btLamMoi;
+    public JButton btQuayLai = new JButton("Quay lại");
 
     // Khai báo field cũ để đảm bảo tương thích
     public JTextField oNhapMa = new JTextField();
@@ -40,7 +41,7 @@ public class ViewQuanLyKhachHang extends JFrame {
 
     public ViewQuanLyKhachHang() {
         setTitle("Quản lý khách sạn - Quản lý khách hàng");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         setSize(1100, 680);
         setMinimumSize(new Dimension(950, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,15 +86,14 @@ public class ViewQuanLyKhachHang extends JFrame {
         oNhapTimKiem.setPreferredSize(new Dimension(280, 34));
         oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Họ tên, CCCD, số điện thoại, địa chỉ...");
 
-        nutTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
-        nutTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutTimKiem.setPreferredSize(new Dimension(110, 34));
-        nutTimKiem.setFocusPainted(false);
+        btTimKiem = new JButton("Tìm kiếm");
+        btTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btTimKiem.setPreferredSize(new Dimension(110, 34));
+        btTimKiem.setFocusPainted(false);
 
         khungTimKiem.add(nhanTim);
         khungTimKiem.add(oNhapTimKiem);
-        khungTimKiem.add(nutTimKiem);
+        khungTimKiem.add(btTimKiem);
 
         khungTren.add(khungTimKiem);
         khungChinh.add(khungTren, BorderLayout.NORTH);
@@ -207,7 +207,7 @@ public class ViewQuanLyKhachHang extends JFrame {
             @Override
             public void mouseClicked(MouseEvent suKien) {
                 if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
-                    nutSua.doClick();
+                    btSua.doClick();
                 }
             }
         });
@@ -221,49 +221,40 @@ public class ViewQuanLyKhachHang extends JFrame {
         JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         khungDuoi.setOpaque(false);
 
-        nutThem = new JButton("Thêm khách hàng");
-        UIStyle.setButtonIcon(nutThem, "them.png");
-        nutThem.setFont(UIStyle.PHONGCHU_IN_DAM);
-        nutThem.setBackground(new Color(13, 110, 253));
-        nutThem.setForeground(Color.BLACK);
-        nutThem.setPreferredSize(new Dimension(160, 36));
-        nutThem.setFocusPainted(false);
+        btThem = new JButton("Thêm khách hàng");
+        btThem.setBackground(new Color(13, 110, 253));
+        btThem.setForeground(Color.BLACK);
+        btThem.setPreferredSize(new Dimension(160, 36));
+        btThem.setFocusPainted(false);
 
-        nutSua = new JButton("Sửa thông tin");
-        UIStyle.setButtonIcon(nutSua, "sua.png");
-        nutSua.setFont(UIStyle.PHONGCHU_IN_DAM);
-        nutSua.setBackground(new Color(255, 193, 7));
-        nutSua.setForeground(Color.BLACK);
-        nutSua.setPreferredSize(new Dimension(130, 36));
-        nutSua.setFocusPainted(false);
+        btSua = new JButton("Sửa thông tin");
+        btSua.setBackground(new Color(255, 193, 7));
+        btSua.setForeground(Color.BLACK);
+        btSua.setPreferredSize(new Dimension(130, 36));
+        btSua.setFocusPainted(false);
 
-        nutLichSu = new JButton("Lịch sử thuê phòng");
-        nutLichSu.setFont(UIStyle.PHONGCHU_IN_DAM);
-        nutLichSu.setBackground(new Color(25, 135, 84));
-        nutLichSu.setForeground(Color.BLACK);
-        nutLichSu.setPreferredSize(new Dimension(170, 36));
-        nutLichSu.setFocusPainted(false);
+        btLichSu = new JButton("Lịch sử thuê phòng");
+        btLichSu.setBackground(new Color(25, 135, 84));
+        btLichSu.setForeground(Color.BLACK);
+        btLichSu.setPreferredSize(new Dimension(170, 36));
+        btLichSu.setFocusPainted(false);
 
-        nutXoa = new JButton("Xóa khách hàng");
-        UIStyle.setButtonIcon(nutXoa, "xoa.png");
-        nutXoa.setFont(UIStyle.PHONGCHU_IN_DAM);
-        nutXoa.setBackground(new Color(220, 53, 69));
-        nutXoa.setForeground(Color.BLACK);
-        nutXoa.setPreferredSize(new Dimension(140, 36));
-        nutXoa.setFocusPainted(false);
+        btXoa = new JButton("Xóa khách hàng");
+        btXoa.setBackground(new Color(220, 53, 69));
+        btXoa.setForeground(Color.BLACK);
+        btXoa.setPreferredSize(new Dimension(140, 36));
+        btXoa.setFocusPainted(false);
 
-        nutLamMoi = new JButton("Làm mới");
-        UIStyle.setButtonIcon(nutLamMoi, "load.png");
-        nutLamMoi.setFont(UIStyle.PHONGCHU_IN_DAM);
-        nutLamMoi.setForeground(Color.BLACK);
-        nutLamMoi.setPreferredSize(new Dimension(120, 36));
-        nutLamMoi.setFocusPainted(false);
+        btLamMoi = new JButton("Làm mới");
+        btLamMoi.setForeground(Color.BLACK);
+        btLamMoi.setPreferredSize(new Dimension(120, 36));
+        btLamMoi.setFocusPainted(false);
 
-        khungDuoi.add(nutThem);
-        khungDuoi.add(nutSua);
-        khungDuoi.add(nutLichSu);
-        khungDuoi.add(nutXoa);
-        khungDuoi.add(nutLamMoi);
+        khungDuoi.add(btThem);
+        khungDuoi.add(btSua);
+        khungDuoi.add(btLichSu);
+        khungDuoi.add(btXoa);
+        khungDuoi.add(btLamMoi);
 
         khungChinh.add(khungDuoi, BorderLayout.SOUTH);
         setContentPane(khungChinh);

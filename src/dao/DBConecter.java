@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
-public class KetNoiCSDL {
+public class DBConecter {
     private static final String CAUHINH_TEP = "db.properties";
 
     private static String mayChu = "localhost";

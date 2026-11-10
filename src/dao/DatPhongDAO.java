@@ -39,7 +39,7 @@ public class DatPhongDAO {
 		String cauLenhSQL = "INSERT INTO dat_phong (ma_khach_hang, ngay_nhan_phong, ngay_tra_phong, so_luong_nguoi, trang_thai, ghi_chu) "
 				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection()) {
+		try (Connection ketNoi = DBConecter.getConnection()) {
 			ketNoi.setAutoCommit(false);
 			if (bangHienTai.getMaPhong() > 0 && !phongPhuHopChoDat(ketNoi, bangHienTai.getMaPhong(), soNguoi,
 					bangHienTai.getNgayNhanPhong(), bangHienTai.getNgayTraPhong(), 0)) {
@@ -89,7 +89,7 @@ public class DatPhongDAO {
 			double giaMoiDem, int soNguoi) {
 		Connection ketNoi = null;
 		try {
-			ketNoi = KetNoiCSDL.getConnection();
+			ketNoi = DBConecter.getConnection();
 			ketNoi.setAutoCommit(false);
 			if (soNguoi < 1 || !phongPhuHopChoDat(ketNoi, maPhong, soNguoi, nhanPhong, traPhong, 0)) {
 				ketNoi.rollback();
@@ -173,7 +173,7 @@ public class DatPhongDAO {
 	public boolean nhanPhong(int maDatPhong) {
 		Connection ketNoi = null;
 		try {
-			ketNoi = KetNoiCSDL.getConnection();
+			ketNoi = DBConecter.getConnection();
 			ketNoi.setAutoCommit(false);
 
 			int maPhong;
@@ -232,7 +232,7 @@ public class DatPhongDAO {
 	public boolean traPhongVaThanhToan(int maDatPhong, int maPhong, double tienPhong, double phuThu, double giamGia, double chungTien, String phuongThuc) {
 		Connection ketNoi = null;
 		try {
-			ketNoi = KetNoiCSDL.getConnection();
+			ketNoi = DBConecter.getConnection();
 			ketNoi.setAutoCommit(false);
 
 			// 1. Chuyen trang thai dat_phong sang 2 (CHECKED_OUT - Da tra phong)
@@ -315,7 +315,7 @@ public class DatPhongDAO {
 	public boolean huyDatPhong(int maDatPhong) {
 		Connection ketNoi = null;
 		try {
-			ketNoi = KetNoiCSDL.getConnection();
+			ketNoi = DBConecter.getConnection();
 			ketNoi.setAutoCommit(false);
 
 			String cauLenhDatBooking = "UPDATE dat_phong SET trang_thai = 3 WHERE ma_dat_phong = ?";
@@ -355,7 +355,7 @@ public class DatPhongDAO {
 		String cauLenhSQL = "UPDATE dat_phong SET ma_khach_hang = ?, ngay_nhan_phong = ?, ngay_tra_phong = ?, so_luong_nguoi = ?, "
 				+ "trang_thai = ?, ghi_chu = ? WHERE ma_dat_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection()) {
+		try (Connection ketNoi = DBConecter.getConnection()) {
 			ketNoi.setAutoCommit(false);
 			if (bangHienTai.getMaPhong() > 0 && !phongPhuHopChoDat(ketNoi, bangHienTai.getMaPhong(), soNguoi,
 					bangHienTai.getNgayNhanPhong(), bangHienTai.getNgayTraPhong(), bangHienTai.getIdDatPhong())) {
@@ -398,7 +398,7 @@ public class DatPhongDAO {
 			return true;
 		}
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection()) {
+		try (Connection ketNoi = DBConecter.getConnection()) {
 			return coDonTrung(ketNoi, maPhong, ngayNhan, ngayTra, maDatPhongBoQua);
 		}
 	}
@@ -456,7 +456,7 @@ public class DatPhongDAO {
 	// Xoa dat phong
 	public int xoa(DatPhong bangHienTai) {
 		String cauLenhSQL = "DELETE FROM dat_phong WHERE ma_dat_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, bangHienTai.getIdDatPhong());
@@ -483,7 +483,7 @@ public class DatPhongDAO {
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "ORDER BY b.ma_dat_phong DESC";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     Statement luongTrinh = ketNoi.createStatement();
 		     ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
@@ -548,7 +548,7 @@ public class DatPhongDAO {
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "WHERE b.ma_dat_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, bangHienTai.getIdDatPhong());
@@ -592,7 +592,7 @@ public class DatPhongDAO {
 		int trangThaiSo = chuyenTrangThaiSangSo(trangThai);
 		String cauLenhSQL = "UPDATE dat_phong SET trang_thai = ? WHERE ma_dat_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setInt(1, trangThaiSo);

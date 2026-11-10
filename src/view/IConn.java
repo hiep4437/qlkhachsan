@@ -5,12 +5,12 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-public final class AppWindowIcon {
-    private AppWindowIcon() {
+public final class IConn {
+    private IConn() {
     }
 
     public static void apply(JFrame cuaSo) {
-        URL taiNguyenBieuTuong = AppWindowIcon.class.getResource("/img/loogo.png");
+        URL taiNguyenBieuTuong = IConn.class.getResource("/img/loogo.png");
         if (taiNguyenBieuTuong != null) {
             cuaSo.setIconImage(new ImageIcon(taiNguyenBieuTuong).getImage());
             return;

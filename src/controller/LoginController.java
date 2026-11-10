@@ -1,6 +1,6 @@
 package controller;
 
-import dao.KetNoiCSDL;
+import dao.DBConecter;
 import model.NguoiDung;
 import service.NguoiDungService;
 import view.view.ViewDangNhap;
@@ -16,7 +16,7 @@ public class LoginController {
 
     public LoginController(ViewDangNhap viewDangNhap) {
         this.viewDangNhap = viewDangNhap;
-        viewDangNhap.getBtnDangNhap().addActionListener(suKien -> dangNhap());
+        viewDangNhap.getBtnDangNhap().addActionListener(ac -> dangNhap());
 
         KeyStroke nhap = KeyStroke.getKeyStroke("ENTER");
         Action lenhNhap = new AbstractAction() {
@@ -51,11 +51,10 @@ public class LoginController {
         }
 
         // Kiem tra ket noi CSDL truoc
-        Connection ketNoi = KetNoiCSDL.getConnection();
+        Connection ketNoi = DBConecter.getConnection();
         if (ketNoi == null) {
-            int luaChon = JOptionPane.showConfirmDialog(
-                    viewDangNhap,
-                    "Không thể kết nối đến máy chủ CSDL MySQL (" + KetNoiCSDL.getHost() + ":" + KetNoiCSDL.getPort() + ").\n"
+            int luaChon = JOptionPane.showConfirmDialog(viewDangNhap,
+                    "Không thể kết nối đến máy chủ CSDL MySQL (" + DBConecter.getHost() + ":" + DBConecter.getPort() + ").\n"
                     + "Bạn có muốn mở hộp thoại Cấu hình máy chủ để kiểm tra/thay đổi thông tin kết nối không?",
                     "Lỗi kết nối CSDL",
                     JOptionPane.YES_NO_OPTION,
@@ -66,7 +65,7 @@ public class LoginController {
             }
             return;
         }
-        KetNoiCSDL.closeConnection(ketNoi);
+        DBConecter.closeConnection(ketNoi);
 
         NguoiDung nguoiDungDangNhap = dichVu.kiemTraDangNhap(ten, matKhau);
 

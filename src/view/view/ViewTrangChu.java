@@ -1,5 +1,6 @@
 package view.view;
 
+import view.ChonNgay;
 import view.dialog.DialogThongTinTaiKhoan;
 import view.dialog.DialogTraPhongThanhToan;
 
@@ -10,7 +11,7 @@ import controller.LoginController;
 import controller.PhongController;
 import controller.StatisticController;
 import controller.NguoiDungController;
-import dao.KetNoiCSDL;
+import dao.DBConecter;
 import model.ThongTinPhongDangO;
 import model.DatPhong;
 import model.KhachHang;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
+import view.IConn;
 
 public class ViewTrangChu extends JFrame {
 
@@ -48,7 +50,7 @@ public class ViewTrangChu extends JFrame {
     private JComboBox<String> hopChonLocTang;
     private JTextField oNhapTimPhong;
     private JLabel nhanStatsChung, nhanStatsTrong, nhanStatsCoKhach, nhanStatsDon, nhanStatsBaoTri;
-    private JButton nutNguoiDungMenu;
+    private JButton btNguoiDungMenu;
     private NguoiDungController boDieuKhienNguoiDung;
     private DatPhongController boDieuKhienDatPhong;
     private StatisticController statisticBoDieuKhien;
@@ -61,7 +63,7 @@ public class ViewTrangChu extends JFrame {
         this.nguoiDungHienTai = (nguoiDung != null) ? nguoiDung : new NguoiDung(1, "admin", "123456", "Quản trị viên", "ADMIN", true);
 
         setTitle("Hệ thống quản lý khách sạn");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         GraphicsEnvironment thamSoMoiTruong = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(thamSoMoiTruong.getMaximumWindowBounds());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -112,33 +114,31 @@ public class ViewTrangChu extends JFrame {
         JPanel khungNguoiDung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
         khungNguoiDung.setOpaque(false);
 
-        nutNguoiDungMenu = new JButton();
+        btNguoiDungMenu = new JButton();
         capNhatNutUserMenu();
-        nutNguoiDungMenu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutNguoiDungMenu.setIcon(UIStyle.createTintedIcon("user.256.png", 18, Color.WHITE));
-        nutNguoiDungMenu.setIconTextGap(8);
-        nutNguoiDungMenu.setForeground(Color.WHITE);
-        nutNguoiDungMenu.setBackground(new Color(36, 64, 132));
-        nutNguoiDungMenu.setFocusPainted(false);
-        nutNguoiDungMenu.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutNguoiDungMenu.setBorder(BorderFactory.createCompoundBorder(
+        btNguoiDungMenu.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btNguoiDungMenu.setIconTextGap(8);
+        btNguoiDungMenu.setForeground(Color.WHITE);
+        btNguoiDungMenu.setBackground(new Color(36, 64, 132));
+        btNguoiDungMenu.setFocusPainted(false);
+        btNguoiDungMenu.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btNguoiDungMenu.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(75, 110, 190), 1),
                 BorderFactory.createEmptyBorder(6, 14, 6, 14)));
-        nutNguoiDungMenu.addActionListener(suKien -> hienThiUserDropdownMenu(nutNguoiDungMenu));
+        btNguoiDungMenu.addActionListener(ac -> hienThiUserDropdownMenu(btNguoiDungMenu));
 
-        JButton nutDangXuat = new JButton("Đăng xuất");
-        nutDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nutDangXuat.setIcon(UIStyle.createTintedIcon("logout.png", 18, Color.WHITE));
-        nutDangXuat.setIconTextGap(8);
-        nutDangXuat.setBackground(new Color(192, 57, 43));
-        nutDangXuat.setForeground(Color.WHITE);
-        nutDangXuat.setFocusPainted(false);
-        nutDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        nutDangXuat.setPreferredSize(nutNguoiDungMenu.getPreferredSize());
-        nutDangXuat.addActionListener(suKien -> dangXuat());
+        JButton btDangXuat = new JButton("Đăng xuất");
+        btDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btDangXuat.setIconTextGap(8);
+        btDangXuat.setBackground(new Color(192, 57, 43));
+        btDangXuat.setForeground(Color.WHITE);
+        btDangXuat.setFocusPainted(false);
+        btDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btDangXuat.setPreferredSize(btNguoiDungMenu.getPreferredSize());
+        btDangXuat.addActionListener(ac -> dangXuat());
 
-        khungNguoiDung.add(nutNguoiDungMenu);
-        khungNguoiDung.add(nutDangXuat);
+        khungNguoiDung.add(btNguoiDungMenu);
+        khungNguoiDung.add(btDangXuat);
 
         khungDauTrang.add(khungTieuDe, BorderLayout.WEST);
         khungDauTrang.add(khungNguoiDung, BorderLayout.EAST);
@@ -210,7 +210,7 @@ public class ViewTrangChu extends JFrame {
         }
 
         // Khi người dùng chuyển tab thì tự động reload dữ liệu tương ứng
-        khungTab.addChangeListener(suKien -> {
+        khungTab.addChangeListener(ac -> {
             int duocChon = khungTab.getSelectedIndex();
             if (duocChon == 0) {
                 taiDuLieuSoDoPhong();
@@ -254,7 +254,7 @@ public class ViewTrangChu extends JFrame {
                 "Bảo trì (MAINTENANCE)"
         });
         hopChonLocTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        hopChonLocTrangThai.addActionListener(suKien -> taiDuLieuSoDoPhong());
+        hopChonLocTrangThai.addActionListener(ac -> taiDuLieuSoDoPhong());
         khungLoc.add(hopChonLocTrangThai);
 
         khungLoc.add(Box.createHorizontalStrut(5));
@@ -263,35 +263,33 @@ public class ViewTrangChu extends JFrame {
                 "Tất cả các tầng", "Tầng 1", "Tầng 2", "Tầng 3", "Tầng 4", "Tầng 5"
         });
         hopChonLocTang.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        hopChonLocTang.addActionListener(suKien -> taiDuLieuSoDoPhong());
+        hopChonLocTang.addActionListener(ac -> taiDuLieuSoDoPhong());
         khungLoc.add(hopChonLocTang);
 
         khungLoc.add(Box.createHorizontalStrut(5));
         khungLoc.add(new JLabel("Tìm số phòng:"));
         oNhapTimPhong = new JTextField(6);
         oNhapTimPhong.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        oNhapTimPhong.addActionListener(suKien -> taiDuLieuSoDoPhong());
+        oNhapTimPhong.addActionListener(ac -> taiDuLieuSoDoPhong());
         khungLoc.add(oNhapTimPhong);
 
-        JButton nutTim = new JButton("Tìm");
-        UIStyle.setButtonIcon(nutTim, "timkiem.png");
-        nutTim.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nutTim.addActionListener(suKien -> taiDuLieuSoDoPhong());
-        khungLoc.add(nutTim);
+        JButton btTim = new JButton("Tìm");
+        btTim.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btTim.addActionListener(ac -> taiDuLieuSoDoPhong());
+        khungLoc.add(btTim);
 
-        JButton nutLamMoi = new JButton("Làm mới");
-        UIStyle.setButtonIcon(nutLamMoi, "load.png");
-        nutLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nutLamMoi.setBackground(new Color(41, 128, 185));
-        nutLamMoi.setForeground(Color.WHITE);
-        nutLamMoi.setFocusPainted(false);
-        nutLamMoi.addActionListener(suKien -> {
+        JButton btLamMoi = new JButton("Làm mới");
+        btLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btLamMoi.setBackground(new Color(41, 128, 185));
+        btLamMoi.setForeground(Color.WHITE);
+        btLamMoi.setFocusPainted(false);
+        btLamMoi.addActionListener(ac -> {
             oNhapTimPhong.setText("");
             hopChonLocTrangThai.setSelectedIndex(0);
             hopChonLocTang.setSelectedIndex(0);
             taiDuLieuSoDoPhong();
         });
-        khungLoc.add(nutLamMoi);
+        khungLoc.add(btLamMoi);
 
         // Thống kê nhanh bên phải
         JPanel statsKhung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
@@ -682,16 +680,15 @@ public class ViewTrangChu extends JFrame {
         gia.insets = new Insets(6, 6, 6, 6);
 
         JTextField oNhapCCCD = new JTextField(12);
-        JButton nutKiemTraCCCD = new JButton("Tìm khách");
-        UIStyle.setButtonIcon(nutKiemTraCCCD, "timkiem.png");
+        JButton btKiemTraCCCD = new JButton("Tìm khách");
         JTextField oNhapHoTen = new JTextField(15);
         JTextField oNhapSDT = new JTextField(15);
         JTextField oNhapDiaChi = new JTextField(15);
 
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
-        DatePickerField oNhapNgayNhan = new DatePickerField(homNay, homNay);
-        DatePickerField oNhapNgayTra = new DatePickerField(ngayMai, ngayMai);
+        ChonNgay oNhapNgayNhan = new ChonNgay(homNay, homNay);
+        ChonNgay oNhapNgayTra = new ChonNgay(ngayMai, ngayMai);
         JTextField oNhapGhiChu = new JTextField("Khách đặt trực tiếp", 15);
         int sucChua = Math.max(1, hangHienTai.getSucChua());
         JSpinner vongQuaySoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChua, 1));
@@ -706,7 +703,7 @@ public class ViewTrangChu extends JFrame {
         khungBieuMau.add(new JLabel("CCCD khách hàng:*"), gia);
         JPanel khungCCCD = new JPanel(new BorderLayout(5, 0));
         khungCCCD.add(oNhapCCCD, BorderLayout.CENTER);
-        khungCCCD.add(nutKiemTraCCCD, BorderLayout.EAST);
+        khungCCCD.add(btKiemTraCCCD, BorderLayout.EAST);
         gia.gridx = 1;
         gia.gridy = 0;
         khungBieuMau.add(khungCCCD, gia);
@@ -751,7 +748,7 @@ public class ViewTrangChu extends JFrame {
         gia.gridy = 5;
         khungBieuMau.add(oNhapNgayTra, gia);
 
-        oNhapNgayNhan.addDateChangeListener(suKien -> {
+        oNhapNgayNhan.addDateChangeListener(ac -> {
             LocalDate earliestTraPhong = oNhapNgayNhan.getDate().plusDays(1);
             oNhapNgayTra.setMinimumDate(earliestTraPhong);
             if (oNhapNgayTra.getDate().isBefore(earliestTraPhong)) {
@@ -788,11 +785,11 @@ public class ViewTrangChu extends JFrame {
             long dem = ChronoUnit.DAYS.between(oNhapNgayNhan.getDate(), oNhapNgayTra.getDate());
             nhanTamTinh.setText(dinhDangTienTe.format(dem * hangHienTai.getGiaMoiDem()) + " (" + dem + " đêm)");
         };
-        oNhapNgayNhan.addDateChangeListener(suKien -> tinhTien.run());
-        oNhapNgayTra.addDateChangeListener(suKien -> tinhTien.run());
+        oNhapNgayNhan.addDateChangeListener(ac -> tinhTien.run());
+        oNhapNgayTra.addDateChangeListener(ac -> tinhTien.run());
 
         // Tìm khách theo CCCD
-        nutKiemTraCCCD.addActionListener(suKien -> {
+        btKiemTraCCCD.addActionListener(ac -> {
             String cccd = oNhapCCCD.getText().trim();
             if (cccd.isEmpty()) {
                 JOptionPane.showMessageDialog(hopThoai, "Vui lòng nhập số CCCD cần tìm!");
@@ -815,18 +812,18 @@ public class ViewTrangChu extends JFrame {
 
         // Nút hành động
         JPanel khungCacNut = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 10));
-        JButton nutKiemTraIn = new JButton(" Nhận phòng");
-        nutKiemTraIn.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        nutKiemTraIn.setBackground(new Color(39, 174, 96));
-        nutKiemTraIn.setForeground(Color.WHITE);
+        JButton btKiemTraIn = new JButton(" Nhận phòng");
+        btKiemTraIn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btKiemTraIn.setBackground(new Color(39, 174, 96));
+        btKiemTraIn.setForeground(Color.WHITE);
 
-        JButton nutHuy = new JButton("Hủy");
-        khungCacNut.add(nutKiemTraIn);
-        khungCacNut.add(nutHuy);
+        JButton btHuy = new JButton("Hủy");
+        khungCacNut.add(btKiemTraIn);
+        khungCacNut.add(btHuy);
 
-        nutHuy.addActionListener(suKien -> hopThoai.dispose());
+        btHuy.addActionListener(ac -> hopThoai.dispose());
 
-        nutKiemTraIn.addActionListener(suKien -> {
+        btKiemTraIn.addActionListener(ac -> {
             String cccd = oNhapCCCD.getText().trim();
             String hoTen = oNhapHoTen.getText().trim();
             String sdt = oNhapSDT.getText().trim();
@@ -982,9 +979,9 @@ public class ViewTrangChu extends JFrame {
     }
 
     private void capNhatNutUserMenu() {
-        if (nutNguoiDungMenu != null && nguoiDungHienTai != null) {
+        if (btNguoiDungMenu != null && nguoiDungHienTai != null) {
             String huyHieuVaiTro = nguoiDungHienTai.isAdmin() ? "ADMIN" : "STAFF";
-            nutNguoiDungMenu.setText("  " + nguoiDungHienTai.getHoTen() + " (" + huyHieuVaiTro + ")  ");
+            btNguoiDungMenu.setText("  " + nguoiDungHienTai.getHoTen() + " (" + huyHieuVaiTro + ")  ");
         }
     }
 
@@ -1007,7 +1004,7 @@ public class ViewTrangChu extends JFrame {
         JMenuItem menuThongTin = new JMenuItem("  Xem thông tin tài khoản");
         menuThongTin.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         menuThongTin.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        menuThongTin.addActionListener(suKien -> hienThiThongTinTaiKhoan());
+        menuThongTin.addActionListener(ac -> hienThiThongTinTaiKhoan());
         menuBatLen.add(menuThongTin);
 
         // 2. Quản lý tài khoản (cho ADMIN)
@@ -1015,7 +1012,7 @@ public class ViewTrangChu extends JFrame {
             JMenuItem menuQuanLyTaiKhoan = new JMenuItem(" Quản lý tài khoản (Admin)");
             menuQuanLyTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             menuQuanLyTaiKhoan.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            menuQuanLyTaiKhoan.addActionListener(suKien -> moTabQuanLyTaiKhoan());
+            menuQuanLyTaiKhoan.addActionListener(ac -> moTabQuanLyTaiKhoan());
             menuBatLen.add(menuQuanLyTaiKhoan);
         }
 
@@ -1026,7 +1023,7 @@ public class ViewTrangChu extends JFrame {
         menuDangXuat.setFont(new Font("Segoe UI", Font.BOLD, 13));
         menuDangXuat.setForeground(new Color(192, 57, 43));
         menuDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        menuDangXuat.addActionListener(suKien -> dangXuat());
+        menuDangXuat.addActionListener(ac -> dangXuat());
         menuBatLen.add(menuDangXuat);
 
         menuBatLen.show(benGoi, 0, benGoi.getHeight() + 4);
@@ -1056,8 +1053,8 @@ public class ViewTrangChu extends JFrame {
         try {
             ViewQuanLyTaiKhoan viewTaiKhoan = new ViewQuanLyTaiKhoan(nguoiDungHienTai);
             boDieuKhienNguoiDung = new NguoiDungController(viewTaiKhoan, nguoiDungHienTai);
-            viewTaiKhoan.nutQuayLai.setText("Về sơ đồ phòng");
-            viewTaiKhoan.nutQuayLai.addActionListener(suKien -> {
+            viewTaiKhoan.btQuayLai.setText("Về sơ đồ phòng");
+            viewTaiKhoan.btQuayLai.addActionListener(ac -> {
                 khungTab.setSelectedIndex(0);
                 taiDuLieuSoDoPhong();
             });

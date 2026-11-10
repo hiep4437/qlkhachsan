@@ -58,7 +58,7 @@ public class PhongDAO {
 		String cauLenhSQL = "INSERT INTO phong (so_phong, ma_loai_phong, tang, gia_moi_dem, trang_thai, mo_ta) "
 				+ "VALUES (?, ?, ?, ?, ?, ?)";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
 			luongIn.setString(1, bangHienTai.getSoPhong().trim());
@@ -91,7 +91,7 @@ public class PhongDAO {
 		String cauLenhSQL = "UPDATE phong SET so_phong = ?, ma_loai_phong = ?, tang = ?, gia_moi_dem = ?, trang_thai = ?, mo_ta = ? "
 				+ "WHERE ma_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setString(1, bangHienTai.getSoPhong().trim());
@@ -113,7 +113,7 @@ public class PhongDAO {
 	public int doiTrangThai(int maPhong, String trangThai) {
 		int trangThaiSo = chuyenTrangThaiSangSo(trangThai);
 		String cauLenhSQL = "UPDATE phong SET trang_thai = ? WHERE ma_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, trangThaiSo);
 			luongIn.setInt(2, maPhong);
@@ -127,7 +127,7 @@ public class PhongDAO {
 	// Xoa phong
 	public int xoa(Phong hangHienTai) {
 		String cauLenhSQL = "DELETE FROM phong WHERE ma_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, hangHienTai.getMaPhong());
 			return luongIn.executeUpdate();
@@ -152,7 +152,7 @@ public class PhongDAO {
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "ORDER BY p.so_phong ASC";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     Statement luongTrinh = ketNoi.createStatement();
 		     ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
@@ -190,7 +190,7 @@ public class PhongDAO {
 				+ "LEFT JOIN loai_phong lp ON p.ma_loai_phong = lp.ma_loai_phong "
 				+ "WHERE p.so_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
 			luongIn.setString(1, bangHienTai.getSoPhong().trim());
@@ -232,7 +232,7 @@ public class PhongDAO {
 				+ "ORDER BY (CASE WHEN b.trang_thai = 1 THEN 1 WHEN b.trang_thai = 0 THEN 2 ELSE 3 END), b.ma_dat_phong DESC "
 				+ "LIMIT 1";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 		     PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, maPhong);
 			try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
@@ -246,8 +246,8 @@ public class PhongDAO {
 					thongTin.setNgayNhan(ketQuaTruyVan.getDate("ngay_nhan_phong"));
 					thongTin.setNgayTra(ketQuaTruyVan.getDate("ngay_tra_phong"));
 
-					int nutTrangThai = ketQuaTruyVan.getInt("b_status");
-					String chuoiTrangThaiNut = (nutTrangThai == 1) ? "CHECKED_IN" : (nutTrangThai == 0 ? "BOOKED" : (nutTrangThai == 2 ? "CHECKED_OUT" : "CANCELLED"));
+					int btTrangThai = ketQuaTruyVan.getInt("b_status");
+					String chuoiTrangThaiNut = (btTrangThai == 1) ? "CHECKED_IN" : (btTrangThai == 0 ? "BOOKED" : (btTrangThai == 2 ? "CHECKED_OUT" : "CANCELLED"));
 					thongTin.setBookingStatus(chuoiTrangThaiNut);
 
 					thongTin.setGhiChu(ketQuaTruyVan.getString("ghi_chu"));

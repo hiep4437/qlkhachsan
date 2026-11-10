@@ -29,7 +29,7 @@ public class StatisticController {
         caiDatRenderers();
         taiDuLieu();
 
-        viewBaoCaoThongKe.nutLoc.addActionListener(suKien -> taiDuLieu());
+        viewBaoCaoThongKe.btLoc.addActionListener(ac -> taiDuLieu());
     }
 
     private void caiDatRenderers() {

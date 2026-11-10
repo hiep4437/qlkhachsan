@@ -10,7 +10,7 @@ public class ChiTietDatPhongDAO {
 	// Them phong vao dat phong
 	public int them(int maDatPhong, int maPhong, float giaMoiDem) {
 		String cauLenhSQL = "INSERT INTO chi_tiet_dat_phong (ma_dat_phong, ma_phong, gia_moi_dem) VALUES (?, ?, ?)";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, maDatPhong);
 			luongIn.setInt(2, maPhong);
@@ -25,7 +25,7 @@ public class ChiTietDatPhongDAO {
 	// Sua gia moi dem
 	public int sua(int maDatPhong, int maPhong, float giaMoiDem) {
 		String cauLenhSQL = "UPDATE chi_tiet_dat_phong SET gia_moi_dem = ? WHERE ma_dat_phong = ? AND ma_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setFloat(1, giaMoiDem);
 			luongIn.setInt(2, maDatPhong);
@@ -40,7 +40,7 @@ public class ChiTietDatPhongDAO {
 	// Xoa phong khoi dat phong
 	public int xoa(int maDatPhong, int maPhong) {
 		String cauLenhSQL = "DELETE FROM chi_tiet_dat_phong WHERE ma_dat_phong = ? AND ma_phong = ?";
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, maDatPhong);
 			luongIn.setInt(2, maPhong);
@@ -56,7 +56,7 @@ public class ChiTietDatPhongDAO {
 		ArrayList<String[]> danhSach = new ArrayList<>();
 		String cauLenhSQL = "SELECT ma_dat_phong, ma_phong, gia_moi_dem FROM chi_tiet_dat_phong";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL);
 			 ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
 
@@ -80,7 +80,7 @@ public class ChiTietDatPhongDAO {
 		String[] ketQua = null;
 		String cauLenhSQL = "SELECT ma_dat_phong, ma_phong, gia_moi_dem FROM chi_tiet_dat_phong WHERE ma_dat_phong = ? AND ma_phong = ?";
 
-		try (Connection ketNoi = KetNoiCSDL.getConnection();
+		try (Connection ketNoi = DBConecter.getConnection();
 			 PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 			luongIn.setInt(1, maDatPhong);
 			luongIn.setInt(2, maPhong);

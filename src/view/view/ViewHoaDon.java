@@ -13,6 +13,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import view.IConn;
 
 public class ViewHoaDon extends JFrame {
 
@@ -23,18 +24,18 @@ public class ViewHoaDon extends JFrame {
 
     // Tìm kiếm & Lọc
     public JTextField oNhapTimKiem;
-    public JButton nutTimKiem;
+    public JButton btTimKiem;
     public JComboBox<String> hopChonLocTrangThai;
     public JComboBox<String> hopChonLocThoiGian;
     public JLabel nhanThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton nutXemChiTiet, nutLamMoi;
-    public JButton nutQuayLai = new JButton("Quay lại");
+    public JButton btXemChiTiet, btLamMoi;
+    public JButton btQuayLai = new JButton("Quay lại");
 
     public ViewHoaDon() {
         setTitle("Quản lý khách sạn - Quản lý hóa đơn");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         setSize(1180, 700);
         setMinimumSize(new Dimension(1000, 580));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,11 +80,10 @@ public class ViewHoaDon extends JFrame {
         oNhapTimKiem.setPreferredSize(new Dimension(200, 34));
         oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Số phòng, tên khách, SĐT, mã HĐ...");
 
-        nutTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
-        nutTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutTimKiem.setPreferredSize(new Dimension(100, 34));
-        nutTimKiem.setFocusPainted(false);
+        btTimKiem = new JButton("Tìm kiếm");
+        btTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btTimKiem.setPreferredSize(new Dimension(100, 34));
+        btTimKiem.setFocusPainted(false);
 
         JLabel nhanLocTrangThai = new JLabel("Trạng thái:");
         nhanLocTrangThai.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -113,7 +113,7 @@ public class ViewHoaDon extends JFrame {
 
         khungTimKiem.add(nhanTim);
         khungTimKiem.add(oNhapTimKiem);
-        khungTimKiem.add(nutTimKiem);
+        khungTimKiem.add(btTimKiem);
         khungTimKiem.add(Box.createHorizontalStrut(10));
         khungTimKiem.add(nhanLocTrangThai);
         khungTimKiem.add(hopChonLocTrangThai);
@@ -284,7 +284,7 @@ public class ViewHoaDon extends JFrame {
             @Override
             public void mouseClicked(MouseEvent suKien) {
                 if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
-                    nutXemChiTiet.doClick();
+                    btXemChiTiet.doClick();
                 }
             }
         });
@@ -298,21 +298,20 @@ public class ViewHoaDon extends JFrame {
         JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
         khungDuoi.setOpaque(false);
 
-        nutXemChiTiet = new JButton("Xem & In hóa đơn");
-        nutXemChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutXemChiTiet.setBackground(new Color(13, 110, 253));
-        nutXemChiTiet.setForeground(Color.WHITE);
-        nutXemChiTiet.setPreferredSize(new Dimension(160, 36));
-        nutXemChiTiet.setFocusPainted(false);
+        btXemChiTiet = new JButton("Xem & In hóa đơn");
+        btXemChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btXemChiTiet.setBackground(new Color(13, 110, 253));
+        btXemChiTiet.setForeground(Color.WHITE);
+        btXemChiTiet.setPreferredSize(new Dimension(160, 36));
+        btXemChiTiet.setFocusPainted(false);
 
-        nutLamMoi = new JButton("Làm mới");
-        UIStyle.setButtonIcon(nutLamMoi, "load.png");
-        nutLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutLamMoi.setPreferredSize(new Dimension(120, 36));
-        nutLamMoi.setFocusPainted(false);
+        btLamMoi = new JButton("Làm mới");
+        btLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btLamMoi.setPreferredSize(new Dimension(120, 36));
+        btLamMoi.setFocusPainted(false);
 
-        khungDuoi.add(nutXemChiTiet);
-        khungDuoi.add(nutLamMoi);
+        khungDuoi.add(btXemChiTiet);
+        khungDuoi.add(btLamMoi);
 
         khungChinh.add(khungDuoi, BorderLayout.SOUTH);
         setContentPane(khungChinh);

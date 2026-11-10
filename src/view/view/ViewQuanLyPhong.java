@@ -14,6 +14,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import view.IConn;
 
 public class ViewQuanLyPhong extends JFrame {
 
@@ -24,13 +25,13 @@ public class ViewQuanLyPhong extends JFrame {
 
     // Tìm kiếm & Lọc
     public JTextField oNhapTimKiem;
-    public JButton nutTimKiem;
+    public JButton btTimKiem;
     public JComboBox<String> hopChonLocTrangThai;
     public JLabel nhanThongKe;
 
     // Các nút chức năng ở bottom
-    public JButton nutThem, nutSua, nutXoa, nutLamMoi;
-    public JButton nutQuayLai = new JButton("Quay lại");
+    public JButton btThem, btSua, btXoa, btLamMoi;
+    public JButton btQuayLai = new JButton("Quay lại");
     private final boolean coQuyenQuanLyPhong;
 
     // Khai báo các field cũ để đảm bảo tương thích mã nguồn
@@ -48,7 +49,7 @@ public class ViewQuanLyPhong extends JFrame {
     public ViewQuanLyPhong(boolean coQuyenQuanLyPhong) {
         this.coQuyenQuanLyPhong = coQuyenQuanLyPhong;
         setTitle("Quản lý khách sạn - Quản lý phòng");
-        AppWindowIcon.apply(this);
+        IConn.apply(this);
         setSize(1100, 680);
         setMinimumSize(new Dimension(900, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,11 +94,10 @@ public class ViewQuanLyPhong extends JFrame {
         oNhapTimKiem.setPreferredSize(new Dimension(220, 34));
         oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Số phòng, loại phòng, tầng...");
 
-        nutTimKiem = new JButton("Tìm kiếm");
-        UIStyle.setButtonIcon(nutTimKiem, "timkiem.png");
-        nutTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutTimKiem.setPreferredSize(new Dimension(110, 34));
-        nutTimKiem.setFocusPainted(false);
+        btTimKiem = new JButton("Tìm kiếm");
+        btTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btTimKiem.setPreferredSize(new Dimension(110, 34));
+        btTimKiem.setFocusPainted(false);
 
         JLabel nhanLoc = new JLabel("Lọc trạng thái:");
         nhanLoc.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -111,7 +111,7 @@ public class ViewQuanLyPhong extends JFrame {
 
         khungTimKiem.add(nhanTim);
         khungTimKiem.add(oNhapTimKiem);
-        khungTimKiem.add(nutTimKiem);
+        khungTimKiem.add(btTimKiem);
         khungTimKiem.add(Box.createHorizontalStrut(15));
         khungTimKiem.add(nhanLoc);
         khungTimKiem.add(hopChonLocTrangThai);
@@ -251,7 +251,7 @@ public class ViewQuanLyPhong extends JFrame {
             @Override
             public void mouseClicked(MouseEvent suKien) {
                 if (suKien.getClickCount() == 2 && bang.getSelectedRow() != -1) {
-                    nutSua.doClick();
+                    btSua.doClick();
                 }
             }
         });
@@ -269,49 +269,45 @@ public class ViewQuanLyPhong extends JFrame {
         JPanel khungNutTrai = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         khungNutTrai.setOpaque(false);
 
-        nutThem = new JButton("Thêm phòng");
-        UIStyle.setButtonIcon(nutThem, "them.png");
-        nutThem.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutThem.setBackground(new Color(13, 110, 253));
-        nutThem.setForeground(Color.BLACK);
-        nutThem.setPreferredSize(new Dimension(140, 36));
-        nutThem.setFocusPainted(false);
-        nutThem.setVisible(coQuyenQuanLyPhong);
+        btThem = new JButton("Thêm phòng");
+        btThem.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btThem.setBackground(new Color(13, 110, 253));
+        btThem.setForeground(Color.BLACK);
+        btThem.setPreferredSize(new Dimension(140, 36));
+        btThem.setFocusPainted(false);
+        btThem.setVisible(coQuyenQuanLyPhong);
 
-        nutSua = new JButton("Sửa phòng");
-        UIStyle.setButtonIcon(nutSua, "sua.png");
-        nutSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutSua.setBackground(new Color(255, 193, 7));
-        nutSua.setForeground(Color.BLACK);
-        nutSua.setPreferredSize(new Dimension(130, 36));
-        nutSua.setFocusPainted(false);
+        btSua = new JButton("Sửa phòng");
+        btSua.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btSua.setBackground(new Color(255, 193, 7));
+        btSua.setForeground(Color.BLACK);
+        btSua.setPreferredSize(new Dimension(130, 36));
+        btSua.setFocusPainted(false);
 
-        nutXoa = new JButton("Xóa phòng");
-        UIStyle.setButtonIcon(nutXoa, "xoa.png");
-        nutXoa.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutXoa.setBackground(new Color(220, 53, 69));
-        nutXoa.setForeground(Color.BLACK);
-        nutXoa.setPreferredSize(new Dimension(130, 36));
-        nutXoa.setFocusPainted(false);
-        nutXoa.setVisible(coQuyenQuanLyPhong);
+        btXoa = new JButton("Xóa phòng");
+        btXoa.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btXoa.setBackground(new Color(220, 53, 69));
+        btXoa.setForeground(Color.BLACK);
+        btXoa.setPreferredSize(new Dimension(130, 36));
+        btXoa.setFocusPainted(false);
+        btXoa.setVisible(coQuyenQuanLyPhong);
 
-        nutLamMoi = new JButton("Làm mới");
-        UIStyle.setButtonIcon(nutLamMoi, "load.png");
-        nutLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutLamMoi.setPreferredSize(new Dimension(140, 36));
-        nutLamMoi.setFocusPainted(false);
+        btLamMoi = new JButton("Làm mới");
+        btLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btLamMoi.setPreferredSize(new Dimension(140, 36));
+        btLamMoi.setFocusPainted(false);
 
-        khungNutTrai.add(nutThem);
-        khungNutTrai.add(nutSua);
-        khungNutTrai.add(nutXoa);
-        khungNutTrai.add(nutLamMoi);
+        khungNutTrai.add(btThem);
+        khungNutTrai.add(btSua);
+        khungNutTrai.add(btXoa);
+        khungNutTrai.add(btLamMoi);
 
         khungDuoi.add(khungNutTrai, BorderLayout.CENTER);
         khungChinh.add(khungDuoi, BorderLayout.SOUTH);
 
         setContentPane(khungChinh);
 
-        nutQuayLai.addActionListener(suKien -> {
+        btQuayLai.addActionListener(ac -> {
             new ViewTrangChu().setVisible(true);
             dispose();
         });

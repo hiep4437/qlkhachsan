@@ -37,16 +37,16 @@ public class KhachHangController {
         taiDuLieu();
 
         // Nút thêm, sửa, lịch sử, xóa
-        viewQuanLyKhachHang.nutThem.addActionListener(suKien -> them());
-        viewQuanLyKhachHang.nutSua.addActionListener(suKien -> sua());
-        viewQuanLyKhachHang.nutLichSu.addActionListener(suKien -> xemLichSu());
-        viewQuanLyKhachHang.nutXoa.addActionListener(suKien -> xoa());
+        viewQuanLyKhachHang.btThem.addActionListener(ac -> them());
+        viewQuanLyKhachHang.btSua.addActionListener(ac -> sua());
+        viewQuanLyKhachHang.btLichSu.addActionListener(ac -> xemLichSu());
+        viewQuanLyKhachHang.btXoa.addActionListener(ac -> xoa());
 
         // Tìm kiếm
-        viewQuanLyKhachHang.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyKhachHang.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyKhachHang.btTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyKhachHang.oNhapTimKiem.addActionListener(ac -> apDungBoLoc());
 
-        viewQuanLyKhachHang.nutLamMoi.addActionListener(suKien -> {
+        viewQuanLyKhachHang.btLamMoi.addActionListener(ac -> {
             viewQuanLyKhachHang.lamMoi();
             taiDuLieu();
         });
@@ -223,9 +223,9 @@ public class KhachHangController {
         hopThoai.add(new JScrollPane(bangLichSu), BorderLayout.CENTER);
 
         JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton nutHang = new JButton("Đóng");
-        nutHang.addActionListener(suKien -> hopThoai.dispose());
-        khungChan.add(nutHang);
+        JButton btHang = new JButton("Đóng");
+        btHang.addActionListener(ac -> hopThoai.dispose());
+        khungChan.add(btHang);
         hopThoai.add(khungChan, BorderLayout.SOUTH);
 
         hopThoai.setVisible(true);

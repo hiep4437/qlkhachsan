@@ -121,35 +121,35 @@ public class DialogChiTietHoaDon extends JDialog {
         khungDuoi.setBackground(new Color(245, 247, 250));
         khungDuoi.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(222, 226, 230)));
 
-        JButton nutIn = new JButton("In hóa đơn (Bill)");
-        nutIn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutIn.setFocusPainted(false);
+        JButton btIn = new JButton("In hóa đơn (Bill)");
+        btIn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btIn.setFocusPainted(false);
 
-        JButton nutThanhToanNgay = new JButton("Xác nhận thanh toán ngay");
-        nutThanhToanNgay.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutThanhToanNgay.setBackground(new Color(39, 174, 96));
-        nutThanhToanNgay.setForeground(Color.WHITE);
-        nutThanhToanNgay.setFocusPainted(false);
+        JButton btThanhToanNgay = new JButton("Xác nhận thanh toán ngay");
+        btThanhToanNgay.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btThanhToanNgay.setBackground(new Color(39, 174, 96));
+        btThanhToanNgay.setForeground(Color.WHITE);
+        btThanhToanNgay.setFocusPainted(false);
 
-        JButton nutHang = new JButton("Đóng");
-        nutHang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutHang.setFocusPainted(false);
+        JButton btHang = new JButton("Đóng");
+        btHang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btHang.setFocusPainted(false);
 
         // Ẩn nút "Thanh toán ngay" nếu đã thanh toán
         if (luongChuoi.equals("ĐÃ THANH TOÁN")) {
-            nutThanhToanNgay.setVisible(false);
+            btThanhToanNgay.setVisible(false);
         }
 
-        khungDuoi.add(nutIn);
-        if (nutThanhToanNgay.isVisible()) {
-            khungDuoi.add(nutThanhToanNgay);
+        khungDuoi.add(btIn);
+        if (btThanhToanNgay.isVisible()) {
+            khungDuoi.add(btThanhToanNgay);
         }
-        khungDuoi.add(nutHang);
+        khungDuoi.add(btHang);
         add(khungDuoi, BorderLayout.SOUTH);
 
-        nutHang.addActionListener(suKien -> dispose());
+        btHang.addActionListener(ac -> dispose());
 
-        nutThanhToanNgay.addActionListener(suKien -> {
+        btThanhToanNgay.addActionListener(ac -> {
             int tepCauHinh = JOptionPane.showConfirmDialog(
                     this,
                     "Xác nhận đã nhận đủ " + dinhDangTienTeChinh.format(hoaDon.getTongTien()) + " cho Hóa đơn #" + hoaDon.getIdHoaDon() + "?",
@@ -166,7 +166,7 @@ public class DialogChiTietHoaDon extends JDialog {
             }
         });
 
-        nutIn.addActionListener(suKien -> inHoaDon());
+        btIn.addActionListener(ac -> inHoaDon());
     }
 
     private void inHoaDon() {
@@ -193,12 +193,12 @@ public class DialogChiTietHoaDon extends JDialog {
         hopThoaiIn.add(new JScrollPane(oNhap), BorderLayout.CENTER);
 
         JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton nutIn = new JButton("In");
-        nutIn.addActionListener(suKien -> thucHienIn(doiTuongCha, oNhap));
-        JButton nutDong = new JButton("Đóng");
-        nutDong.addActionListener(suKien -> hopThoaiIn.dispose());
-        khungDuoi.add(nutIn);
-        khungDuoi.add(nutDong);
+        JButton btIn = new JButton("In");
+        btIn.addActionListener(ac -> thucHienIn(doiTuongCha, oNhap));
+        JButton btDong = new JButton("Đóng");
+        btDong.addActionListener(ac -> hopThoaiIn.dispose());
+        khungDuoi.add(btIn);
+        khungDuoi.add(btDong);
         hopThoaiIn.add(khungDuoi, BorderLayout.SOUTH);
 
         hopThoaiIn.setVisible(true);

@@ -28,16 +28,16 @@ public class PhongController {
         taiDuLieu();
 
         // Nút thêm, sửa, xóa
-        viewQuanLyPhong.nutThem.addActionListener(suKien -> them());
-        viewQuanLyPhong.nutSua.addActionListener(suKien -> sua());
-        viewQuanLyPhong.nutXoa.addActionListener(suKien -> xoa());
+        viewQuanLyPhong.btThem.addActionListener(ac -> them());
+        viewQuanLyPhong.btSua.addActionListener(ac -> sua());
+        viewQuanLyPhong.btXoa.addActionListener(ac -> xoa());
 
         // Tìm kiếm & Lọc
-        viewQuanLyPhong.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyPhong.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
-        viewQuanLyPhong.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
+        viewQuanLyPhong.btTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyPhong.oNhapTimKiem.addActionListener(ac -> apDungBoLoc());
+        viewQuanLyPhong.hopChonLocTrangThai.addActionListener(ac -> apDungBoLoc());
 
-        viewQuanLyPhong.nutLamMoi.addActionListener(suKien -> {
+        viewQuanLyPhong.btLamMoi.addActionListener(ac -> {
             viewQuanLyPhong.lamMoi();
             taiDuLieu();
         });

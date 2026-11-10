@@ -181,8 +181,8 @@ public class DialogTraPhongThanhToan extends JDialog {
             }
         };
 
-        oNhapPhuThu.addActionListener(suKien -> capNhatChung.run());
-        oNhapGiamGia.addActionListener(suKien -> capNhatChung.run());
+        oNhapPhuThu.addActionListener(ac -> capNhatChung.run());
+        oNhapGiamGia.addActionListener(ac -> capNhatChung.run());
         oNhapPhuThu.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusLost(java.awt.event.FocusEvent suKien) {
@@ -201,35 +201,35 @@ public class DialogTraPhongThanhToan extends JDialog {
         khungDuoi.setBackground(new Color(245, 247, 250));
         khungDuoi.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(222, 226, 230)));
 
-        JButton nutInHoaDon = new JButton("In / Xem trước hóa đơn");
-        nutInHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nutInHoaDon.setFocusPainted(false);
+        JButton btInHoaDon = new JButton("In / Xem trước hóa đơn");
+        btInHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btInHoaDon.setFocusPainted(false);
 
-        JButton nutXacNhan = new JButton("Xác nhận thanh toán & Trả phòng");
-        nutXacNhan.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nutXacNhan.setBackground(new Color(192, 57, 43));
-        nutXacNhan.setForeground(Color.WHITE);
-        nutXacNhan.setFocusPainted(false);
+        JButton btXacNhan = new JButton("Xác nhận thanh toán & Trả phòng");
+        btXacNhan.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btXacNhan.setBackground(new Color(192, 57, 43));
+        btXacNhan.setForeground(Color.WHITE);
+        btXacNhan.setFocusPainted(false);
 
-        JButton nutHuy = new JButton("Hủy bỏ");
-        nutHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nutHuy.setFocusPainted(false);
+        JButton btHuy = new JButton("Hủy bỏ");
+        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        btHuy.setFocusPainted(false);
 
-        khungDuoi.add(nutInHoaDon);
-        khungDuoi.add(nutHuy);
-        khungDuoi.add(nutXacNhan);
+        khungDuoi.add(btInHoaDon);
+        khungDuoi.add(btHuy);
+        khungDuoi.add(btXacNhan);
         add(khungDuoi, BorderLayout.SOUTH);
 
-        nutHuy.addActionListener(suKien -> dispose());
+        btHuy.addActionListener(ac -> dispose());
 
         // In / Xem trước phiếu thanh toán
-        nutInHoaDon.addActionListener(suKien -> {
+        btInHoaDon.addActionListener(ac -> {
             capNhatChung.run();
             hienThiPhieuInHoaDon();
         });
 
         // Xác nhận thanh toán & Trả phòng
-        nutXacNhan.addActionListener(suKien -> {
+        btXacNhan.addActionListener(ac -> {
             capNhatChung.run();
 
             double phuThu = parseDoubleSafe(oNhapPhuThu.getText());
@@ -319,9 +319,9 @@ public class DialogTraPhongThanhToan extends JDialog {
         hopThoaiIn.add(thanhCuon, BorderLayout.CENTER);
 
         JPanel khungNut = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton nutHang = new JButton("Đóng");
-        nutHang.addActionListener(suKien -> hopThoaiIn.dispose());
-        khungNut.add(nutHang);
+        JButton btHang = new JButton("Đóng");
+        btHang.addActionListener(ac -> hopThoaiIn.dispose());
+        khungNut.add(btHang);
         hopThoaiIn.add(khungNut, BorderLayout.SOUTH);
 
         hopThoaiIn.setVisible(true);

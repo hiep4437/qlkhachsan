@@ -53,7 +53,7 @@ public class ThongKeDAO {
     }
 
     private Connection moKetNoi() throws SQLException {
-        Connection ketNoi = KetNoiCSDL.getConnection();
+        Connection ketNoi = DBConecter.getConnection();
         if (ketNoi == null) {
             throw new SQLException("Không thể kết nối cơ sở dữ liệu.");
         }

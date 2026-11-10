@@ -27,15 +27,15 @@ public class HoaDonController {
 		taiDuLieu();
 
 		// Nút xem chi tiết hóa đơn
-		viewHoaDon.nutXemChiTiet.addActionListener(suKien -> xemChiTiet());
+		viewHoaDon.btXemChiTiet.addActionListener(ac -> xemChiTiet());
 
 		// Tìm kiếm & Lọc
-		viewHoaDon.nutTimKiem.addActionListener(suKien -> apDungBoLoc());
-		viewHoaDon.oNhapTimKiem.addActionListener(suKien -> apDungBoLoc());
-		viewHoaDon.hopChonLocTrangThai.addActionListener(suKien -> apDungBoLoc());
-		viewHoaDon.hopChonLocThoiGian.addActionListener(suKien -> apDungBoLoc());
+		viewHoaDon.btTimKiem.addActionListener(ac -> apDungBoLoc());
+		viewHoaDon.oNhapTimKiem.addActionListener(ac -> apDungBoLoc());
+		viewHoaDon.hopChonLocTrangThai.addActionListener(ac -> apDungBoLoc());
+		viewHoaDon.hopChonLocThoiGian.addActionListener(ac -> apDungBoLoc());
 
-		viewHoaDon.nutLamMoi.addActionListener(suKien -> {
+		viewHoaDon.btLamMoi.addActionListener(ac -> {
 			viewHoaDon.lamMoi();
 			taiDuLieu();
 		});

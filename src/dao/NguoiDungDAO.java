@@ -37,7 +37,7 @@ public class NguoiDungDAO {
             cauLenhSQL = "INSERT INTO nguoi_dung (ten_dang_nhap, mat_khau, ho_ten, vai_tro, trang_thai) VALUES (?, ?, ?, ?, ?)";
         }
 
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL, Statement.RETURN_GENERATED_KEYS)) {
 
             int chiSo = 1;
@@ -76,7 +76,7 @@ public class NguoiDungDAO {
             cauLenhSQL = "UPDATE nguoi_dung SET ten_dang_nhap = ?, ho_ten = ?, vai_tro = ?, trang_thai = ? WHERE ma_nguoi_dung = ?";
         }
 
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
 
             int chiSo = 1;
@@ -99,7 +99,7 @@ public class NguoiDungDAO {
     // Xoa nguoi dung theo ID
     public int xoaNguoiDung(int maNguoiDung) {
         String cauLenhSQL = "DELETE FROM nguoi_dung WHERE ma_nguoi_dung = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setInt(1, maNguoiDung);
             return luongIn.executeUpdate();
@@ -120,7 +120,7 @@ public class NguoiDungDAO {
         ArrayList<NguoiDung> danhSach = new ArrayList<>();
         String cauLenhSQL = "SELECT * FROM nguoi_dung ORDER BY ma_nguoi_dung ASC";
 
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              Statement luongTrinh = ketNoi.createStatement();
              ResultSet ketQuaTruyVan = luongTrinh.executeQuery(cauLenhSQL)) {
 
@@ -154,7 +154,7 @@ public class NguoiDungDAO {
     public NguoiDung timTheoUsername(String tenDangNhap) {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty()) return null;
         String cauLenhSQL = "SELECT * FROM nguoi_dung WHERE ten_dang_nhap = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setString(1, tenDangNhap.trim());
             try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
@@ -180,7 +180,7 @@ public class NguoiDungDAO {
     // Tim kiem theo ID
     public NguoiDung timTheoId(int maNguoiDung) {
         String cauLenhSQL = "SELECT * FROM nguoi_dung WHERE ma_nguoi_dung = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setInt(1, maNguoiDung);
             try (ResultSet ketQuaTruyVan = luongIn.executeQuery()) {
@@ -206,7 +206,7 @@ public class NguoiDungDAO {
     // Doi mat khau nguoi dung
     public int doiMatKhau(int maNguoiDung, String matKhauMoi) {
         String cauLenhSQL = "UPDATE nguoi_dung SET mat_khau = ? WHERE ma_nguoi_dung = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setString(1, matKhauMoi);
             luongIn.setInt(2, maNguoiDung);
@@ -220,7 +220,7 @@ public class NguoiDungDAO {
     // Doi trang thai hoat dong (khoa / mo khoa)
     public int doiTrangThai(int maNguoiDung, boolean dangHoatDong) {
         String cauLenhSQL = "UPDATE nguoi_dung SET trang_thai = ? WHERE ma_nguoi_dung = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setInt(1, dangHoatDong ? 1 : 0);
             luongIn.setInt(2, maNguoiDung);
@@ -234,7 +234,7 @@ public class NguoiDungDAO {
     // Cap nhat thong tin ca nhan (ho ten)
     public int capNhatHoTen(int maNguoiDung, String hoTen) {
         String cauLenhSQL = "UPDATE nguoi_dung SET ho_ten = ? WHERE ma_nguoi_dung = ?";
-        try (Connection ketNoi = KetNoiCSDL.getConnection();
+        try (Connection ketNoi = DBConecter.getConnection();
              PreparedStatement luongIn = ketNoi.prepareStatement(cauLenhSQL)) {
             luongIn.setString(1, hoTen.trim());
             luongIn.setInt(2, maNguoiDung);
