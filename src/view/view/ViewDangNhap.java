@@ -1,144 +1,217 @@
+/*
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//            amen đà phật github copecute
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
 package view.view;
 
 import dao.DBConecter;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import view.IConn;
 
-public class ViewDangNhap extends JFrame {
-    public JTextField oNhapTenDangNhap;
-    public JPasswordField oNhapMatKhau;
-    public JButton btDangNhap, btThoat;
-    public JButton btCauHinhServer;
-    public JLabel nhanThongBaoServer;
+/**
+ *
+ * @author Admin
+ */
+public class ViewDangNhap extends javax.swing.JFrame {
 
+    /**
+     * Creates new form ViewDangNhap
+     */
     public ViewDangNhap() {
-        setTitle("Đăng nhập - Quản lý khách sạn");
+        initComponents();
         IConn.apply(this);
-        setSize(420, 360);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-
-        // Panel chinh
-        JPanel khungChinh = new JPanel(new BorderLayout(10, 10));
-        khungChinh.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
-        khungChinh.setBackground(new Color(245, 247, 250));
-
-        // Header Panel
-        JPanel khungDauTrang = new JPanel();
-        khungDauTrang.setLayout(new BoxLayout(khungDauTrang, BoxLayout.Y_AXIS));
-        khungDauTrang.setOpaque(false);
-
-        JLabel nhanBieuTuong = new JLabel("QUẢN LÝ KHÁCH SẠN");
-        nhanBieuTuong.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        nhanBieuTuong.setForeground(new Color(26, 82, 118));
-        nhanBieuTuong.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel nhanPhu = new JLabel("Đăng nhập");
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(Color.GRAY);
-        nhanPhu.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        khungDauTrang.add(nhanBieuTuong);
-        khungDauTrang.add(Box.createVerticalStrut(4));
-        khungDauTrang.add(nhanPhu);
-        khungDauTrang.add(Box.createVerticalStrut(15));
-
-        // Form Panel
-        JPanel khungBieuMau = new JPanel(new GridBagLayout());
-        khungBieuMau.setOpaque(false);
-        GridBagConstraints ranhGioi = new GridBagConstraints();
-        ranhGioi.fill = GridBagConstraints.HORIZONTAL;
-        ranhGioi.insets = new Insets(6, 4, 6, 4);
-
-        // Row 1: Username
-        ranhGioi.gridx = 0;
-        ranhGioi.gridy = 0;
-        ranhGioi.weightx = 0.3;
-        JLabel nhanNguoiDung = new JLabel("Tên đăng nhập:");
-        nhanNguoiDung.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        khungBieuMau.add(nhanNguoiDung, ranhGioi);
-
-        ranhGioi.gridx = 1;
-        ranhGioi.gridy = 0;
-        ranhGioi.weightx = 0.7;
-        oNhapTenDangNhap = new JTextField(15);
-        oNhapTenDangNhap.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        oNhapTenDangNhap.setPreferredSize(new Dimension(200, 30));
-        khungBieuMau.add(oNhapTenDangNhap, ranhGioi);
-
-        // Row 2: Password
-        ranhGioi.gridx = 0;
-        ranhGioi.gridy = 1;
-        ranhGioi.weightx = 0.3;
-        JLabel nhanMatKhau = new JLabel("Mật khẩu:");
-        nhanMatKhau.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        khungBieuMau.add(nhanMatKhau, ranhGioi);
-
-        ranhGioi.gridx = 1;
-        ranhGioi.gridy = 1;
-        ranhGioi.weightx = 0.7;
-        oNhapMatKhau = new JPasswordField(15);
-        oNhapMatKhau.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        oNhapMatKhau.setPreferredSize(new Dimension(200, 30));
-        khungBieuMau.add(oNhapMatKhau, ranhGioi);
-
-        // Buttons Panel
-        JPanel btKhung = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        btKhung.setOpaque(false);
-
-        btDangNhap = new JButton("Đăng nhập");
-        btDangNhap.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btDangNhap.setBackground(new Color(41, 128, 185));
-        btDangNhap.setForeground(Color.WHITE);
-        btDangNhap.setFocusPainted(false);
-        btDangNhap.setPreferredSize(new Dimension(120, 34));
-
-        btThoat = new JButton("Thoát");
-        btThoat.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btThoat.setPreferredSize(new Dimension(90, 34));
-
-        btKhung.add(btDangNhap);
-        btKhung.add(btThoat);
-
-        // Bottom config panel
-        JPanel khungDuoi = new JPanel(new BorderLayout());
-        khungDuoi.setOpaque(false);
-        khungDuoi.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-
-        btCauHinhServer = new JButton(" Cấu hình máy chủ");
-        btCauHinhServer.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        btCauHinhServer.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btCauHinhServer.setFocusPainted(false);
-
-        nhanThongBaoServer = new JLabel(
-                "CSDL: " + DBConecter.getHost() + ":" + DBConecter.getPort() + "/" + DBConecter.getDatabase());
-        nhanThongBaoServer.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        nhanThongBaoServer.setForeground(new Color(100, 100, 100));
-
-        khungDuoi.add(nhanThongBaoServer, BorderLayout.WEST);
-        khungDuoi.add(btCauHinhServer, BorderLayout.EAST);
-
-        // Center container
-        JPanel khungGiua = new JPanel(new BorderLayout());
-        khungGiua.setOpaque(false);
-        khungGiua.add(khungBieuMau, BorderLayout.CENTER);
-        khungGiua.add(btKhung, BorderLayout.SOUTH);
-
-        khungChinh.add(khungDauTrang, BorderLayout.NORTH);
-        khungChinh.add(khungGiua, BorderLayout.CENTER);
-        khungChinh.add(khungDuoi, BorderLayout.SOUTH);
-
-        add(khungChinh);
-
-        // Events
-        btThoat.addActionListener(ac -> System.exit(0));
-        btCauHinhServer.addActionListener(ac -> hienThiDialogCauHinhServer());
-
-        // Phím Enter đăng nhập
+        capNhatThongTinServer();
         getRootPane().setDefaultButton(btDangNhap);
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        nhanBieuTuong = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        nhanNguoiDung = new javax.swing.JLabel();
+        oNhapTenDangNhap = new javax.swing.JTextField();
+        nhanMatKhau = new javax.swing.JLabel();
+        oNhapMatKhau = new javax.swing.JPasswordField();
+        btDangNhap = new javax.swing.JButton();
+        btThoat = new javax.swing.JButton();
+        nhanThongBaoServer = new javax.swing.JLabel();
+        btCauHinhServer = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Đăng nhập - Quản lý khách sạn");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(245, 247, 250));
+
+        nhanBieuTuong.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        nhanBieuTuong.setForeground(new java.awt.Color(26, 82, 118));
+        nhanBieuTuong.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nhanBieuTuong.setText("QUẢN LÝ KHÁCH SẠN");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(128, 128, 128));
+        nhanPhu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        nhanPhu.setText("Đăng nhập");
+
+        nhanNguoiDung.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanNguoiDung.setText("Tên đăng nhập:");
+
+        oNhapTenDangNhap.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanMatKhau.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanMatKhau.setText("Mật khẩu:");
+
+        oNhapMatKhau.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        btDangNhap.setBackground(new java.awt.Color(41, 128, 185));
+        btDangNhap.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btDangNhap.setForeground(new java.awt.Color(255, 255, 255));
+        btDangNhap.setText("Đăng nhập");
+        btDangNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        btThoat.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btThoat.setText("Thoát");
+        btThoat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btThoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btThoatActionPerformed(evt);
+            }
+        });
+
+        nhanThongBaoServer.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
+        nhanThongBaoServer.setForeground(new java.awt.Color(100, 100, 100));
+        nhanThongBaoServer.setText("CSDL: localhost:3306/hotel_management");
+
+        btCauHinhServer.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        btCauHinhServer.setText(" Cấu hình máy chủ");
+        btCauHinhServer.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btCauHinhServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCauHinhServerActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, khungChinhLayout.createSequentialGroup()
+                .addContainerGap(25, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
+                        .addComponent(nhanThongBaoServer, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addComponent(btCauHinhServer))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nhanNguoiDung)
+                            .addComponent(nhanMatKhau))
+                        .addGap(15, 15, 15)
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(oNhapTenDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                            .addComponent(oNhapMatKhau)))
+                    .addComponent(nhanBieuTuong, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nhanPhu, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(95, 95, 95)
+                .addComponent(btDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(nhanBieuTuong)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanNguoiDung)
+                    .addComponent(oNhapTenDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanMatKhau)
+                    .addComponent(oNhapMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanThongBaoServer)
+                    .addComponent(btCauHinhServer, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThoatActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btThoatActionPerformed
+
+    private void btCauHinhServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCauHinhServerActionPerformed
+        hienThiDialogCauHinhServer();
+    }//GEN-LAST:event_btCauHinhServerActionPerformed
 
     public void capNhatThongTinServer() {
         nhanThongBaoServer.setText("CSDL: " + DBConecter.getHost() + ":" + DBConecter.getPort() + "/" + DBConecter.getDatabase());
@@ -274,7 +347,52 @@ public class ViewDangNhap extends JFrame {
         return btDangNhap;
     }
 
-    public static void main(String[] thamSo) {
-        SwingUtilities.invokeLater(() -> new ViewDangNhap().setVisible(true));
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ViewDangNhap.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ViewDangNhap.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ViewDangNhap.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ViewDangNhap.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ViewDangNhap().setVisible(true);
+            }
+        });
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btCauHinhServer;
+    public javax.swing.JButton btDangNhap;
+    public javax.swing.JButton btThoat;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JLabel nhanBieuTuong;
+    private javax.swing.JLabel nhanMatKhau;
+    private javax.swing.JLabel nhanNguoiDung;
+    private javax.swing.JLabel nhanPhu;
+    public javax.swing.JLabel nhanThongBaoServer;
+    public javax.swing.JPasswordField oNhapMatKhau;
+    public javax.swing.JTextField oNhapTenDangNhap;
+    // End of variables declaration//GEN-END:variables
 }
