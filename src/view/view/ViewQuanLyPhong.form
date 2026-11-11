@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3" />
+    <Property name="title" type="java.lang.String" value="Quản lý khách sạn - Quản lý phòng" />
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1" />
+    <SyntheticProperty name="generateCenter" type="boolean" value="false" />
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0" />
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true" />
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1" />
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0" />
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false" />
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2" />
+  </AuxValues>
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Component id="khungChinh" alignment="0" max="32767" attributes="0" />
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+        <Component id="khungChinh" alignment="0" max="32767" attributes="0" />
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="khungChinh">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="fa" green="f7" red="f5" type="rgb" />
+        </Property>
+      </Properties>
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0" />
+              <Group type="103" groupAlignment="0" attributes="0">
+                <Component id="cuonPane" max="32767" attributes="0" />
+                <Group type="102" attributes="0">
+                  <Component id="nhanTieuDe" min="-2" max="-2" attributes="0" />
+                  <EmptySpace max="32767" attributes="0" />
+                  <Component id="nhanThongKe" min="-2" max="-2" attributes="0" />
+                </Group>
+                <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                    <Group type="102" attributes="0">
+                      <Component id="nhanTim" min="-2" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="oNhapTimKiem" min="-2" pref="220" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="btTimKiem" min="-2" pref="110" max="-2" attributes="0" />
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0" />
+                      <Component id="nhanLoc" min="-2" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="hopChonLocTrangThai" min="-2" pref="160" max="-2" attributes="0" />
+                    </Group>
+                    <Group type="102" alignment="0" attributes="0">
+                      <Component id="btThem" min="-2" pref="140" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="btSua" min="-2" pref="130" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="btXoa" min="-2" pref="130" max="-2" attributes="0" />
+                      <EmptySpace type="unrelated" max="-2" attributes="0" />
+                      <Component id="btLamMoi" min="-2" pref="140" max="-2" attributes="0" />
+                    </Group>
+                  </Group>
+                  <EmptySpace min="0" pref="334" max="32767" attributes="0" />
+                </Group>
+              </Group>
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0" />
+            </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+            <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0" />
+              <Group type="103" groupAlignment="3" attributes="0">
+                <Component id="nhanTieuDe" alignment="3" min="-2" max="-2" attributes="0" />
+                <Component id="nhanThongKe" alignment="3" min="-2" max="-2" attributes="0" />
+              </Group>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0" />
+              <Group type="103" groupAlignment="3" attributes="0">
+                <Component id="nhanTim" alignment="3" min="-2" max="-2" attributes="0" />
+                <Component id="oNhapTimKiem" alignment="3" min="-2" pref="34" max="-2" attributes="0" />
+                <Component id="btTimKiem" alignment="3" min="-2" pref="34" max="-2" attributes="0" />
+                <Component id="nhanLoc" alignment="3" min="-2" max="-2" attributes="0" />
+                <Component id="hopChonLocTrangThai" alignment="3" min="-2" pref="34" max="-2" attributes="0" />
+              </Group>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0" />
+              <Component id="cuonPane" pref="515" max="32767" attributes="0" />
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0" />
+              <Group type="103" groupAlignment="3" attributes="0">
+                <Component id="btThem" alignment="3" min="-2" pref="36" max="-2" attributes="0" />
+                <Component id="btSua" alignment="3" min="-2" pref="36" max="-2" attributes="0" />
+                <Component id="btXoa" alignment="3" min="-2" pref="36" max="-2" attributes="0" />
+                <Component id="btLamMoi" alignment="3" min="-2" pref="36" max="-2" attributes="0" />
+              </Group>
+              <EmptySpace min="-2" pref="15" max="-2" attributes="0" />
+            </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="nhanTieuDe">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="22" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="3b" green="29" red="1e" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="DANH SÁCH QUẢN LÝ PHÒNG" />
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="nhanThongKe">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="0" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="8b" green="74" red="64" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Tổng số: 0 phòng | Trống: 0 | Có khách: 0 | Đang dọn: 0 | Bảo trì: 0" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="nhanTim">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="55" green="41" red="33" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Tìm kiếm:" />
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="oNhapTimKiem">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="0" />
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="btTimKiem">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="0" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Tìm kiếm" />
+            <Property name="focusPainted" type="boolean" value="false" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="nhanLoc">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="55" green="41" red="33" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Lọc trạng thái:" />
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="hopChonLocTrangThai">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="0" />
+            </Property>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="5">
+                <StringItem index="0" value="Tất cả trạng thái"/>
+                <StringItem index="1" value="TRỐNG"/>
+                <StringItem index="2" value="CÓ KHÁCH"/>
+                <StringItem index="3" value="ĐANG DỌN"/>
+                <StringItem index="4" value="BẢO TRÌ"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;" />
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Container class="javax.swing.JScrollPane" name="cuonPane">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true" />
+          </AuxValues>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout" />
+          <SubComponents>
+            <Component class="javax.swing.JTable" name="bang">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="13" style="0" />
+                </Property>
+                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                  <Table columnCount="7" rowCount="0">
+                    <Column editable="false" title="ID" type="java.lang.Integer" />
+                    <Column editable="false" title="Số phòng" type="java.lang.String" />
+                    <Column editable="false" title="Tầng" type="java.lang.Integer" />
+                    <Column editable="false" title="Loại phòng" type="java.lang.String" />
+                    <Column editable="false" title="Giá mỗi đêm" type="java.lang.String" />
+                    <Column editable="false" title="Trạng thái" type="java.lang.String" />
+                    <Column editable="false" title="Mô tả" type="java.lang.String" />
+                  </Table>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JButton" name="btThem">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="fd" green="6e" red="d" type="rgb" />
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Thêm phòng" />
+            <Property name="focusPainted" type="boolean" value="false" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="btSua">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="7" green="c1" red="ff" type="rgb" />
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Sửa phòng" />
+            <Property name="focusPainted" type="boolean" value="false" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="btXoa">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="45" green="35" red="dc" type="rgb" />
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="1" />
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="0" red="0" type="rgb" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Xóa phòng" />
+            <Property name="focusPainted" type="boolean" value="false" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="btLamMoi">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI" size="13" style="0" />
+            </Property>
+            <Property name="text" type="java.lang.String" value="Làm mới" />
+            <Property name="focusPainted" type="boolean" value="false" />
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1" />
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>

@@ -1,283 +1,52 @@
 package view.view;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import view.IConn;
 
-public class ViewHoaDon extends JFrame {
+/**
+ *
+ * @author Admin
+ */
+public class ViewHoaDon extends javax.swing.JFrame {
 
     // Bảng dữ liệu
-    public JTable bang;
     public DefaultTableModel moHinh;
     public TableRowSorter<DefaultTableModel> boSapXep;
 
-    // Tìm kiếm & Lọc
-    public JTextField oNhapTimKiem;
-    public JButton btTimKiem;
-    public JComboBox<String> hopChonLocTrangThai;
-    public JComboBox<String> hopChonLocThoiGian;
-    public JLabel nhanThongKe;
-
     // Các nút chức năng ở bottom
-    public JButton btXemChiTiet, btLamMoi;
     public JButton btQuayLai = new JButton("Quay lại");
 
     public ViewHoaDon() {
-        setTitle("Quản lý khách sạn - Quản lý hóa đơn");
-        IConn.apply(this);
+        initComponents();
         setSize(1180, 700);
         setMinimumSize(new Dimension(1000, 580));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        caiDatBang();
+    }
 
-        JPanel khungChinh = new JPanel(new BorderLayout(0, 10));
-        khungChinh.setBackground(new Color(245, 247, 250));
-        khungChinh.setBorder(new EmptyBorder(15, 15, 15, 15));
-
-        // ================= TOP: HEADER & THANH TÌM KIẾM =================
-        JPanel khungTren = new JPanel();
-        khungTren.setLayout(new BoxLayout(khungTren, BoxLayout.Y_AXIS));
-        khungTren.setBackground(new Color(245, 247, 250));
-
-        // 1. Tiêu đề
-        JPanel khungTieuDe = new JPanel(new BorderLayout());
-        khungTieuDe.setOpaque(false);
-
-        JLabel nhanTieuDe = new JLabel("QUẢN LÝ HÓA ĐƠN & DOANH THU");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        nhanTieuDe.setForeground(new Color(30, 41, 59));
-
-        nhanThongKe = new JLabel("Tổng số: 0 hóa đơn | Đã thu: 0 đ | Chưa thu: 0 đ");
-        nhanThongKe.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        nhanThongKe.setForeground(new Color(100, 116, 139));
-
-        khungTieuDe.add(nhanTieuDe, BorderLayout.WEST);
-        khungTieuDe.add(nhanThongKe, BorderLayout.EAST);
-        khungTren.add(khungTieuDe);
-        khungTren.add(Box.createVerticalStrut(12));
-
-        // 2. Thanh tìm kiếm & lọc
-        JPanel khungTimKiem = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        khungTimKiem.setOpaque(false);
-
-        JLabel nhanTim = new JLabel("Tìm kiếm:");
-        nhanTim.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nhanTim.setForeground(new Color(51, 65, 85));
-
-        oNhapTimKiem = new JTextField(16);
-        oNhapTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        oNhapTimKiem.setPreferredSize(new Dimension(200, 34));
-        oNhapTimKiem.putClientProperty("JTextField.placeholderText", "Số phòng, tên khách, SĐT, mã HĐ...");
-
-        btTimKiem = new JButton("Tìm kiếm");
-        btTimKiem.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btTimKiem.setPreferredSize(new Dimension(100, 34));
-        btTimKiem.setFocusPainted(false);
-
-        JLabel nhanLocTrangThai = new JLabel("Trạng thái:");
-        nhanLocTrangThai.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nhanLocTrangThai.setForeground(new Color(51, 65, 85));
-
-        hopChonLocTrangThai = new JComboBox<>(new String[] {
-            "Tất cả trạng thái",
-            "Đã thanh toán (PAID)",
-            "Chưa thanh toán (UNPAID)",
-            "Đã hoàn tiền (REFUNDED)"
-        });
-        hopChonLocTrangThai.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        hopChonLocTrangThai.setPreferredSize(new Dimension(190, 34));
-
-        JLabel nhanLocTG = new JLabel("Thời gian:");
-        nhanLocTG.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nhanLocTG.setForeground(new Color(51, 65, 85));
-
-        hopChonLocThoiGian = new JComboBox<>(new String[] {
-            "Tất cả thời gian",
-            "Hôm nay",
-            "Tháng này",
-            "Năm nay"
-        });
-        hopChonLocThoiGian.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        hopChonLocThoiGian.setPreferredSize(new Dimension(140, 34));
-
-        khungTimKiem.add(nhanTim);
-        khungTimKiem.add(oNhapTimKiem);
-        khungTimKiem.add(btTimKiem);
-        khungTimKiem.add(Box.createHorizontalStrut(10));
-        khungTimKiem.add(nhanLocTrangThai);
-        khungTimKiem.add(hopChonLocTrangThai);
-        khungTimKiem.add(Box.createHorizontalStrut(10));
-        khungTimKiem.add(nhanLocTG);
-        khungTimKiem.add(hopChonLocThoiGian);
-
-        khungTren.add(khungTimKiem);
-        khungChinh.add(khungTren, BorderLayout.NORTH);
-
-        // ================= CENTER: BẢNG HÓA ĐƠN =================
-        moHinh = new DefaultTableModel(
-                new String[] {
-                    "Mã HĐ", "Phòng", "Khách hàng", "Số điện thoại", "Ngày lập",
-                    "Tiền phòng", "Phụ thu", "Giảm giá", "Tổng tiền", "Phương thức TT", "Trạng thái"
-                }, 0) {
-            @Override
-            public boolean isCellEditable(int hang, int chiSoCot) {
-                return false;
-            }
-
-            @Override
-            public Class<?> getColumnClass(int chiSoCot) {
-                if (chiSoCot == 0) return Integer.class;
-                return String.class;
-            }
-        };
-
-        bang = new JTable(moHinh);
-        bang.setRowHeight(38);
-        bang.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        bang.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        bang.setGridColor(new Color(230, 235, 240));
-        bang.setShowVerticalLines(false);
-        bang.setShowHorizontalLines(true);
-        bang.setSelectionBackground(new Color(225, 238, 255));
-        bang.setSelectionForeground(new Color(15, 23, 42));
-
-        JTableHeader tieuDe = bang.getTableHeader();
-        tieuDe.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        tieuDe.setBackground(new Color(238, 242, 246));
-        tieuDe.setForeground(new Color(30, 41, 59));
-        tieuDe.setPreferredSize(new Dimension(tieuDe.getWidth(), 38));
-
+    private void caiDatBang() {
+        moHinh = (DefaultTableModel) bang.getModel();
         boSapXep = new TableRowSorter<>(moHinh);
         bang.setRowSorter(boSapXep);
         List<RowSorter.SortKey> cacKhoaSapXep = new ArrayList<>();
         cacKhoaSapXep.add(new RowSorter.SortKey(0, SortOrder.DESCENDING));
         boSapXep.setSortKeys(cacKhoaSapXep);
-
-        DefaultTableCellRenderer boKetXuatGiua = new DefaultTableCellRenderer();
-        boKetXuatGiua.setHorizontalAlignment(SwingConstants.CENTER);
-
-        DefaultTableCellRenderer boKetXuatPhai = new DefaultTableCellRenderer();
-        boKetXuatPhai.setHorizontalAlignment(SwingConstants.RIGHT);
-
-        // Cột 0: Mã HĐ
-        bang.getColumnModel().getColumn(0).setPreferredWidth(60);
-        bang.getColumnModel().getColumn(0).setMaxWidth(80);
-        bang.getColumnModel().getColumn(0).setCellRenderer(boKetXuatGiua);
-
-        // Cột 1: Phòng
-        bang.getColumnModel().getColumn(1).setPreferredWidth(80);
-        DefaultTableCellRenderer boKetXuatPhong = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
-                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
-                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
-                setFont(new Font("Segoe UI", Font.BOLD, 13));
-                setHorizontalAlignment(CENTER);
-                setForeground(dangChon ? bang.getSelectionForeground() : new Color(31, 78, 121));
-                return thanhPhan;
-            }
-        };
-        bang.getColumnModel().getColumn(1).setCellRenderer(boKetXuatPhong);
-
-        // Cột 2: Khách hàng
-        bang.getColumnModel().getColumn(2).setPreferredWidth(160);
-        DefaultTableCellRenderer boKetXuatKhach = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
-                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
-                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
-                setFont(new Font("Segoe UI", Font.BOLD, 13));
-                return thanhPhan;
-            }
-        };
-        bang.getColumnModel().getColumn(2).setCellRenderer(boKetXuatKhach);
-
-        // Cột 3: Số ĐT
-        bang.getColumnModel().getColumn(3).setPreferredWidth(110);
-        bang.getColumnModel().getColumn(3).setCellRenderer(boKetXuatGiua);
-
-        // Cột 4: Ngày lập
-        bang.getColumnModel().getColumn(4).setPreferredWidth(130);
-        bang.getColumnModel().getColumn(4).setCellRenderer(boKetXuatGiua);
-
-        // Cột 5: Tiền phòng
-        bang.getColumnModel().getColumn(5).setPreferredWidth(100);
-        bang.getColumnModel().getColumn(5).setCellRenderer(boKetXuatPhai);
-
-        // Cột 6: Phụ thu
-        bang.getColumnModel().getColumn(6).setPreferredWidth(90);
-        bang.getColumnModel().getColumn(6).setCellRenderer(boKetXuatPhai);
-
-        // Cột 7: Giảm giá
-        bang.getColumnModel().getColumn(7).setPreferredWidth(90);
-        bang.getColumnModel().getColumn(7).setCellRenderer(boKetXuatPhai);
-
-        // Cột 8: Tổng tiền
-        bang.getColumnModel().getColumn(8).setPreferredWidth(120);
-        DefaultTableCellRenderer boKetXuatTong = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean dangChon,
-                                                           boolean hasTieuDiem, int hang, int chiSoCot) {
-                Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
-                setFont(new Font("Segoe UI", Font.BOLD, 13));
-                setHorizontalAlignment(RIGHT);
-                setForeground(dangChon ? bang.getSelectionForeground() : new Color(192, 57, 43));
-                return thanhPhan;
-            }
-        };
-        bang.getColumnModel().getColumn(8).setCellRenderer(boKetXuatTong);
-
-        // Cột 9: Phương thức TT
-        bang.getColumnModel().getColumn(9).setPreferredWidth(110);
-        bang.getColumnModel().getColumn(9).setCellRenderer(boKetXuatGiua);
-
-        // Cột 10: Trạng thái badge
-        bang.getColumnModel().getColumn(10).setPreferredWidth(140);
-        bang.getColumnModel().getColumn(10).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable bang, Object giaTri, boolean duocChon, boolean tieuDiem,
-                                                           int hang, int chiSoCot) {
-                super.getTableCellRendererComponent(bang, giaTri, duocChon, tieuDiem, hang, chiSoCot);
-                String trangThai = giaTri == null ? "" : giaTri.toString().trim();
-                setHorizontalAlignment(CENTER);
-                setFont(new Font("Segoe UI", Font.BOLD, 12));
-
-                if (trangThai.contains("PAID") || trangThai.contains("ĐÃ THANH TOÁN")) {
-                    setText("ĐÃ THANH TOÁN");
-                    setBackground(new Color(209, 231, 221));
-                    setForeground(new Color(15, 81, 50));
-                } else if (trangThai.contains("REFUNDED") || trangThai.contains("HOÀN TIỀN")) {
-                    setText("ĐÃ HOÀN TIỀN");
-                    setBackground(new Color(248, 215, 218));
-                    setForeground(new Color(132, 32, 41));
-                } else if (trangThai.contains("UNPAID") || trangThai.contains("CHƯA THANH TOÁN")) {
-                    setText("CHƯA THANH TOÁN");
-                    setBackground(new Color(255, 243, 205));
-                    setForeground(new Color(102, 77, 3));
-                } else {
-                    setText(trangThai);
-                    setBackground(bang.getBackground());
-                    setForeground(bang.getForeground());
-                }
-
-                if (duocChon) {
-                    setBackground(bang.getSelectionBackground());
-                    setForeground(bang.getSelectionForeground());
-                }
-                return this;
-            }
-        });
 
         // Click đúp vào dòng để xem chi tiết
         bang.addMouseListener(new MouseAdapter() {
@@ -288,33 +57,6 @@ public class ViewHoaDon extends JFrame {
                 }
             }
         });
-
-        JScrollPane cuonPane = new JScrollPane(bang);
-        cuonPane.setBorder(BorderFactory.createLineBorder(new Color(220, 226, 235), 1));
-        cuonPane.getViewport().setBackground(Color.WHITE);
-        khungChinh.add(cuonPane, BorderLayout.CENTER);
-
-        // ================= BOTTOM: CÁC NÚT THAO TÁC =================
-        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
-        khungDuoi.setOpaque(false);
-
-        btXemChiTiet = new JButton("Xem & In hóa đơn");
-        btXemChiTiet.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btXemChiTiet.setBackground(new Color(13, 110, 253));
-        btXemChiTiet.setForeground(Color.WHITE);
-        btXemChiTiet.setPreferredSize(new Dimension(160, 36));
-        btXemChiTiet.setFocusPainted(false);
-
-        btLamMoi = new JButton("Làm mới");
-        btLamMoi.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btLamMoi.setPreferredSize(new Dimension(120, 36));
-        btLamMoi.setFocusPainted(false);
-
-        khungDuoi.add(btXemChiTiet);
-        khungDuoi.add(btLamMoi);
-
-        khungChinh.add(khungDuoi, BorderLayout.SOUTH);
-        setContentPane(khungChinh);
     }
 
     public void lamMoi() {
@@ -323,4 +65,227 @@ public class ViewHoaDon extends JFrame {
         hopChonLocThoiGian.setSelectedIndex(0);
         bang.clearSelection();
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanThongKe = new javax.swing.JLabel();
+        nhanTim = new javax.swing.JLabel();
+        oNhapTimKiem = new javax.swing.JTextField();
+        btTimKiem = new javax.swing.JButton();
+        nhanLocTrangThai = new javax.swing.JLabel();
+        hopChonLocTrangThai = new javax.swing.JComboBox<>();
+        nhanLocTG = new javax.swing.JLabel();
+        hopChonLocThoiGian = new javax.swing.JComboBox<>();
+        cuonPane = new javax.swing.JScrollPane();
+        bang = new javax.swing.JTable();
+        btXemChiTiet = new javax.swing.JButton();
+        btLamMoi = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Quản lý khách sạn - Quản lý hóa đơn");
+
+        khungChinh.setBackground(new java.awt.Color(245, 247, 250));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(30, 41, 59));
+        nhanTieuDe.setText("QUẢN LÝ HÓA ĐƠN & DOANH THU");
+
+        nhanThongKe.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanThongKe.setForeground(new java.awt.Color(100, 116, 139));
+        nhanThongKe.setText("Tổng số: 0 hóa đơn | Đã thu: 0 đ | Chưa thu: 0 đ");
+
+        nhanTim.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTim.setForeground(new java.awt.Color(51, 65, 85));
+        nhanTim.setText("Tìm kiếm:");
+
+        oNhapTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        btTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btTimKiem.setText("Tìm kiếm");
+        btTimKiem.setFocusPainted(false);
+
+        nhanLocTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanLocTrangThai.setForeground(new java.awt.Color(51, 65, 85));
+        nhanLocTrangThai.setText("Trạng thái:");
+
+        hopChonLocTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonLocTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả trạng thái", "Đã thanh toán (PAID)", "Chưa thanh toán (UNPAID)", "Đã hoàn tiền (REFUNDED)" }));
+
+        nhanLocTG.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanLocTG.setForeground(new java.awt.Color(51, 65, 85));
+        nhanLocTG.setText("Thời gian:");
+
+        hopChonLocThoiGian.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonLocThoiGian.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả thời gian", "Hôm nay", "Tháng này", "Năm nay" }));
+
+        bang.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        bang.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Mã HĐ", "Phòng", "Khách hàng", "Số điện thoại", "Ngày lập", "Tiền phòng", "Phụ thu", "Giảm giá", "Tổng tiền", "Phương thức TT", "Trạng thái"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        cuonPane.setViewportView(bang);
+
+        btXemChiTiet.setBackground(new java.awt.Color(13, 110, 253));
+        btXemChiTiet.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btXemChiTiet.setForeground(new java.awt.Color(255, 255, 255));
+        btXemChiTiet.setText("Xem & In hóa đơn");
+        btXemChiTiet.setFocusPainted(false);
+
+        btLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btLamMoi.setText("Làm mới");
+        btLamMoi.setFocusPainted(false);
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cuonPane)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(nhanTieuDe)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nhanThongKe))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addComponent(nhanTim)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(oNhapTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(nhanLocTrangThai)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(hopChonLocTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(15, 15, 15)
+                                .addComponent(nhanLocTG)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(hopChonLocThoiGian, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addComponent(btXemChiTiet, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 100, Short.MAX_VALUE)))
+                .addGap(15, 15, 15))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanThongKe))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTim)
+                    .addComponent(oNhapTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nhanLocTrangThai)
+                    .addComponent(hopChonLocTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nhanLocTG)
+                    .addComponent(hopChonLocThoiGian, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(cuonPane, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btXemChiTiet, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ViewHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ViewHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ViewHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ViewHoaDon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ViewHoaDon().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JTable bang;
+    public javax.swing.JButton btLamMoi;
+    public javax.swing.JButton btTimKiem;
+    public javax.swing.JButton btXemChiTiet;
+    private javax.swing.JScrollPane cuonPane;
+    public javax.swing.JComboBox<String> hopChonLocThoiGian;
+    public javax.swing.JComboBox<String> hopChonLocTrangThai;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JLabel nhanLocTG;
+    private javax.swing.JLabel nhanLocTrangThai;
+    public javax.swing.JLabel nhanThongKe;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JLabel nhanTim;
+    public javax.swing.JTextField oNhapTimKiem;
+    // End of variables declaration//GEN-END:variables
 }

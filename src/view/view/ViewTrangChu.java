@@ -1,6 +1,6 @@
 package view.view;
 
-import view.ChonNgay;
+import java.time.format.DateTimeFormatter;
 import view.dialog.DialogThongTinTaiKhoan;
 import view.dialog.DialogTraPhongThanhToan;
 
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.*;
-import view.IConn;
 
 public class ViewTrangChu extends JFrame {
 
@@ -44,13 +43,11 @@ public class ViewTrangChu extends JFrame {
     private DecimalFormat dinhDangTienTe = new DecimalFormat("#,### đ");
 
     // UI components
-    private JTabbedPane khungTab;
     private JPanel khungLuoiPhong;
     private JComboBox<String> hopChonLocTrangThai;
     private JComboBox<String> hopChonLocTang;
     private JTextField oNhapTimPhong;
     private JLabel nhanStatsChung, nhanStatsTrong, nhanStatsCoKhach, nhanStatsDon, nhanStatsBaoTri;
-    private JButton btNguoiDungMenu;
     private NguoiDungController boDieuKhienNguoiDung;
     private DatPhongController boDieuKhienDatPhong;
     private StatisticController statisticBoDieuKhien;
@@ -62,17 +59,31 @@ public class ViewTrangChu extends JFrame {
     public ViewTrangChu(NguoiDung nguoiDung) {
         this.nguoiDungHienTai = (nguoiDung != null) ? nguoiDung : new NguoiDung(1, "admin", "123456", "Quản trị viên", "ADMIN", true);
 
-        setTitle("Hệ thống quản lý khách sạn");
-        IConn.apply(this);
+        initComponents();
+
+        khungDauTrang.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        btNguoiDungMenu.setIconTextGap(8);
+        btNguoiDungMenu.setForeground(Color.WHITE);
+        btNguoiDungMenu.setBackground(new Color(36, 64, 132));
+        btNguoiDungMenu.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btNguoiDungMenu.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(75, 110, 190), 1),
+                BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+        btNguoiDungMenu.addActionListener(ac -> hienThiUserDropdownMenu(btNguoiDungMenu));
+        capNhatNutUserMenu();
+
+        btDangXuat.setIconTextGap(8);
+        btDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btDangXuat.addActionListener(ac -> dangXuat());
+
         GraphicsEnvironment thamSoMoiTruong = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(thamSoMoiTruong.getMaximumWindowBounds());
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setSize(1200, 750);
         setMinimumSize(new Dimension(1000, 650));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        initUI();
+        initTabs();
         taiDuLieuSoDoPhong();
     }
 
@@ -91,62 +102,7 @@ public class ViewTrangChu extends JFrame {
         }
     }
 
-    private void initUI() {
-        setLayout(new BorderLayout());
-
-        // 1. Top Header
-        JPanel khungDauTrang = new JPanel(new BorderLayout());
-        khungDauTrang.setBackground(new Color(24, 44, 97));
-        khungDauTrang.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
-        // Header Left: Logo and title
-        JPanel khungTieuDe = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        khungTieuDe.setOpaque(false);
-        JLabel nhanBieuTuong = new JLabel("");
-        nhanBieuTuong.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 28));
-        JLabel nhanTieuDe = new JLabel("QUẢN LÝ KHÁCH SẠN");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        nhanTieuDe.setForeground(Color.WHITE);
-        khungTieuDe.add(nhanBieuTuong);
-        khungTieuDe.add(nhanTieuDe);
-
-        // Header Right: User info dropdown menu & logout
-        JPanel khungNguoiDung = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 0));
-        khungNguoiDung.setOpaque(false);
-
-        btNguoiDungMenu = new JButton();
-        capNhatNutUserMenu();
-        btNguoiDungMenu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btNguoiDungMenu.setIconTextGap(8);
-        btNguoiDungMenu.setForeground(Color.WHITE);
-        btNguoiDungMenu.setBackground(new Color(36, 64, 132));
-        btNguoiDungMenu.setFocusPainted(false);
-        btNguoiDungMenu.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btNguoiDungMenu.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(75, 110, 190), 1),
-                BorderFactory.createEmptyBorder(6, 14, 6, 14)));
-        btNguoiDungMenu.addActionListener(ac -> hienThiUserDropdownMenu(btNguoiDungMenu));
-
-        JButton btDangXuat = new JButton("Đăng xuất");
-        btDangXuat.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btDangXuat.setIconTextGap(8);
-        btDangXuat.setBackground(new Color(192, 57, 43));
-        btDangXuat.setForeground(Color.WHITE);
-        btDangXuat.setFocusPainted(false);
-        btDangXuat.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btDangXuat.setPreferredSize(btNguoiDungMenu.getPreferredSize());
-        btDangXuat.addActionListener(ac -> dangXuat());
-
-        khungNguoiDung.add(btNguoiDungMenu);
-        khungNguoiDung.add(btDangXuat);
-
-        khungDauTrang.add(khungTieuDe, BorderLayout.WEST);
-        khungDauTrang.add(khungNguoiDung, BorderLayout.EAST);
-        add(khungDauTrang, BorderLayout.NORTH);
-
-        // 2. Main Tabbed Pane
-        khungTab = new JTabbedPane();
-        khungTab.setFont(new Font("Segoe UI", Font.BOLD, 13));
+    private void initTabs() {
 
         // Tab 0: Sơ đồ phòng (Màn hình chính)
         JPanel theSoThucHien = taoPanelSoDoPhong();
@@ -225,8 +181,6 @@ public class ViewTrangChu extends JFrame {
                 }
             }
         });
-
-        add(khungTab, BorderLayout.CENTER);
     }
 
     private JPanel taoPanelSoDoPhong() {
@@ -687,8 +641,9 @@ public class ViewTrangChu extends JFrame {
 
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
-        ChonNgay oNhapNgayNhan = new ChonNgay(homNay, homNay);
-        ChonNgay oNhapNgayTra = new ChonNgay(ngayMai, ngayMai);
+        DateTimeFormatter dinhDangNgay = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        JTextField oNhapNgayNhan = new JTextField(homNay.format(dinhDangNgay));
+        JTextField oNhapNgayTra = new JTextField(ngayMai.format(dinhDangNgay));
         JTextField oNhapGhiChu = new JTextField("Khách đặt trực tiếp", 15);
         int sucChua = Math.max(1, hangHienTai.getSucChua());
         JSpinner vongQuaySoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChua, 1));
@@ -748,45 +703,17 @@ public class ViewTrangChu extends JFrame {
         gia.gridy = 5;
         khungBieuMau.add(oNhapNgayTra, gia);
 
-        oNhapNgayNhan.addDateChangeListener(ac -> {
-            LocalDate earliestTraPhong = oNhapNgayNhan.getDate().plusDays(1);
-            oNhapNgayTra.setMinimumDate(earliestTraPhong);
-            if (oNhapNgayTra.getDate().isBefore(earliestTraPhong)) {
-                oNhapNgayTra.setDate(earliestTraPhong);
-            }
-        });
-
-        // Hàng 6: Tạm tính
-        gia.gridx = 0;
-        gia.gridy = 6;
-        khungBieuMau.add(new JLabel("Tạm tính tiền phòng:"), gia);
-        gia.gridx = 1;
-        gia.gridy = 6;
-        khungBieuMau.add(nhanTamTinh, gia);
-
-        // Hàng 7: Số khách
-        gia.gridx = 0;
-        gia.gridy = 7;
-        khungBieuMau.add(new JLabel("Số khách (tối đa " + sucChua + "):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 7;
-        khungBieuMau.add(vongQuaySoNguoi, gia);
-
-        // Hàng 8: Ghi chú
-        gia.gridx = 0;
-        gia.gridy = 8;
-        khungBieuMau.add(new JLabel("Ghi chú:"), gia);
-        gia.gridx = 1;
-        gia.gridy = 8;
-        khungBieuMau.add(oNhapGhiChu, gia);
-
         // Tính lại số tiền khi đổi ngày
         Runnable tinhTien = () -> {
-            long dem = ChronoUnit.DAYS.between(oNhapNgayNhan.getDate(), oNhapNgayTra.getDate());
-            nhanTamTinh.setText(dinhDangTienTe.format(dem * hangHienTai.getGiaMoiDem()) + " (" + dem + " đêm)");
+            try {
+                LocalDate ngNhan = LocalDate.parse(oNhapNgayNhan.getText().trim(), dinhDangNgay);
+                LocalDate ngTra = LocalDate.parse(oNhapNgayTra.getText().trim(), dinhDangNgay);
+                long dem = ChronoUnit.DAYS.between(ngNhan, ngTra);
+                nhanTamTinh.setText(dinhDangTienTe.format(dem * hangHienTai.getGiaMoiDem()) + " (" + dem + " đêm)");
+            } catch (Exception ignored) {}
         };
-        oNhapNgayNhan.addDateChangeListener(ac -> tinhTien.run());
-        oNhapNgayTra.addDateChangeListener(ac -> tinhTien.run());
+        oNhapNgayNhan.addActionListener(ac -> tinhTien.run());
+        oNhapNgayTra.addActionListener(ac -> tinhTien.run());
 
         // Tìm khách theo CCCD
         btKiemTraCCCD.addActionListener(ac -> {
@@ -837,8 +764,8 @@ public class ViewTrangChu extends JFrame {
             Date ngayNhan;
             Date ngayTra;
             try {
-                ngayNhan = Date.valueOf(oNhapNgayNhan.getDate());
-                ngayTra = Date.valueOf(oNhapNgayTra.getDate());
+                ngayNhan = Date.valueOf(LocalDate.parse(oNhapNgayNhan.getText().trim(), dinhDangNgay));
+                ngayTra = Date.valueOf(LocalDate.parse(oNhapNgayTra.getText().trim(), dinhDangNgay));
                 if (ngayNhan.toLocalDate().isBefore(LocalDate.now())) {
                     JOptionPane.showMessageDialog(hopThoai, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ",
                             JOptionPane.WARNING_MESSAGE);
@@ -1089,4 +1016,75 @@ public class ViewTrangChu extends JFrame {
     public static void main(String[] thamSo) {
         SwingUtilities.invokeLater(() -> new ViewTrangChu().setVisible(true));
     }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungDauTrang = new javax.swing.JPanel();
+        nhanTieuDeUng = new javax.swing.JLabel();
+        khungNguoiDung = new javax.swing.JPanel();
+        btNguoiDungMenu = new javax.swing.JButton();
+        btDangXuat = new javax.swing.JButton();
+        khungTab = new javax.swing.JTabbedPane();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Hệ thống quản lý khách sạn");
+
+        khungChinh.setLayout(new java.awt.BorderLayout());
+
+        khungDauTrang.setBackground(new java.awt.Color(24, 44, 97));
+        khungDauTrang.setLayout(new java.awt.BorderLayout());
+
+        nhanTieuDeUng.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
+        nhanTieuDeUng.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDeUng.setText("QUẢN LÝ KHÁCH SẠN");
+        khungDauTrang.add(nhanTieuDeUng, java.awt.BorderLayout.WEST);
+
+        khungNguoiDung.setOpaque(false);
+        khungNguoiDung.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 12, 0));
+
+        btNguoiDungMenu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btNguoiDungMenu.setText("Người dùng");
+        btNguoiDungMenu.setFocusPainted(false);
+        khungNguoiDung.add(btNguoiDungMenu);
+
+        btDangXuat.setBackground(new java.awt.Color(192, 57, 43));
+        btDangXuat.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btDangXuat.setForeground(new java.awt.Color(255, 255, 255));
+        btDangXuat.setText("Đăng xuất");
+        btDangXuat.setFocusPainted(false);
+        khungNguoiDung.add(btDangXuat);
+
+        khungDauTrang.add(khungNguoiDung, java.awt.BorderLayout.EAST);
+
+        khungChinh.add(khungDauTrang, java.awt.BorderLayout.NORTH);
+
+        khungTab.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        khungChinh.add(khungTab, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btDangXuat;
+    private javax.swing.JButton btNguoiDungMenu;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungDauTrang;
+    private javax.swing.JPanel khungNguoiDung;
+    private javax.swing.JTabbedPane khungTab;
+    private javax.swing.JLabel nhanTieuDeUng;
+    // End of variables declaration//GEN-END:variables
 }

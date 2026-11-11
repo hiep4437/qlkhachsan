@@ -1,23 +1,16 @@
 package view.dialog;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Window;
 import java.text.DecimalFormat;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import model.Phong;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import model.LoaiPhong;
+import model.Phong;
 
-public class DialogThemSuaPhong extends JDialog {
-
-    private JTextField oNhapSoPhong;
-    private JSpinner vongQuayTang;
-    private JComboBox<LoaiPhong> hopChonLoaiPhong;
-    private JTextField oNhapGiaMoiDem;
-    private JComboBox<String> hopChonTrangThai;
-    private JTextArea oNhapMoTa;
-    private JButton btLuu;
-    private JButton btHuy;
+public class DialogThemSuaPhong extends javax.swing.JDialog {
 
     private boolean daLuu = false;
     private Phong phong;
@@ -25,83 +18,13 @@ public class DialogThemSuaPhong extends JDialog {
     public DialogThemSuaPhong(Window doiTuongCha, Phong phongCanSua, List<LoaiPhong> danhSachLoaiPhong) {
         super(doiTuongCha, phongCanSua == null ? "Thêm phòng mới" : "Chỉnh sửa phòng " + phongCanSua.getSoPhong(),
                 ModalityType.APPLICATION_MODAL);
-
+        initComponents();
         this.phong = phongCanSua != null ? phongCanSua : new Phong();
         boolean dangSua = (phongCanSua != null && phongCanSua.getMaPhong() > 0);
 
-        setSize(520, 560);
-        setLocationRelativeTo(doiTuongCha);
-        setResizable(false);
-        setLayout(new BorderLayout());
-
-        // Header Panel
-        JPanel khungTieuDe = new JPanel(new BorderLayout());
-        khungTieuDe.setBackground(new Color(30, 60, 114));
-        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
-
-        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA THÔNG TIN PHÒNG" : "THÊM PHÒNG MỚI VÀO HỆ THỐNG");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        nhanTieuDe.setForeground(Color.WHITE);
-
-        JLabel nhanPhu = new JLabel(dangSua ? "Cập nhật loại phòng, giá, trạng thái hoặc thông tin phòng"
-                : "Nhập thông tin chi tiết để thêm phòng mới");
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(new Color(220, 230, 242));
-
-        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
-        khungTieuDe.add(nhanPhu, BorderLayout.SOUTH);
-        add(khungTieuDe, BorderLayout.NORTH);
-
-        // Body Form Panel
-        JPanel khungNoiDung = new JPanel(new GridBagLayout());
-        khungNoiDung.setBorder(new EmptyBorder(20, 24, 15, 24));
-        khungNoiDung.setBackground(Color.WHITE);
-
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill = GridBagConstraints.HORIZONTAL;
-        gia.insets = new Insets(8, 8, 8, 8);
-
-        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
-        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
-
-        // 1. Số phòng
-        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
-        JLabel nhanSoPhong = new JLabel("Số phòng (*):");
-        nhanSoPhong.setFont(phongChuNhan);
-        khungNoiDung.add(nhanSoPhong, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapSoPhong = new JTextField(15);
-        oNhapSoPhong.setFont(phongChuNhap);
-        oNhapSoPhong.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapSoPhong, gia);
-
-        // 2. Tầng
-        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
-        JLabel nhanTang = new JLabel("Tầng:");
-        nhanTang.setFont(phongChuNhan);
-        khungNoiDung.add(nhanTang, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        vongQuayTang = new JSpinner(new SpinnerNumberModel(1, 1, 99, 1));
-        vongQuayTang.setFont(phongChuNhap);
-        vongQuayTang.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(vongQuayTang, gia);
-
-        // 3. Loại phòng (JComboBox load từ DB)
-        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
-        JLabel nhanLoaiPhong = new JLabel("Loại phòng (*):");
-        nhanLoaiPhong.setFont(phongChuNhan);
-        khungNoiDung.add(nhanLoaiPhong, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonLoaiPhong = new JComboBox<>();
-        hopChonLoaiPhong.setFont(phongChuNhap);
-        hopChonLoaiPhong.setPreferredSize(new Dimension(200, 32));
-
         if (danhSachLoaiPhong != null) {
-            for (LoaiPhong nhoHon : danhSachLoaiPhong) {
-                hopChonLoaiPhong.addItem(nhoHon);
+            for (LoaiPhong loai : danhSachLoaiPhong) {
+                hopChonLoaiPhong.addItem(loai);
             }
         }
         hopChonLoaiPhong.setRenderer(new DefaultListCellRenderer() {
@@ -116,50 +39,6 @@ public class DialogThemSuaPhong extends JDialog {
                 return this;
             }
         });
-        khungNoiDung.add(hopChonLoaiPhong, gia);
-
-        // 4. Giá mỗi đêm
-        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
-        JLabel nhanGia = new JLabel("Giá mỗi đêm (VNĐ) (*):");
-        nhanGia.setFont(phongChuNhan);
-        khungNoiDung.add(nhanGia, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapGiaMoiDem = new JTextField(15);
-        oNhapGiaMoiDem.setFont(phongChuNhap);
-        oNhapGiaMoiDem.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapGiaMoiDem, gia);
-
-        // 5. Trạng thái
-        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
-        JLabel nhanTrangThai = new JLabel("Trạng thái:");
-        nhanTrangThai.setFont(phongChuNhan);
-        khungNoiDung.add(nhanTrangThai, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonTrangThai = new JComboBox<>(new String[] { "TRỐNG", "CÓ KHÁCH", "ĐANG DỌN", "BẢO TRÌ" });
-        hopChonTrangThai.setFont(phongChuNhap);
-        hopChonTrangThai.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(hopChonTrangThai, gia);
-
-        // 6. Mô tả
-        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
-        gia.anchor = GridBagConstraints.NORTHWEST;
-        JLabel nhanMoTa = new JLabel("Mô tả / Ghi chú:");
-        nhanMoTa.setFont(phongChuNhan);
-        khungNoiDung.add(nhanMoTa, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        gia.anchor = GridBagConstraints.CENTER;
-        oNhapMoTa = new JTextArea(3, 15);
-        oNhapMoTa.setFont(phongChuNhap);
-        oNhapMoTa.setLineWrap(true);
-        oNhapMoTa.setWrapStyleWord(true);
-        JScrollPane thanhCuonMoTa = new JScrollPane(oNhapMoTa);
-        thanhCuonMoTa.setPreferredSize(new Dimension(200, 75));
-        khungNoiDung.add(thanhCuonMoTa, gia);
-
-        add(khungNoiDung, BorderLayout.CENTER);
 
         // Tự động tính tầng khi gõ số phòng (nếu thêm mới)
         oNhapSoPhong.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -177,13 +56,15 @@ public class DialogThemSuaPhong extends JDialog {
             }
         });
 
-        // Điền dữ liệu nếu là Edit
         if (dangSua) {
+            nhanTieuDe.setText("CHỈNH SỬA THÔNG TIN PHÒNG");
+            nhanPhu.setText("Cập nhật loại phòng, giá, trạng thái hoặc thông tin phòng");
+            btLuu.setText("Cập nhật");
+
             oNhapSoPhong.setText(this.phong.getSoPhong());
             int bangHienTai = this.phong.getTang() > 0 ? this.phong.getTang() : 1;
             vongQuayTang.setValue(bangHienTai);
 
-            // Chọn đúng loại phòng
             if (danhSachLoaiPhong != null) {
                 for (int chiSo = 0; chiSo < hopChonLoaiPhong.getItemCount(); chiSo++) {
                     LoaiPhong loai = hopChonLoaiPhong.getItemAt(chiSo);
@@ -213,29 +94,219 @@ public class DialogThemSuaPhong extends JDialog {
             oNhapGiaMoiDem.setText("300000");
         }
 
-        // Footer Buttons
-        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        khungChan.setBackground(new Color(245, 247, 250));
-        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
-
-        btHuy = new JButton("Hủy bỏ");
-        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btHuy.setPreferredSize(new Dimension(100, 34));
-        btHuy.setFocusPainted(false);
-        btHuy.addActionListener(ac -> dispose());
-
-        btLuu = new JButton(dangSua ? "Cập nhật" : "Thêm mới");
-        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btLuu.setBackground(new Color(13, 110, 253));
-        btLuu.setForeground(Color.WHITE);
-        btLuu.setPreferredSize(new Dimension(120, 34));
-        btLuu.setFocusPainted(false);
-        btLuu.addActionListener(ac -> xuLyLuu());
-
-        khungChan.add(btHuy);
-        khungChan.add(btLuu);
-        add(khungChan, BorderLayout.SOUTH);
+        setLocationRelativeTo(doiTuongCha);
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungTieuDe = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        nhanSoPhong = new javax.swing.JLabel();
+        oNhapSoPhong = new javax.swing.JTextField();
+        nhanTang = new javax.swing.JLabel();
+        vongQuayTang = new javax.swing.JSpinner();
+        nhanLoaiPhong = new javax.swing.JLabel();
+        hopChonLoaiPhong = new javax.swing.JComboBox<>();
+        nhanGia = new javax.swing.JLabel();
+        oNhapGiaMoiDem = new javax.swing.JTextField();
+        nhanTrangThai = new javax.swing.JLabel();
+        hopChonTrangThai = new javax.swing.JComboBox<>();
+        nhanMoTa = new javax.swing.JLabel();
+        cuonMoTa = new javax.swing.JScrollPane();
+        oNhapMoTa = new javax.swing.JTextArea();
+        btHuy = new javax.swing.JButton();
+        btLuu = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thông tin phòng");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(255, 255, 255));
+
+        khungTieuDe.setBackground(new java.awt.Color(30, 60, 114));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDe.setText("THÊM PHÒNG MỚI");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
+        nhanPhu.setText("Nhập thông tin chi tiết phòng mới");
+
+        javax.swing.GroupLayout khungTieuDeLayout = new javax.swing.GroupLayout(khungTieuDe);
+        khungTieuDe.setLayout(khungTieuDeLayout);
+        khungTieuDeLayout.setHorizontalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanPhu))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungTieuDeLayout.setVerticalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(nhanTieuDe)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        nhanSoPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanSoPhong.setText("Số phòng (*):");
+
+        oNhapSoPhong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanTang.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTang.setText("Tầng:");
+
+        vongQuayTang.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        vongQuayTang.setModel(new javax.swing.SpinnerNumberModel(1, 1, 99, 1));
+
+        nhanLoaiPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanLoaiPhong.setText("Loại phòng (*):");
+
+        hopChonLoaiPhong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanGia.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanGia.setText("Giá mỗi đêm (VNĐ) (*):");
+
+        oNhapGiaMoiDem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapGiaMoiDem.setText("300000");
+
+        nhanTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTrangThai.setText("Trạng thái:");
+
+        hopChonTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TRỐNG", "CÓ KHÁCH", "ĐANG DỌN", "BẢO TRÌ" }));
+
+        nhanMoTa.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanMoTa.setText("Mô tả / Ghi chú:");
+
+        oNhapMoTa.setColumns(15);
+        oNhapMoTa.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapMoTa.setLineWrap(true);
+        oNhapMoTa.setRows(3);
+        oNhapMoTa.setWrapStyleWord(true);
+        cuonMoTa.setViewportView(oNhapMoTa);
+
+        btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setText("Hủy bỏ");
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHuyActionPerformed(evt);
+            }
+        });
+
+        btLuu.setBackground(new java.awt.Color(13, 110, 253));
+        btLuu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btLuu.setForeground(new java.awt.Color(255, 255, 255));
+        btLuu.setText("Thêm mới");
+        btLuu.setFocusPainted(false);
+        btLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLuuActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nhanSoPhong)
+                            .addComponent(nhanTang)
+                            .addComponent(nhanLoaiPhong)
+                            .addComponent(nhanGia)
+                            .addComponent(nhanTrangThai)
+                            .addComponent(nhanMoTa))
+                        .addGap(20, 20, 20)
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(oNhapSoPhong, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(vongQuayTang)
+                            .addComponent(hopChonLoaiPhong, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapGiaMoiDem)
+                            .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cuonMoTa))))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addComponent(khungTieuDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanSoPhong)
+                    .addComponent(oNhapSoPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTang)
+                    .addComponent(vongQuayTang, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanLoaiPhong)
+                    .addComponent(hopChonLoaiPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanGia)
+                    .addComponent(oNhapGiaMoiDem, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTrangThai)
+                    .addComponent(hopChonTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanMoTa)
+                    .addComponent(cuonMoTa, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
+        dispose();
+    }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuActionPerformed
+        xuLyLuu();
+    }//GEN-LAST:event_btLuuActionPerformed
 
     private void xuLyLuu() {
         String soPhong = oNhapSoPhong.getText().trim();
@@ -270,7 +341,6 @@ public class DialogThemSuaPhong extends JDialog {
         String trangThaiChon = (String) hopChonTrangThai.getSelectedItem();
         String moTa = oNhapMoTa.getText().trim();
 
-        // Gán vào đối tượng room
         this.phong.setSoPhong(soPhong);
         this.phong.setTang(tang);
         this.phong.setMaLoaiPhong(loaiDaChon.getMaLoaiPhong());
@@ -290,4 +360,26 @@ public class DialogThemSuaPhong extends JDialog {
     public Phong getRoom() {
         return phong;
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHuy;
+    private javax.swing.JButton btLuu;
+    private javax.swing.JScrollPane cuonMoTa;
+    private javax.swing.JComboBox<LoaiPhong> hopChonLoaiPhong;
+    private javax.swing.JComboBox<String> hopChonTrangThai;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungTieuDe;
+    private javax.swing.JLabel nhanGia;
+    private javax.swing.JLabel nhanLoaiPhong;
+    private javax.swing.JLabel nhanMoTa;
+    private javax.swing.JLabel nhanPhu;
+    private javax.swing.JLabel nhanSoPhong;
+    private javax.swing.JLabel nhanTang;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JLabel nhanTrangThai;
+    private javax.swing.JTextField oNhapGiaMoiDem;
+    private javax.swing.JTextArea oNhapMoTa;
+    private javax.swing.JTextField oNhapSoPhong;
+    private javax.swing.JSpinner vongQuayTang;
+    // End of variables declaration//GEN-END:variables
 }

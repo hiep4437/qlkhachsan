@@ -1,37 +1,26 @@
 package view.dialog;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Window;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.SpinnerNumberModel;
 
+import java.time.format.DateTimeFormatter;
 import dao.KhachHangDAO;
 import dao.PhongDAO;
 import model.DatPhong;
 import model.KhachHang;
 import model.Phong;
 import service.DatPhongService;
-import view.ChonNgay;
 
-public class DialogThemSuaDatPhong extends JDialog {
+public class DialogThemSuaDatPhong extends javax.swing.JDialog {
 
-    private JTextField oNhapCCCD;
-    private JTextField oNhapHoTen;
-    private JTextField oNhapSDT;
-    private JButton btKiemTraCCCD;
-
-    private JComboBox<Phong> hopChonPhong;
-    private ChonNgay oNhapNgayNhan;
-    private ChonNgay oNhapNgayTra;
-    private JSpinner vongQuaySoNguoi;
-    private JComboBox<String> hopChonTrangThai;
-    private JTextField oNhapGhiChu;
-
-    private JButton btLuu;
-    private JButton btHuy;
+    private static final DateTimeFormatter DINH_DANG_NGAY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private boolean daLuu = false;
     private DatPhong datPhong;
@@ -42,101 +31,14 @@ public class DialogThemSuaDatPhong extends JDialog {
     private int maKhachHangDaChon = 0;
     private int maPhongDaChon = 0;
     private float giaPhongDaChon = 0;
+    private final boolean dangSua;
 
     public DialogThemSuaDatPhong(Window doiTuongCha, DatPhong datPhongCanSua) {
         super(doiTuongCha, datPhongCanSua == null ? "Đặt phòng mới" : "Chỉnh sửa đơn đặt phòng #" + datPhongCanSua.getIdDatPhong(),
                 ModalityType.APPLICATION_MODAL);
-
+        initComponents();
         this.datPhong = datPhongCanSua != null ? datPhongCanSua : new DatPhong();
-        boolean dangSua = (datPhongCanSua != null && datPhongCanSua.getIdDatPhong() > 0);
-
-        setSize(580, 640);
-        setLocationRelativeTo(doiTuongCha);
-        setResizable(false);
-        setLayout(new BorderLayout());
-
-        // Header Panel
-        JPanel khungTieuDe = new JPanel(new BorderLayout());
-        khungTieuDe.setBackground(new Color(30, 60, 114));
-        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
-
-        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA ĐƠN ĐẶT PHÒNG #" + this.datPhong.getIdDatPhong() : "TẠO ĐƠN ĐẶT PHÒNG MỚI");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        nhanTieuDe.setForeground(Color.WHITE);
-
-        JLabel nhanPhu = new JLabel(dangSua ? "Cập nhật ngày nhận/trả, số người, trạng thái hoặc phòng"
-                : "Nhập thông tin khách hàng, chọn phòng trống và ngày lưu trú");
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(new Color(220, 230, 242));
-
-        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
-        khungTieuDe.add(nhanPhu, BorderLayout.SOUTH);
-        add(khungTieuDe, BorderLayout.NORTH);
-
-        // Body Form
-        JPanel khungNoiDung = new JPanel(new GridBagLayout());
-        khungNoiDung.setBorder(new EmptyBorder(15, 20, 15, 20));
-        khungNoiDung.setBackground(Color.WHITE);
-
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill = GridBagConstraints.HORIZONTAL;
-        gia.insets = new Insets(6, 6, 6, 6);
-
-        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
-        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
-
-        // 1. CCCD Khách hàng
-        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
-        JLabel nhanCCCD = new JLabel("Số CCCD (*):");
-        nhanCCCD.setFont(phongChuNhan);
-        khungNoiDung.add(nhanCCCD, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        JPanel khungCCCD = new JPanel(new BorderLayout(5, 0));
-        khungCCCD.setOpaque(false);
-        oNhapCCCD = new JTextField();
-        oNhapCCCD.setFont(phongChuNhap);
-        oNhapCCCD.setPreferredSize(new Dimension(160, 32));
-        btKiemTraCCCD = new JButton("Tìm");
-        btKiemTraCCCD.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btKiemTraCCCD.setFocusPainted(false);
-        khungCCCD.add(oNhapCCCD, BorderLayout.CENTER);
-        khungCCCD.add(btKiemTraCCCD, BorderLayout.EAST);
-        khungNoiDung.add(khungCCCD, gia);
-
-        // 2. Tên khách hàng & SDT
-        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
-        JLabel nhanHoTen = new JLabel("Họ tên khách (*):");
-        nhanHoTen.setFont(phongChuNhan);
-        khungNoiDung.add(nhanHoTen, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapHoTen = new JTextField();
-        oNhapHoTen.setFont(phongChuNhap);
-        oNhapHoTen.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapHoTen, gia);
-
-        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
-        JLabel nhanSDT = new JLabel("Số điện thoại (*):");
-        nhanSDT.setFont(phongChuNhan);
-        khungNoiDung.add(nhanSDT, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapSDT = new JTextField();
-        oNhapSDT.setFont(phongChuNhap);
-        oNhapSDT.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapSDT, gia);
-
-        // 3. Chọn phòng
-        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
-        JLabel nhanPhong = new JLabel("Chọn phòng (*):");
-        nhanPhong.setFont(phongChuNhan);
-        khungNoiDung.add(nhanPhong, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonPhong = new JComboBox<>();
-        hopChonPhong.setFont(phongChuNhap);
-        hopChonPhong.setPreferredSize(new Dimension(200, 32));
+        this.dangSua = (datPhongCanSua != null && datPhongCanSua.getIdDatPhong() > 0);
 
         // Load danh sách phòng
         ArrayList<Phong> tatCaPhong = phongDAO.xuat();
@@ -159,59 +61,15 @@ public class DialogThemSuaDatPhong extends JDialog {
                 return this;
             }
         });
-        khungNoiDung.add(hopChonPhong, gia);
 
-        // 4. Ngày nhận & Ngày trả (yyyy-MM-dd)
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
+        oNhapNgayNhan.setText(homNay.format(DINH_DANG_NGAY));
+        oNhapNgayTra.setText(ngayMai.format(DINH_DANG_NGAY));
 
-        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
-        JLabel nhanNhan = new JLabel("Ngày nhận:");
-        nhanNhan.setFont(phongChuNhan);
-        khungNoiDung.add(nhanNhan, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapNgayNhan = new ChonNgay(homNay, homNay);
-        oNhapNgayNhan.setPreferredSize(new Dimension(324, 32));
-        khungNoiDung.add(oNhapNgayNhan, gia);
-
-        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
-        JLabel nhanTra = new JLabel("Ngày trả:");
-        nhanTra.setFont(phongChuNhan);
-        khungNoiDung.add(nhanTra, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapNgayTra = new ChonNgay(ngayMai, ngayMai);
-        oNhapNgayTra.setPreferredSize(new Dimension(324, 32));
-        khungNoiDung.add(oNhapNgayTra, gia);
-
-        // 5. Số lượng người
-        gia.gridx = 0; gia.gridy = 6; gia.weightx = 0;
-        JLabel nhanSoNguoi = new JLabel("Số người ở:");
-        nhanSoNguoi.setFont(phongChuNhan);
-        khungNoiDung.add(nhanSoNguoi, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        Phong phongBanDau = (Phong) hopChonPhong.getSelectedItem();
-        int sucChuaBanDau = phongBanDau != null ? Math.max(1, phongBanDau.getSucChua()) : 1;
-        vongQuaySoNguoi = new JSpinner(new SpinnerNumberModel(1, 1, sucChuaBanDau, 1));
-        vongQuaySoNguoi.setFont(phongChuNhap);
-        vongQuaySoNguoi.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(vongQuaySoNguoi, gia);
-        hopChonPhong.addActionListener(ac -> capNhatSucChuaPhong());
-
-        // 6. Trạng thái
-        gia.gridx = 0; gia.gridy = 7; gia.weightx = 0;
-        JLabel nhanTrangThai = new JLabel("Trạng thái:");
-        nhanTrangThai.setFont(phongChuNhan);
-        khungNoiDung.add(nhanTrangThai, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonTrangThai = new JComboBox<>(dangSua
+        hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(dangSua
                 ? new String[] { "BOOKED", "CHECKED_IN", "CHECKED_OUT", "CANCELLED" }
-                : new String[] { "BOOKED" });
-        hopChonTrangThai.setFont(phongChuNhap);
-        hopChonTrangThai.setPreferredSize(new Dimension(200, 32));
+                : new String[] { "BOOKED" }));
         hopChonTrangThai.setEnabled(dangSua);
         hopChonTrangThai.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -226,51 +84,18 @@ public class DialogThemSuaDatPhong extends JDialog {
                 return this;
             }
         });
-        khungNoiDung.add(hopChonTrangThai, gia);
 
-        // 7. Ghi chú
-        gia.gridx = 0; gia.gridy = 8; gia.weightx = 0;
-        JLabel nhanGhiChu = new JLabel("Ghi chú:");
-        nhanGhiChu.setFont(phongChuNhan);
-        khungNoiDung.add(nhanGhiChu, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapGhiChu = new JTextField();
-        oNhapGhiChu.setFont(phongChuNhap);
-        oNhapGhiChu.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapGhiChu, gia);
-
-        add(khungNoiDung, BorderLayout.CENTER);
-
-        // Xử lý tìm kiếm CCCD
-        btKiemTraCCCD.addActionListener(ac -> {
-            String cccd = oNhapCCCD.getText().trim();
-            if (cccd.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD để tìm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            KhachHang taiKhoan = new KhachHang();
-            taiKhoan.setSoCCCD(cccd);
-            KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
-            if (timThay != null) {
-                maKhachHangDaChon = timThay.getIdKhachHang();
-                oNhapHoTen.setText(timThay.getNameKhachHang());
-                oNhapSDT.setText(timThay.getSoDienThoai());
-                JOptionPane.showMessageDialog(this, "Tìm thấy khách hàng: " + timThay.getNameKhachHang(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Chưa có thông tin khách hàng này. Vui lòng nhập họ tên & SĐT để hệ thống tự động lưu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                oNhapHoTen.requestFocus();
-            }
-        });
-
-        // Điền dữ liệu nếu là sửa
         if (dangSua) {
+            nhanTieuDe.setText("CHỈNH SỬA ĐƠN ĐẶT PHÒNG #" + this.datPhong.getIdDatPhong());
+            nhanPhu.setText("Cập nhật ngày nhận/trả, số người, trạng thái hoặc phòng");
+            btLuu.setText("Cập nhật");
+
             oNhapCCCD.setText(this.datPhong.getCccd() != null ? this.datPhong.getCccd() : "");
             if (this.datPhong.getNgayNhanPhong() != null) {
-                oNhapNgayNhan.setDate(this.datPhong.getNgayNhanPhong().toLocalDate());
+                oNhapNgayNhan.setText(this.datPhong.getNgayNhanPhong().toLocalDate().format(DINH_DANG_NGAY));
             }
             if (this.datPhong.getNgayTraPhong() != null) {
-                oNhapNgayTra.setDate(this.datPhong.getNgayTraPhong().toLocalDate());
+                oNhapNgayTra.setText(this.datPhong.getNgayTraPhong().toLocalDate().format(DINH_DANG_NGAY));
             }
             oNhapGhiChu.setText(this.datPhong.getGhiChu() != null ? this.datPhong.getGhiChu() : "");
 
@@ -282,7 +107,6 @@ public class DialogThemSuaDatPhong extends JDialog {
                 else hopChonTrangThai.setSelectedItem("BOOKED");
             }
 
-            // Chọn phòng
             if (this.datPhong.getSoPhong() != null) {
                 for (int chiSo = 0; chiSo < hopChonPhong.getItemCount(); chiSo++) {
                     Phong hangHienTai = hopChonPhong.getItemAt(chiSo);
@@ -296,143 +120,390 @@ public class DialogThemSuaDatPhong extends JDialog {
             int sucChua = phongDangChon() != null ? Math.max(1, phongDangChon().getSucChua()) : 1;
             vongQuaySoNguoi.setValue(Math.min(Math.max(1, this.datPhong.getSoNguoi()), sucChua));
 
-            // Tìm thông tin khách hàng
             if (this.datPhong.getIdKhachHang() > 0) {
-                maKhachHangDaChon = this.datPhong.getIdKhachHang();
-                KhachHang taiKhoan = new KhachHang();
-                taiKhoan.setIdKhachHang(maKhachHangDaChon);
-                KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
+                KhachHang timThu = new KhachHang();
+                timThu.setIdKhachHang(this.datPhong.getIdKhachHang());
+                KhachHang timThay = khachHangDAO.timKiem(timThu);
                 if (timThay != null) {
+                    maKhachHangDaChon = timThay.getIdKhachHang();
                     oNhapHoTen.setText(timThay.getNameKhachHang());
                     oNhapSDT.setText(timThay.getSoDienThoai());
+                    if (oNhapCCCD.getText().isEmpty()) {
+                        oNhapCCCD.setText(timThay.getSoCCCD());
+                    }
                 }
             }
+        } else {
+            capNhatSucChuaPhong();
         }
 
-        oNhapNgayTra.setMinimumDate(oNhapNgayNhan.getDate().plusDays(1));
-        oNhapNgayNhan.addDateChangeListener(ac -> {
-            LocalDate earliestTraPhong = oNhapNgayNhan.getDate().plusDays(1);
-            oNhapNgayTra.setMinimumDate(earliestTraPhong);
-            if (oNhapNgayTra.getDate().isBefore(earliestTraPhong)) {
-                oNhapNgayTra.setDate(earliestTraPhong);
+        setLocationRelativeTo(doiTuongCha);
+    }
+
+    private Phong phongDangChon() {
+        return (Phong) hopChonPhong.getSelectedItem();
+    }
+
+    private void capNhatSucChuaPhong() {
+        Phong chon = phongDangChon();
+        if (chon != null) {
+            int sucChua = Math.max(1, chon.getSucChua());
+            vongQuaySoNguoi.setModel(new SpinnerNumberModel(1, 1, sucChua, 1));
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungTieuDe = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        nhanCCCD = new javax.swing.JLabel();
+        oNhapCCCD = new javax.swing.JTextField();
+        btKiemTraCCCD = new javax.swing.JButton();
+        nhanHoTen = new javax.swing.JLabel();
+        oNhapHoTen = new javax.swing.JTextField();
+        nhanSDT = new javax.swing.JLabel();
+        oNhapSDT = new javax.swing.JTextField();
+        nhanPhong = new javax.swing.JLabel();
+        hopChonPhong = new javax.swing.JComboBox<>();
+        nhanNgayNhan = new javax.swing.JLabel();
+        oNhapNgayNhan = new javax.swing.JTextField();
+        nhanNgayTra = new javax.swing.JLabel();
+        oNhapNgayTra = new javax.swing.JTextField();
+        nhanSoNguoi = new javax.swing.JLabel();
+        vongQuaySoNguoi = new javax.swing.JSpinner();
+        nhanTrangThai = new javax.swing.JLabel();
+        hopChonTrangThai = new javax.swing.JComboBox<>();
+        nhanGhiChu = new javax.swing.JLabel();
+        oNhapGhiChu = new javax.swing.JTextField();
+        btHuy = new javax.swing.JButton();
+        btLuu = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thông tin đặt phòng");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(255, 255, 255));
+
+        khungTieuDe.setBackground(new java.awt.Color(30, 60, 114));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDe.setText("TẠO ĐƠN ĐẶT PHÒNG MỚI");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
+        nhanPhu.setText("Nhập thông tin khách hàng và chọn phòng lưu trú");
+
+        javax.swing.GroupLayout khungTieuDeLayout = new javax.swing.GroupLayout(khungTieuDe);
+        khungTieuDe.setLayout(khungTieuDeLayout);
+        khungTieuDeLayout.setHorizontalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanPhu))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungTieuDeLayout.setVerticalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(nhanTieuDe)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        nhanCCCD.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanCCCD.setText("Số CCCD (*):");
+
+        oNhapCCCD.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        btKiemTraCCCD.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btKiemTraCCCD.setText("Tìm");
+        btKiemTraCCCD.setFocusPainted(false);
+        btKiemTraCCCD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btKiemTraCCCDActionPerformed(evt);
             }
         });
 
-        // Footer buttons
-        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        khungChan.setBackground(new Color(245, 247, 250));
-        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
+        nhanHoTen.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanHoTen.setText("Họ tên khách (*):");
 
-        btHuy = new JButton("Hủy bỏ");
-        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btHuy.setPreferredSize(new Dimension(100, 34));
+        oNhapHoTen.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanSDT.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanSDT.setText("Số điện thoại (*):");
+
+        oNhapSDT.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanPhong.setText("Chọn phòng (*):");
+
+        hopChonPhong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonPhong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hopChonPhongActionPerformed(evt);
+            }
+        });
+
+        nhanNgayNhan.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanNgayNhan.setText("Ngày nhận:");
+
+        nhanNgayTra.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanNgayTra.setText("Ngày trả:");
+
+        nhanSoNguoi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanSoNguoi.setText("Số người:");
+
+        vongQuaySoNguoi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        vongQuaySoNguoi.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
+
+        nhanTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTrangThai.setText("Trạng thái:");
+
+        hopChonTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanGhiChu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanGhiChu.setText("Ghi chú:");
+
+        oNhapGhiChu.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
-        btHuy.addActionListener(ac -> dispose());
+        btHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHuyActionPerformed(evt);
+            }
+        });
 
-        btLuu = new JButton(dangSua ? "Cập nhật" : "Đặt phòng");
-        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btLuu.setBackground(new Color(13, 110, 253));
-        btLuu.setForeground(Color.WHITE);
-        btLuu.setPreferredSize(new Dimension(130, 34));
+        btLuu.setBackground(new java.awt.Color(13, 110, 253));
+        btLuu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btLuu.setForeground(new java.awt.Color(255, 255, 255));
+        btLuu.setText("Lưu đặt phòng");
         btLuu.setFocusPainted(false);
-        btLuu.addActionListener(ac -> xuLyLuu());
+        btLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLuuActionPerformed(evt);
+            }
+        });
 
-        khungChan.add(btHuy);
-        khungChan.add(btLuu);
-        add(khungChan, BorderLayout.SOUTH);
-    }
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nhanCCCD)
+                            .addComponent(nhanHoTen)
+                            .addComponent(nhanSDT)
+                            .addComponent(nhanPhong)
+                            .addComponent(nhanNgayNhan)
+                            .addComponent(nhanNgayTra)
+                            .addComponent(nhanSoNguoi)
+                            .addComponent(nhanTrangThai)
+                            .addComponent(nhanGhiChu))
+                        .addGap(20, 20, 20)
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addComponent(oNhapCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btKiemTraCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(oNhapHoTen)
+                            .addComponent(oNhapSDT)
+                            .addComponent(hopChonPhong, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapNgayNhan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapNgayTra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(vongQuaySoNguoi)
+                            .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapGhiChu))))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addComponent(khungTieuDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanCCCD)
+                    .addComponent(oNhapCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btKiemTraCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanHoTen)
+                    .addComponent(oNhapHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanSDT)
+                    .addComponent(oNhapSDT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanPhong)
+                    .addComponent(hopChonPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanNgayNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(oNhapNgayNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanNgayTra, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(oNhapNgayTra, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanSoNguoi)
+                    .addComponent(vongQuaySoNguoi, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTrangThai)
+                    .addComponent(hopChonTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanGhiChu)
+                    .addComponent(oNhapGhiChu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btKiemTraCCCDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btKiemTraCCCDActionPerformed
+        String cccd = oNhapCCCD.getText().trim();
+        if (cccd.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD để tìm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        KhachHang taiKhoan = new KhachHang();
+        taiKhoan.setSoCCCD(cccd);
+        KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
+        if (timThay != null) {
+            maKhachHangDaChon = timThay.getIdKhachHang();
+            oNhapHoTen.setText(timThay.getNameKhachHang());
+            oNhapSDT.setText(timThay.getSoDienThoai());
+            JOptionPane.showMessageDialog(this, "Tìm thấy khách hàng: " + timThay.getNameKhachHang(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Chưa có thông tin khách hàng này. Vui lòng nhập họ tên & SĐT để hệ thống tự động lưu!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            oNhapHoTen.requestFocus();
+        }
+    }//GEN-LAST:event_btKiemTraCCCDActionPerformed
+
+    private void hopChonPhongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hopChonPhongActionPerformed
+        capNhatSucChuaPhong();
+    }//GEN-LAST:event_hopChonPhongActionPerformed
+
+    private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
+        dispose();
+    }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuActionPerformed
+        xuLyLuu();
+    }//GEN-LAST:event_btLuuActionPerformed
 
     private void xuLyLuu() {
         String cccd = oNhapCCCD.getText().trim();
         String hoTen = oNhapHoTen.getText().trim();
         String sdt = oNhapSDT.getText().trim();
 
-        if (cccd.isEmpty() || hoTen.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD và họ tên khách hàng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        if (cccd.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số CCCD!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            oNhapCCCD.requestFocus();
+            return;
+        }
+        if (hoTen.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập họ tên khách hàng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            oNhapHoTen.requestFocus();
+            return;
+        }
+        if (sdt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số điện thoại!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            oNhapSDT.requestFocus();
             return;
         }
 
-        Phong phongChon = (Phong) hopChonPhong.getSelectedItem();
+        Phong phongChon = phongDangChon();
         if (phongChon == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng lưu trú!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        maPhongDaChon = phongChon.getMaPhong();
-        giaPhongDaChon = phongChon.getGiaMoiDem();
 
-        Date ngayNhan;
-        Date ngayTra;
+        LocalDate ngayNhan;
+        LocalDate ngayTra;
         try {
-            ngayNhan = Date.valueOf(oNhapNgayNhan.getDate());
-            ngayTra = Date.valueOf(oNhapNgayTra.getDate());
-            if (ngayNhan.toLocalDate().isBefore(LocalDate.now())) {
-                JOptionPane.showMessageDialog(this, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            if (!ngayTra.after(ngayNhan)) {
-                JOptionPane.showMessageDialog(this, "Ngày trả phòng phải sau ngày nhận phòng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+            ngayNhan = LocalDate.parse(oNhapNgayNhan.getText().trim(), DINH_DANG_NGAY);
+            ngayTra = LocalDate.parse(oNhapNgayTra.getText().trim(), DINH_DANG_NGAY);
         } catch (Exception ngoaiLe) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận và ngày trả hợp lệ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ngày không hợp lệ. Định dạng: yyyy-MM-dd (VD: 2026-01-15)", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        try {
-            if (dichVuDatPhong.phongBiDatTrung(maPhongDaChon, ngayNhan, ngayTra, datPhong.getIdDatPhong())) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Phòng " + phongChon.getSoPhong() + " đã được đặt hoặc có khách trong khoảng thời gian này.\n"
-                                + "Vui lòng chọn phòng khác hoặc điều chỉnh ngày lưu trú.",
-                        "Phòng không khả dụng",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
+        if (ngayTra.isBefore(ngayNhan) || ngayTra.isEqual(ngayNhan)) {
+            JOptionPane.showMessageDialog(this, "Ngày trả phòng phải sau ngày nhận phòng ít nhất 1 ngày!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (maKhachHangDaChon <= 0) {
+            KhachHang timThu = new KhachHang();
+            timThu.setSoCCCD(cccd);
+            KhachHang khTonTai = khachHangDAO.timKiem(timThu);
+            if (khTonTai != null) {
+                maKhachHangDaChon = khTonTai.getIdKhachHang();
+            } else {
+                KhachHang khachMoi = new KhachHang(0, hoTen, cccd, sdt, "", "");
+                if (khachHangDAO.them(khachMoi) > 0) {
+                    KhachHang vuaThem = khachHangDAO.timKiem(khachMoi);
+                    if (vuaThem != null) {
+                        maKhachHangDaChon = vuaThem.getIdKhachHang();
+                    }
+                }
             }
-        } catch (Exception ngoaiLe) {
-            JOptionPane.showMessageDialog(this, "Không thể kiểm tra tình trạng phòng: " + ngoaiLe.getMessage(),
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
         }
 
-        int soNguoi = (int) vongQuaySoNguoi.getValue();
-        if (soNguoi > Math.max(1, phongChon.getSucChua())) {
-            JOptionPane.showMessageDialog(this,
-                    "Phòng " + phongChon.getSoPhong() + " chỉ nhận tối đa " + phongChon.getSucChua() + " khách!",
-                    "Vượt sức chứa", JOptionPane.WARNING_MESSAGE);
+        if (maKhachHangDaChon <= 0) {
+            JOptionPane.showMessageDialog(this, "Không thể lưu thông tin khách hàng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        // Kiểm tra hoặc tạo mới khách hàng sau khi xác thực phòng và ngày lưu trú.
-        KhachHang taiKhoan = new KhachHang();
-        taiKhoan.setSoCCCD(cccd);
-        KhachHang timThay = khachHangDAO.timKiem(taiKhoan);
-        if (timThay == null) {
-            KhachHang moi = new KhachHang(0, hoTen, cccd, sdt, "", "");
-            khachHangDAO.them(moi);
-            timThay = khachHangDAO.timKiem(taiKhoan);
-        }
-        if (timThay == null) {
-            JOptionPane.showMessageDialog(this, "Không thể lưu thông tin khách hàng. Vui lòng kiểm tra CCCD và thử lại.",
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        maKhachHangDaChon = timThay.getIdKhachHang();
-
-        String trangThai = (String) hopChonTrangThai.getSelectedItem();
-        String ghiChu = oNhapGhiChu.getText().trim();
 
         this.datPhong.setIdKhachHang(maKhachHangDaChon);
-        this.datPhong.setCccd(cccd);
-        this.datPhong.setNgayNhanPhong(ngayNhan);
-        this.datPhong.setNgayTraPhong(ngayTra);
-        this.datPhong.setSoNguoi(soNguoi);
-        this.datPhong.setTrangThai(trangThai);
-        this.datPhong.setGhiChu(ghiChu);
-        this.datPhong.setSoPhong(phongChon.getSoPhong());
         this.datPhong.setMaPhong(phongChon.getMaPhong());
-        this.datPhong.setGiaMoiDem(phongChon.getGiaMoiDem());
-        this.datPhong.setTang("Tầng " + phongChon.getTang());
+        this.datPhong.setNgayNhanPhong(Date.valueOf(ngayNhan));
+        this.datPhong.setNgayTraPhong(Date.valueOf(ngayTra));
+        this.datPhong.setSoNguoi((int) vongQuaySoNguoi.getValue());
+        this.datPhong.setGhiChu(oNhapGhiChu.getText().trim());
+        this.datPhong.setTrangThai((String) hopChonTrangThai.getSelectedItem());
 
         daLuu = true;
         dispose();
@@ -446,22 +517,31 @@ public class DialogThemSuaDatPhong extends JDialog {
         return datPhong;
     }
 
-    public int getSelectedRoomId() {
-        return maPhongDaChon;
-    }
-
-    public float getSelectedRoomPrice() {
-        return giaPhongDaChon;
-    }
-
-    private Phong phongDangChon() {
-        return (Phong) hopChonPhong.getSelectedItem();
-    }
-
-    private void capNhatSucChuaPhong() {
-        Phong phong = phongDangChon();
-        int sucChua = phong != null ? Math.max(1, phong.getSucChua()) : 1;
-        int soNguoi = (int) vongQuaySoNguoi.getValue();
-        vongQuaySoNguoi.setModel(new SpinnerNumberModel(Math.min(soNguoi, sucChua), 1, sucChua, 1));
-    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHuy;
+    private javax.swing.JButton btKiemTraCCCD;
+    private javax.swing.JButton btLuu;
+    private javax.swing.JComboBox<Phong> hopChonPhong;
+    private javax.swing.JComboBox<String> hopChonTrangThai;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungTieuDe;
+    private javax.swing.JLabel nhanCCCD;
+    private javax.swing.JLabel nhanGhiChu;
+    private javax.swing.JLabel nhanHoTen;
+    private javax.swing.JLabel nhanNgayNhan;
+    private javax.swing.JLabel nhanNgayTra;
+    private javax.swing.JLabel nhanPhong;
+    private javax.swing.JLabel nhanPhu;
+    private javax.swing.JLabel nhanSDT;
+    private javax.swing.JLabel nhanSoNguoi;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JLabel nhanTrangThai;
+    private javax.swing.JTextField oNhapCCCD;
+    private javax.swing.JTextField oNhapGhiChu;
+    private javax.swing.JTextField oNhapHoTen;
+    private javax.swing.JTextField oNhapNgayNhan;
+    private javax.swing.JTextField oNhapNgayTra;
+    private javax.swing.JTextField oNhapSDT;
+    private javax.swing.JSpinner vongQuaySoNguoi;
+    // End of variables declaration//GEN-END:variables
 }

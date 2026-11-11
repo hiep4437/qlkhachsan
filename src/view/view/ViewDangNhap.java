@@ -42,7 +42,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import view.IConn;
 
 /**
  *
@@ -55,7 +54,6 @@ public class ViewDangNhap extends javax.swing.JFrame {
      */
     public ViewDangNhap() {
         initComponents();
-        IConn.apply(this);
         setLocationRelativeTo(null);
         capNhatThongTinServer();
         getRootPane().setDefaultButton(btDangNhap);
@@ -112,11 +110,9 @@ public class ViewDangNhap extends javax.swing.JFrame {
         btDangNhap.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btDangNhap.setForeground(new java.awt.Color(255, 255, 255));
         btDangNhap.setText("Đăng nhập");
-        btDangNhap.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btThoat.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         btThoat.setText("Thoát");
-        btThoat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btThoat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btThoatActionPerformed(evt);
@@ -129,7 +125,6 @@ public class ViewDangNhap extends javax.swing.JFrame {
 
         btCauHinhServer.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         btCauHinhServer.setText(" Cấu hình máy chủ");
-        btCauHinhServer.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btCauHinhServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btCauHinhServerActionPerformed(evt);

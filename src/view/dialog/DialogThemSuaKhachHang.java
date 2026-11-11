@@ -1,19 +1,10 @@
 package view.dialog;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.awt.Window;
+import javax.swing.JOptionPane;
 import model.KhachHang;
 
-public class DialogThemSuaKhachHang extends JDialog {
-
-    private JTextField oNhapHoTen;
-    private JTextField oNhapCCCD;
-    private JTextField oNhapSDT;
-    private JTextField oNhapThuDienTu;
-    private JTextField oNhapDiaChi;
-    private JButton btLuu;
-    private JButton btHuy;
+public class DialogThemSuaKhachHang extends javax.swing.JDialog {
 
     private boolean daLuu = false;
     private KhachHang khachHang;
@@ -21,139 +12,210 @@ public class DialogThemSuaKhachHang extends JDialog {
     public DialogThemSuaKhachHang(Window doiTuongCha, KhachHang khachHangCanSua) {
         super(doiTuongCha, khachHangCanSua == null ? "Thêm khách hàng mới" : "Chỉnh sửa khách hàng: " + khachHangCanSua.getNameKhachHang(),
                 ModalityType.APPLICATION_MODAL);
-
+        initComponents();
         this.khachHang = khachHangCanSua != null ? khachHangCanSua : new KhachHang();
         boolean dangSua = (khachHangCanSua != null && khachHangCanSua.getIdKhachHang() > 0);
-
-        setSize(480, 480);
-        setLocationRelativeTo(doiTuongCha);
-        setResizable(false);
-        setLayout(new BorderLayout());
-
-        // Header Panel
-        JPanel khungTieuDe = new JPanel(new BorderLayout());
-        khungTieuDe.setBackground(new Color(30, 60, 114));
-        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
-
-        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA THÔNG TIN KHÁCH HÀNG" : "THÊM KHÁCH HÀNG MỚI");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        nhanTieuDe.setForeground(Color.WHITE);
-
-        JLabel nhanPhu = new JLabel(dangSua ? "Cập nhật họ tên, CCCD, số điện thoại hoặc địa chỉ"
-                : "Nhập thông tin chi tiết khách hàng để lưu vào hệ thống");
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(new Color(220, 230, 242));
-
-        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
-        khungTieuDe.add(nhanPhu, BorderLayout.SOUTH);
-        add(khungTieuDe, BorderLayout.NORTH);
-
-        // Form Body
-        JPanel khungNoiDung = new JPanel(new GridBagLayout());
-        khungNoiDung.setBorder(new EmptyBorder(20, 24, 15, 24));
-        khungNoiDung.setBackground(Color.WHITE);
-
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill = GridBagConstraints.HORIZONTAL;
-        gia.insets = new Insets(8, 8, 8, 8);
-
-        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
-        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
-
-        // 1. Họ và tên
-        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
-        JLabel nhanHoTen = new JLabel("Họ và tên (*):");
-        nhanHoTen.setFont(phongChuNhan);
-        khungNoiDung.add(nhanHoTen, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapHoTen = new JTextField(15);
-        oNhapHoTen.setFont(phongChuNhap);
-        oNhapHoTen.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapHoTen, gia);
-
-        // 2. Số CCCD
-        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
-        JLabel nhanCCCD = new JLabel("Số CCCD (*):");
-        nhanCCCD.setFont(phongChuNhan);
-        khungNoiDung.add(nhanCCCD, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapCCCD = new JTextField(15);
-        oNhapCCCD.setFont(phongChuNhap);
-        oNhapCCCD.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapCCCD, gia);
-
-        // 3. Số điện thoại
-        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
-        JLabel nhanSDT = new JLabel("Số điện thoại (*):");
-        nhanSDT.setFont(phongChuNhan);
-        khungNoiDung.add(nhanSDT, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapSDT = new JTextField(15);
-        oNhapSDT.setFont(phongChuNhap);
-        oNhapSDT.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapSDT, gia);
-
-        // 4. Email
-        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
-        JLabel nhanThuDienTu = new JLabel("Email:");
-        nhanThuDienTu.setFont(phongChuNhan);
-        khungNoiDung.add(nhanThuDienTu, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapThuDienTu = new JTextField(15);
-        oNhapThuDienTu.setFont(phongChuNhap);
-        oNhapThuDienTu.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapThuDienTu, gia);
-
-        // 5. Địa chỉ
-        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
-        JLabel nhanDiaChi = new JLabel("Địa chỉ:");
-        nhanDiaChi.setFont(phongChuNhan);
-        khungNoiDung.add(nhanDiaChi, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapDiaChi = new JTextField(15);
-        oNhapDiaChi.setFont(phongChuNhap);
-        oNhapDiaChi.setPreferredSize(new Dimension(200, 32));
-        khungNoiDung.add(oNhapDiaChi, gia);
-
-        add(khungNoiDung, BorderLayout.CENTER);
-
-        // Điền dữ liệu nếu là sửa
         if (dangSua) {
+            nhanTieuDe.setText("CHỈNH SỬA THÔNG TIN KHÁCH HÀNG");
+            nhanPhu.setText("Cập nhật họ tên, CCCD, số điện thoại hoặc địa chỉ");
+            btLuu.setText("Cập nhật");
             oNhapHoTen.setText(this.khachHang.getNameKhachHang() != null ? this.khachHang.getNameKhachHang() : "");
             oNhapCCCD.setText(this.khachHang.getSoCCCD() != null ? this.khachHang.getSoCCCD() : "");
             oNhapSDT.setText(this.khachHang.getSoDienThoai() != null ? this.khachHang.getSoDienThoai() : "");
             oNhapThuDienTu.setText(this.khachHang.getEmail() != null ? this.khachHang.getEmail() : "");
             oNhapDiaChi.setText(this.khachHang.getDiaChi() != null ? this.khachHang.getDiaChi() : "");
         }
-
-        // Footer buttons
-        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        khungChan.setBackground(new Color(245, 247, 250));
-        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
-
-        btHuy = new JButton("Hủy bỏ");
-        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btHuy.setPreferredSize(new Dimension(100, 34));
-        btHuy.setFocusPainted(false);
-        btHuy.addActionListener(ac -> dispose());
-
-        btLuu = new JButton(dangSua ? "Cập nhật" : "Thêm mới");
-        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btLuu.setBackground(new Color(13, 110, 253));
-        btLuu.setForeground(Color.WHITE);
-        btLuu.setPreferredSize(new Dimension(120, 34));
-        btLuu.setFocusPainted(false);
-        btLuu.addActionListener(ac -> xuLyLuu());
-
-        khungChan.add(btHuy);
-        khungChan.add(btLuu);
-        add(khungChan, BorderLayout.SOUTH);
+        setLocationRelativeTo(doiTuongCha);
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungTieuDe = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        nhanHoTen = new javax.swing.JLabel();
+        oNhapHoTen = new javax.swing.JTextField();
+        nhanCCCD = new javax.swing.JLabel();
+        oNhapCCCD = new javax.swing.JTextField();
+        nhanSDT = new javax.swing.JLabel();
+        oNhapSDT = new javax.swing.JTextField();
+        nhanThuDienTu = new javax.swing.JLabel();
+        oNhapThuDienTu = new javax.swing.JTextField();
+        nhanDiaChi = new javax.swing.JLabel();
+        oNhapDiaChi = new javax.swing.JTextField();
+        btHuy = new javax.swing.JButton();
+        btLuu = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thông tin khách hàng");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(255, 255, 255));
+
+        khungTieuDe.setBackground(new java.awt.Color(30, 60, 114));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDe.setText("THÊM KHÁCH HÀNG MỚI");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
+        nhanPhu.setText("Nhập thông tin chi tiết khách hàng");
+
+        javax.swing.GroupLayout khungTieuDeLayout = new javax.swing.GroupLayout(khungTieuDe);
+        khungTieuDe.setLayout(khungTieuDeLayout);
+        khungTieuDeLayout.setHorizontalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanPhu))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungTieuDeLayout.setVerticalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(nhanTieuDe)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        nhanHoTen.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanHoTen.setText("Họ và tên (*):");
+
+        oNhapHoTen.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanCCCD.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanCCCD.setText("Số CCCD (*):");
+
+        oNhapCCCD.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanSDT.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanSDT.setText("Số điện thoại (*):");
+
+        oNhapSDT.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanThuDienTu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanThuDienTu.setText("Email:");
+
+        oNhapThuDienTu.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanDiaChi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanDiaChi.setText("Địa chỉ:");
+
+        oNhapDiaChi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setText("Hủy bỏ");
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHuyActionPerformed(evt);
+            }
+        });
+
+        btLuu.setBackground(new java.awt.Color(13, 110, 253));
+        btLuu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btLuu.setForeground(new java.awt.Color(255, 255, 255));
+        btLuu.setText("Thêm mới");
+        btLuu.setFocusPainted(false);
+        btLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLuuActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nhanHoTen)
+                            .addComponent(nhanCCCD)
+                            .addComponent(nhanSDT)
+                            .addComponent(nhanThuDienTu)
+                            .addComponent(nhanDiaChi))
+                        .addGap(20, 20, 20)
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(oNhapHoTen, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(oNhapCCCD)
+                            .addComponent(oNhapSDT)
+                            .addComponent(oNhapThuDienTu)
+                            .addComponent(oNhapDiaChi))))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addComponent(khungTieuDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanHoTen)
+                    .addComponent(oNhapHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanCCCD)
+                    .addComponent(oNhapCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanSDT)
+                    .addComponent(oNhapSDT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanThuDienTu)
+                    .addComponent(oNhapThuDienTu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanDiaChi)
+                    .addComponent(oNhapDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
+        dispose();
+    }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuActionPerformed
+        xuLyLuu();
+    }//GEN-LAST:event_btLuuActionPerformed
 
     private void xuLyLuu() {
         String hoTen = oNhapHoTen.getText().trim();
@@ -197,4 +259,23 @@ public class DialogThemSuaKhachHang extends JDialog {
     public KhachHang getCustomer() {
         return khachHang;
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHuy;
+    private javax.swing.JButton btLuu;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungTieuDe;
+    private javax.swing.JLabel nhanCCCD;
+    private javax.swing.JLabel nhanDiaChi;
+    private javax.swing.JLabel nhanHoTen;
+    private javax.swing.JLabel nhanPhu;
+    private javax.swing.JLabel nhanSDT;
+    private javax.swing.JLabel nhanThuDienTu;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JTextField oNhapCCCD;
+    private javax.swing.JTextField oNhapDiaChi;
+    private javax.swing.JTextField oNhapHoTen;
+    private javax.swing.JTextField oNhapSDT;
+    private javax.swing.JTextField oNhapThuDienTu;
+    // End of variables declaration//GEN-END:variables
 }

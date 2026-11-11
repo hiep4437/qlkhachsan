@@ -6,11 +6,11 @@ import javax.swing.UIManager;
 
 public class Main {
     public static void main(String[] thamSo) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         ViewDangNhap viewDangNhap = new ViewDangNhap();
         new LoginController(viewDangNhap);

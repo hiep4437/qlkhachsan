@@ -2,6 +2,7 @@ module hotel {
     requires java.sql;
     requires java.desktop;
     requires mysql.connector.j;
+    requires java.logging;
 
     exports main;
     exports controller;

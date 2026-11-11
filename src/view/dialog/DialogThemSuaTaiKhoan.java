@@ -1,22 +1,13 @@
 package view.dialog;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import java.awt.Component;
+import java.awt.Window;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import model.NguoiDung;
 
-public class DialogThemSuaTaiKhoan extends JDialog {
-
-    private JTextField oNhapTenDangNhap;
-    private JPasswordField oNhapMatKhau;
-    private JPasswordField oNhapXacNhanMatKhau;
-    private JTextField oNhapHoTen;
-    private JComboBox<String> hopChonVaiTro;
-    private JComboBox<String> hopChonTrangThai;
-    private JLabel nhanGhiChuMatKhau;
-
-    private JButton btLuu;
-    private JButton btHuy;
+public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
 
     private boolean daLuu = false;
     private NguoiDung nguoiDung;
@@ -26,200 +17,284 @@ public class DialogThemSuaTaiKhoan extends JDialog {
         super(doiTuongCha,
               nguoiDungCanSua == null ? "Thêm tài khoản người dùng mới" : "Chỉnh sửa tài khoản: " + nguoiDungCanSua.getTenDangNhap(),
               ModalityType.APPLICATION_MODAL);
-
-        this.nguoiDung   = nguoiDungCanSua != null ? nguoiDungCanSua : new NguoiDung();
+        initComponents();
+        this.nguoiDung = nguoiDungCanSua != null ? nguoiDungCanSua : new NguoiDung();
         this.dangSua = (nguoiDungCanSua != null && nguoiDungCanSua.getIdNguoiDung() > 0);
 
-        setSize(500, 530);
-        setLocationRelativeTo(doiTuongCha);
-        setResizable(false);
-        setLayout(new BorderLayout());
-
-        // ── Header ────────────────────────────────────────────────────────────
-        JPanel khungTieuDe = new JPanel(new BorderLayout());
-        khungTieuDe.setBackground(new Color(30, 60, 114));
-        khungTieuDe.setBorder(new EmptyBorder(16, 20, 16, 20));
-
-        JLabel nhanTieuDe = new JLabel(dangSua ? "CHỈNH SỬA THÔNG TIN TÀI KHOẢN" : "TẠO TÀI KHOẢN NGƯỜI DÙNG MỚI");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        nhanTieuDe.setForeground(Color.WHITE);
-
-        JLabel nhanPhu = new JLabel(dangSua
-                ? "Cập nhật họ tên, mật khẩu, vai trò hoặc trạng thái tài khoản"
-                : "Nhập thông tin đăng nhập và vai trò cho người dùng mới");
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(new Color(220, 230, 242));
-
-        khungTieuDe.add(nhanTieuDe, BorderLayout.NORTH);
-        khungTieuDe.add(nhanPhu,   BorderLayout.SOUTH);
-        add(khungTieuDe, BorderLayout.NORTH);
-
-        // ── Form Body ─────────────────────────────────────────────────────────
-        JPanel khungNoiDung = new JPanel(new GridBagLayout());
-        khungNoiDung.setBorder(new EmptyBorder(20, 24, 15, 24));
-        khungNoiDung.setBackground(Color.WHITE);
-
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill    = GridBagConstraints.HORIZONTAL;
-        gia.insets  = new Insets(8, 8, 8, 8);
-
-        Font phongChuNhan = new Font("Segoe UI", Font.BOLD, 13);
-        Font phongChuNhap = new Font("Segoe UI", Font.PLAIN, 13);
-
-        // 1. Họ và tên
-        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0;
-        JLabel nhan1 = new JLabel("Họ và tên (*):");
-        nhan1.setFont(phongChuNhan);
-        khungNoiDung.add(nhan1, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapHoTen = new JTextField(18);
-        oNhapHoTen.setFont(phongChuNhap);
-        oNhapHoTen.setPreferredSize(new Dimension(220, 32));
-        khungNoiDung.add(oNhapHoTen, gia);
-
-        // 2. Tên đăng nhập
-        gia.gridx = 0; gia.gridy = 1; gia.weightx = 0;
-        JLabel nhan2 = new JLabel("Tên đăng nhập (*):");
-        nhan2.setFont(phongChuNhan);
-        khungNoiDung.add(nhan2, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapTenDangNhap = new JTextField(18);
-        oNhapTenDangNhap.setFont(phongChuNhap);
-        oNhapTenDangNhap.setPreferredSize(new Dimension(220, 32));
-        khungNoiDung.add(oNhapTenDangNhap, gia);
-
-        // 3. Mật khẩu
-        gia.gridx = 0; gia.gridy = 2; gia.weightx = 0;
-        JLabel nhan3 = new JLabel(dangSua ? "Mật khẩu mới:" : "Mật khẩu (*):");
-        nhan3.setFont(phongChuNhan);
-        khungNoiDung.add(nhan3, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        oNhapMatKhau = new JPasswordField(18);
-        oNhapMatKhau.setFont(phongChuNhap);
-        oNhapMatKhau.setPreferredSize(new Dimension(220, 32));
-        khungNoiDung.add(oNhapMatKhau, gia);
-
-        // 4. Xác nhận mật khẩu
-        gia.gridx = 0; gia.gridy = 3; gia.weightx = 0;
-        JLabel nhan4 = new JLabel("Xác nhận mật khẩu:");
-        nhan4.setFont(phongChuNhan);
-        khungNoiDung.add(nhan4, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        JPanel khungMatKhau2 = new JPanel(new BorderLayout(0, 2));
-        khungMatKhau2.setOpaque(false);
-        oNhapXacNhanMatKhau = new JPasswordField(18);
-        oNhapXacNhanMatKhau.setFont(phongChuNhap);
-        oNhapXacNhanMatKhau.setPreferredSize(new Dimension(220, 32));
-        nhanGhiChuMatKhau = new JLabel(dangSua ? " (Để trống nếu không đổi mật khẩu)" : "");
-        nhanGhiChuMatKhau.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        nhanGhiChuMatKhau.setForeground(Color.GRAY);
-        khungMatKhau2.add(oNhapXacNhanMatKhau, BorderLayout.CENTER);
-        khungMatKhau2.add(nhanGhiChuMatKhau, BorderLayout.SOUTH);
-        khungNoiDung.add(khungMatKhau2, gia);
-
-        // 5. Vai trò
-        gia.gridx = 0; gia.gridy = 4; gia.weightx = 0;
-        JLabel nhan5 = new JLabel("Vai trò:");
-        nhan5.setFont(phongChuNhan);
-        khungNoiDung.add(nhan5, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonVaiTro = new JComboBox<>(new String[]{"STAFF", "ADMIN"});
-        hopChonVaiTro.setFont(phongChuNhap);
-        hopChonVaiTro.setPreferredSize(new Dimension(220, 32));
         hopChonVaiTro.setRenderer(new DefaultListCellRenderer() {
-            @Override public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
-                                                                    boolean dangChon, boolean oDangChon) {
+            @Override
+            public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
+                                                          boolean dangChon, boolean oDangChon) {
                 super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
                 if ("ADMIN".equals(giaTri)) setText("Quản trị viên (ADMIN)");
                 else setText("Nhân viên (STAFF)");
                 return this;
             }
         });
-        khungNoiDung.add(hopChonVaiTro, gia);
 
-        // 6. Trạng thái
-        gia.gridx = 0; gia.gridy = 5; gia.weightx = 0;
-        JLabel nhan6 = new JLabel("Trạng thái:");
-        nhan6.setFont(phongChuNhan);
-        khungNoiDung.add(nhan6, gia);
-
-        gia.gridx = 1; gia.weightx = 1;
-        hopChonTrangThai = new JComboBox<>(new String[]{"Hoạt động", "Đã khóa"});
-        hopChonTrangThai.setFont(phongChuNhap);
-        hopChonTrangThai.setPreferredSize(new Dimension(220, 32));
-        khungNoiDung.add(hopChonTrangThai, gia);
-
-        add(khungNoiDung, BorderLayout.CENTER);
-
-        // Điền dữ liệu khi là Edit
         if (dangSua) {
+            nhanTieuDe.setText("CHỈNH SỬA THÔNG TIN TÀI KHOẢN");
+            nhanPhu.setText("Cập nhật họ tên, mật khẩu, vai trò hoặc trạng thái tài khoản");
+            nhanMatKhau.setText("Mật khẩu mới:");
+            nhanGhiChuMatKhau.setText("(Để trống nếu không đổi mật khẩu)");
+            btLuu.setText("Cập nhật");
+
             oNhapHoTen.setText(this.nguoiDung.getHoTen() != null ? this.nguoiDung.getHoTen() : "");
             oNhapTenDangNhap.setText(this.nguoiDung.getTenDangNhap() != null ? this.nguoiDung.getTenDangNhap() : "");
             hopChonVaiTro.setSelectedItem("ADMIN".equalsIgnoreCase(this.nguoiDung.getVaiTro()) ? "ADMIN" : "STAFF");
             hopChonTrangThai.setSelectedIndex(this.nguoiDung.isTrangThai() ? 0 : 1);
         }
 
-        // ── Footer Buttons ────────────────────────────────────────────────────
-        JPanel khungChan = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        khungChan.setBackground(new Color(245, 247, 250));
-        khungChan.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(220, 224, 230)));
-
-        btHuy = new JButton("Hủy bỏ");
-        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btHuy.setPreferredSize(new Dimension(100, 34));
-        btHuy.setFocusPainted(false);
-        btHuy.addActionListener(ac -> dispose());
-
-        btLuu = new JButton(dangSua ? "Cập nhật" : "Tạo tài khoản");
-        btLuu.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btLuu.setBackground(new Color(13, 110, 253));
-        btLuu.setForeground(Color.WHITE);
-        btLuu.setPreferredSize(new Dimension(145, 34));
-        btLuu.setFocusPainted(false);
-        btLuu.addActionListener(ac -> xuLyLuu());
-
-        khungChan.add(btHuy);
-        khungChan.add(btLuu);
-        add(khungChan, BorderLayout.SOUTH);
+        setLocationRelativeTo(doiTuongCha);
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungTieuDe = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        nhanHoTen = new javax.swing.JLabel();
+        oNhapHoTen = new javax.swing.JTextField();
+        nhanTenDangNhap = new javax.swing.JLabel();
+        oNhapTenDangNhap = new javax.swing.JTextField();
+        nhanMatKhau = new javax.swing.JLabel();
+        oNhapMatKhau = new javax.swing.JPasswordField();
+        nhanXacNhanMatKhau = new javax.swing.JLabel();
+        oNhapXacNhanMatKhau = new javax.swing.JPasswordField();
+        nhanGhiChuMatKhau = new javax.swing.JLabel();
+        nhanVaiTro = new javax.swing.JLabel();
+        hopChonVaiTro = new javax.swing.JComboBox<>();
+        nhanTrangThai = new javax.swing.JLabel();
+        hopChonTrangThai = new javax.swing.JComboBox<>();
+        btHuy = new javax.swing.JButton();
+        btLuu = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Thông tin tài khoản");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(255, 255, 255));
+
+        khungTieuDe.setBackground(new java.awt.Color(30, 60, 114));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDe.setText("TẠO TÀI KHOẢN MỚI");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
+        nhanPhu.setText("Nhập thông tin đăng nhập và vai trò cho người dùng");
+
+        javax.swing.GroupLayout khungTieuDeLayout = new javax.swing.GroupLayout(khungTieuDe);
+        khungTieuDe.setLayout(khungTieuDeLayout);
+        khungTieuDeLayout.setHorizontalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanPhu))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungTieuDeLayout.setVerticalGroup(
+            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungTieuDeLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(nhanTieuDe)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        nhanHoTen.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanHoTen.setText("Họ và tên (*):");
+
+        oNhapHoTen.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanTenDangNhap.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTenDangNhap.setText("Tên đăng nhập (*):");
+
+        oNhapTenDangNhap.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanMatKhau.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanMatKhau.setText("Mật khẩu (*):");
+
+        oNhapMatKhau.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanXacNhanMatKhau.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanXacNhanMatKhau.setText("Xác nhận mật khẩu:");
+
+        oNhapXacNhanMatKhau.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+
+        nhanGhiChuMatKhau.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
+        nhanGhiChuMatKhau.setForeground(new java.awt.Color(128, 128, 128));
+        nhanGhiChuMatKhau.setText(" ");
+
+        nhanVaiTro.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanVaiTro.setText("Vai trò:");
+
+        hopChonVaiTro.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonVaiTro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "STAFF", "ADMIN" }));
+
+        nhanTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTrangThai.setText("Trạng thái:");
+
+        hopChonTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hoạt động", "Đã khóa" }));
+
+        btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setText("Hủy bỏ");
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHuyActionPerformed(evt);
+            }
+        });
+
+        btLuu.setBackground(new java.awt.Color(13, 110, 253));
+        btLuu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btLuu.setForeground(new java.awt.Color(255, 255, 255));
+        btLuu.setText("Tạo tài khoản");
+        btLuu.setFocusPainted(false);
+        btLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLuuActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nhanHoTen)
+                            .addComponent(nhanTenDangNhap)
+                            .addComponent(nhanMatKhau)
+                            .addComponent(nhanXacNhanMatKhau)
+                            .addComponent(nhanVaiTro)
+                            .addComponent(nhanTrangThai))
+                        .addGap(20, 20, 20)
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(nhanGhiChuMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapHoTen, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .addComponent(oNhapTenDangNhap)
+                            .addComponent(oNhapMatKhau)
+                            .addComponent(oNhapXacNhanMatKhau)
+                            .addComponent(hopChonVaiTro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addComponent(khungTieuDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanHoTen)
+                    .addComponent(oNhapHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTenDangNhap)
+                    .addComponent(oNhapTenDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanMatKhau)
+                    .addComponent(oNhapMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanXacNhanMatKhau)
+                    .addComponent(oNhapXacNhanMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(2, 2, 2)
+                .addComponent(nhanGhiChuMatKhau)
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanVaiTro)
+                    .addComponent(hopChonVaiTro, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nhanTrangThai)
+                    .addComponent(hopChonTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
+        dispose();
+    }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuActionPerformed
+        xuLyLuu();
+    }//GEN-LAST:event_btLuuActionPerformed
+
     private void xuLyLuu() {
-        String hoTen      = oNhapHoTen.getText().trim();
+        String hoTen = oNhapHoTen.getText().trim();
         String tenDangNhap = oNhapTenDangNhap.getText().trim();
-        String matKhau    = new String(oNhapMatKhau.getPassword()).trim();
-        String xacNhan    = new String(oNhapXacNhanMatKhau.getPassword()).trim();
-        boolean hoatHang  = hopChonTrangThai.getSelectedIndex() == 0;
-        String vaiTro     = (String) hopChonVaiTro.getSelectedItem();
+        String matKhau = new String(oNhapMatKhau.getPassword()).trim();
+        String xacNhan = new String(oNhapXacNhanMatKhau.getPassword()).trim();
+        boolean hoatHang = hopChonTrangThai.getSelectedIndex() == 0;
+        String vaiTro = (String) hopChonVaiTro.getSelectedItem();
 
         if (hoTen.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập họ và tên!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            oNhapHoTen.requestFocus(); return;
+            oNhapHoTen.requestFocus();
+            return;
         }
         if (tenDangNhap.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập tên đăng nhập!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            oNhapTenDangNhap.requestFocus(); return;
+            oNhapTenDangNhap.requestFocus();
+            return;
         }
 
-        // Khi thêm mới, bắt buộc có mật khẩu
         if (!dangSua && matKhau.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            oNhapMatKhau.requestFocus(); return;
+            oNhapMatKhau.requestFocus();
+            return;
         }
 
-        // Nếu có nhập mật khẩu thì phải khớp xác nhận
         if (!matKhau.isEmpty()) {
             if (matKhau.length() < 4) {
                 JOptionPane.showMessageDialog(this, "Mật khẩu phải có ít nhất 4 ký tự!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                oNhapMatKhau.requestFocus(); return;
+                oNhapMatKhau.requestFocus();
+                return;
             }
             if (!matKhau.equals(xacNhan)) {
                 JOptionPane.showMessageDialog(this, "Mật khẩu xác nhận không khớp!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                oNhapXacNhanMatKhau.requestFocus(); return;
+                oNhapXacNhanMatKhau.requestFocus();
+                return;
             }
         }
 
@@ -227,7 +302,6 @@ public class DialogThemSuaTaiKhoan extends JDialog {
         this.nguoiDung.setTenDangNhap(tenDangNhap);
         this.nguoiDung.setVaiTro(vaiTro);
         this.nguoiDung.setTrangThai(hoatHang);
-        // Chỉ set mật khẩu nếu user có nhập (khi sửa, trống = giữ nguyên)
         if (!matKhau.isEmpty()) {
             this.nguoiDung.setMatKhau(matKhau);
         }
@@ -236,6 +310,33 @@ public class DialogThemSuaTaiKhoan extends JDialog {
         dispose();
     }
 
-    public boolean isSaved()   { return daLuu; }
-    public NguoiDung   getUser()   { return nguoiDung;  }
+    public boolean isSaved() {
+        return daLuu;
+    }
+
+    public NguoiDung getUser() {
+        return nguoiDung;
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHuy;
+    private javax.swing.JButton btLuu;
+    private javax.swing.JComboBox<String> hopChonTrangThai;
+    private javax.swing.JComboBox<String> hopChonVaiTro;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungTieuDe;
+    private javax.swing.JLabel nhanGhiChuMatKhau;
+    private javax.swing.JLabel nhanHoTen;
+    private javax.swing.JLabel nhanMatKhau;
+    private javax.swing.JLabel nhanPhu;
+    private javax.swing.JLabel nhanTenDangNhap;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JLabel nhanTrangThai;
+    private javax.swing.JLabel nhanVaiTro;
+    private javax.swing.JLabel nhanXacNhanMatKhau;
+    private javax.swing.JTextField oNhapHoTen;
+    private javax.swing.JPasswordField oNhapMatKhau;
+    private javax.swing.JTextField oNhapTenDangNhap;
+    private javax.swing.JPasswordField oNhapXacNhanMatKhau;
+    // End of variables declaration//GEN-END:variables
 }

@@ -1,20 +1,18 @@
 package view.dialog;
 
-import view.dialog.DialogChiTietHoaDon;
-
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Window;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JOptionPane;
 import model.DatPhong;
 import model.HoaDon;
 import service.DatPhongService;
 import service.HoaDonService;
 
-public class DialogTraPhongThanhToan extends JDialog {
+public class DialogTraPhongThanhToan extends javax.swing.JDialog {
 
     private boolean hoanTat = false;
     private DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,### đ");
@@ -22,152 +20,43 @@ public class DialogTraPhongThanhToan extends JDialog {
     private DatPhong datPhong;
     private DatPhongService dichVuDatPhong = new DatPhongService();
 
-    // Các thành phần form
-    private JTextField oNhapPhuThu;
-    private JTextField oNhapGiamGia;
-    private JComboBox<String> hopChonPhuongThuc;
-    private JLabel nhanChungTien;
     private double tienPhong = 0;
     private double chungThanhToan = 0;
 
     public DialogTraPhongThanhToan(Window doiTuongCha, DatPhong nut) {
         super(doiTuongCha, "Trả phòng & Xuất hóa đơn thanh toán", ModalityType.APPLICATION_MODAL);
+        initComponents();
         this.datPhong = nut;
 
-        setSize(580, 640);
-        setResizable(false);
-        setLocationRelativeTo(doiTuongCha);
-        setLayout(new BorderLayout());
+        if (datPhong != null) {
+            String chuoiPhong = (!datPhong.getSoPhong().isEmpty()) ? "Phòng " + datPhong.getSoPhong() : "";
+            nhanPhu.setText("Xác nhận tính tiền và kết thúc lượt lưu trú " + chuoiPhong);
 
-        initUI();
-    }
+            String tenKhach = (!datPhong.getTenKhachHang().isEmpty()) ? datPhong.getTenKhachHang() : "Khách lưu trú";
+            String sdt = (!datPhong.getSoDienThoai().isEmpty()) ? datPhong.getSoDienThoai() : "---";
+            String cccd = (!datPhong.getCccd().isEmpty()) ? datPhong.getCccd() : "---";
+            String soPhong = (!datPhong.getSoPhong().isEmpty()) ? datPhong.getSoPhong() : "---";
+            String loaiPhong = (!datPhong.getTenLoaiPhong().isEmpty()) ? datPhong.getTenLoaiPhong() : "Tiêu chuẩn";
 
-    private void initUI() {
-        // 1. Header Panel
-        JPanel khungDau = new JPanel(new BorderLayout());
-        khungDau.setBackground(new Color(192, 57, 43));
-        khungDau.setBorder(new EmptyBorder(15, 20, 15, 20));
+            Date ngayNhan = datPhong.getNgayNhanPhong() != null ? datPhong.getNgayNhanPhong() : Date.valueOf(LocalDate.now());
+            Date ngayTraHienTai = Date.valueOf(LocalDate.now());
 
-        JLabel nhanTieuDe = new JLabel("HÓA ĐƠN THANH TOÁN & TRẢ PHÒNG");
-        nhanTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        nhanTieuDe.setForeground(Color.WHITE);
+            long soDem = 1;
+            try {
+                soDem = Math.max(1, ChronoUnit.DAYS.between(ngayNhan.toLocalDate(), ngayTraHienTai.toLocalDate()));
+            } catch (Exception biBoQua) {}
 
-        String chuoiPhong = (datPhong != null && !datPhong.getSoPhong().isEmpty()) ? "Phòng " + datPhong.getSoPhong() : "";
-        JLabel nhanPhu = new JLabel("Xác nhận tính tiền và kết thúc lượt lưu trú " + chuoiPhong);
-        nhanPhu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        nhanPhu.setForeground(new Color(250, 219, 216));
+            double donGia = datPhong.getGiaMoiDem() > 0 ? datPhong.getGiaMoiDem() : 300000;
+            tienPhong = soDem * donGia;
 
-        khungDau.add(nhanTieuDe, BorderLayout.NORTH);
-        khungDau.add(nhanPhu, BorderLayout.SOUTH);
-        add(khungDau, BorderLayout.NORTH);
-
-        // 2. Body Panel
-        JPanel khungNoiDung = new JPanel();
-        khungNoiDung.setLayout(new BoxLayout(khungNoiDung, BoxLayout.Y_AXIS));
-        khungNoiDung.setBackground(Color.WHITE);
-        khungNoiDung.setBorder(new EmptyBorder(20, 25, 15, 25));
-
-        // Khối 1: Thông tin khách & phòng
-        JPanel khungThongTin = new JPanel(new GridLayout(4, 2, 8, 8));
-        khungThongTin.setBackground(new Color(248, 249, 250));
-        khungThongTin.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(222, 226, 230)),
-                new EmptyBorder(12, 14, 12, 14)));
-
-        String tenKhach = (datPhong != null && !datPhong.getTenKhachHang().isEmpty()) ? datPhong.getTenKhachHang() : "Khách lưu trú";
-        String sdt = (datPhong != null && !datPhong.getSoDienThoai().isEmpty()) ? datPhong.getSoDienThoai() : "---";
-        String cccd = (datPhong != null && !datPhong.getCccd().isEmpty()) ? datPhong.getCccd() : "---";
-        String soPhong = (datPhong != null && !datPhong.getSoPhong().isEmpty()) ? datPhong.getSoPhong() : "---";
-        String loaiPhong = (datPhong != null && !datPhong.getTenLoaiPhong().isEmpty()) ? datPhong.getTenLoaiPhong() : "Tiêu chuẩn";
-
-        Date ngayNhan = (datPhong != null && datPhong.getNgayNhanPhong() != null) ? datPhong.getNgayNhanPhong() : Date.valueOf(LocalDate.now());
-        Date ngayTraHienTai = Date.valueOf(LocalDate.now());
-
-        long soDem = 1;
-        try {
-            soDem = Math.max(1, ChronoUnit.DAYS.between(ngayNhan.toLocalDate(), ngayTraHienTai.toLocalDate()));
-        } catch (Exception biBoQua) {}
-
-        double donGia = (datPhong != null && datPhong.getGiaMoiDem() > 0) ? datPhong.getGiaMoiDem() : 300000;
-        tienPhong = soDem * donGia;
-
-        khungThongTin.add(taoLabel("Khách hàng:", true));
-        khungThongTin.add(taoLabel(tenKhach + " (SĐT: " + sdt + ")", false));
-
-        khungThongTin.add(taoLabel("Số CCCD:", true));
-        khungThongTin.add(taoLabel(cccd, false));
-
-        khungThongTin.add(taoLabel("Phòng lưu trú:", true));
-        khungThongTin.add(taoLabel("P." + soPhong + " (" + loaiPhong + " - " + dinhDangTienTeChinh.format(donGia) + "/đêm)", false));
-
-        khungThongTin.add(taoLabel("Thời gian ở:", true));
-        khungThongTin.add(taoLabel(ngayNhan + " đến " + ngayTraHienTai + " (" + soDem + " đêm)", false));
-
-        khungNoiDung.add(khungThongTin);
-        khungNoiDung.add(Box.createVerticalStrut(15));
-
-        // Khối 2: Chi tiết tính tiền
-        JPanel khungTinhToan = new JPanel(new GridBagLayout());
-        khungTinhToan.setOpaque(false);
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill = GridBagConstraints.HORIZONTAL;
-        gia.insets = new Insets(6, 4, 6, 4);
-
-        // Tiền phòng
-        gia.gridx = 0; gia.gridy = 0; gia.weightx = 0.4;
-        khungTinhToan.add(new JLabel("Tiền phòng (" + soDem + " đêm):"), gia);
-        gia.gridx = 1; gia.gridy = 0; gia.weightx = 0.6;
-        JLabel nhanTienPhong = new JLabel(dinhDangTienTeChinh.format(tienPhong));
-        nhanTienPhong.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        khungTinhToan.add(nhanTienPhong, gia);
-
-        // Phụ thu
-        gia.gridx = 0; gia.gridy = 1;
-        khungTinhToan.add(new JLabel("Phụ thu (dịch vụ, nước, đồ uống):"), gia);
-        gia.gridx = 1; gia.gridy = 1;
-        oNhapPhuThu = new JTextField("0");
-        oNhapPhuThu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        khungTinhToan.add(oNhapPhuThu, gia);
-
-        // Giảm giá
-        gia.gridx = 0; gia.gridy = 2;
-        khungTinhToan.add(new JLabel("Giảm giá / Chiết khấu:"), gia);
-        gia.gridx = 1; gia.gridy = 2;
-        oNhapGiamGia = new JTextField("0");
-        oNhapGiamGia.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        khungTinhToan.add(oNhapGiamGia, gia);
-
-        // Phương thức thanh toán
-        gia.gridx = 0; gia.gridy = 3;
-        khungTinhToan.add(new JLabel("Phương thức thanh toán:"), gia);
-        gia.gridx = 1; gia.gridy = 3;
-        hopChonPhuongThuc = new JComboBox<>(new String[] { "Tiền mặt", "Chuyển khoản QR", "Thẻ tín dụng / POS" });
-        hopChonPhuongThuc.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        khungTinhToan.add(hopChonPhuongThuc, gia);
-
-        // TỔNG TIỀN PHẢI THANH TOÁN
-        gia.gridx = 0; gia.gridy = 4;
-        JLabel nhanChungTieuDe = new JLabel("TỔNG THANH TOÁN:");
-        nhanChungTieuDe.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        nhanChungTieuDe.setForeground(new Color(192, 57, 43));
-        khungTinhToan.add(nhanChungTieuDe, gia);
-
-        gia.gridx = 1; gia.gridy = 4;
-        nhanChungTien = new JLabel(dinhDangTienTeChinh.format(tienPhong));
-        nhanChungTien.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        nhanChungTien.setForeground(new Color(192, 57, 43));
-        khungTinhToan.add(nhanChungTien, gia);
-
-        khungNoiDung.add(khungTinhToan);
-
-        // Ghi chú nghiệp vụ
-        khungNoiDung.add(Box.createVerticalStrut(10));
-        JLabel nhanGhiChu = new JLabel("Lưu ý: Sau khi xác nhận thanh toán, phòng sẽ tự động chuyển sang ĐANG DỌN (CLEANING).");
-        nhanGhiChu.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        nhanGhiChu.setForeground(new Color(108, 117, 125));
-        khungNoiDung.add(nhanGhiChu);
-
-        add(khungNoiDung, BorderLayout.CENTER);
+            nhanKhach.setText(tenKhach + " (SĐT: " + sdt + ")");
+            nhanCCCD.setText(cccd);
+            nhanPhong.setText("Phòng " + soPhong + " (" + loaiPhong + ")");
+            nhanNgay.setText(ngayNhan + "  ➔  " + ngayTraHienTai + " (" + soDem + " đêm)");
+            nhanDonGia.setText(dinhDangTienTeChinh.format(donGia) + "/đêm");
+            nhanTienPhong.setText(dinhDangTienTeChinh.format(tienPhong));
+            nhanChungTien.setText(dinhDangTienTeChinh.format(tienPhong));
+        }
 
         // Tự động tính toán khi thay đổi phụ thu, giảm giá
         Runnable capNhatChung = () -> {
@@ -196,154 +85,441 @@ public class DialogTraPhongThanhToan extends JDialog {
             }
         });
 
-        // 3. Bottom Action Buttons
-        JPanel khungDuoi = new JPanel(new FlowLayout(FlowLayout.RIGHT, 12, 12));
-        khungDuoi.setBackground(new Color(245, 247, 250));
-        khungDuoi.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(222, 226, 230)));
+        setLocationRelativeTo(doiTuongCha);
+    }
 
-        JButton btInHoaDon = new JButton("In / Xem trước hóa đơn");
-        btInHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        btInHoaDon.setFocusPainted(false);
-
-        JButton btXacNhan = new JButton("Xác nhận thanh toán & Trả phòng");
-        btXacNhan.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btXacNhan.setBackground(new Color(192, 57, 43));
-        btXacNhan.setForeground(Color.WHITE);
-        btXacNhan.setFocusPainted(false);
-
-        JButton btHuy = new JButton("Hủy bỏ");
-        btHuy.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btHuy.setFocusPainted(false);
-
-        khungDuoi.add(btInHoaDon);
-        khungDuoi.add(btHuy);
-        khungDuoi.add(btXacNhan);
-        add(khungDuoi, BorderLayout.SOUTH);
-
-        btHuy.addActionListener(ac -> dispose());
-
-        // In / Xem trước phiếu thanh toán
-        btInHoaDon.addActionListener(ac -> {
-            capNhatChung.run();
-            hienThiPhieuInHoaDon();
-        });
-
-        // Xác nhận thanh toán & Trả phòng
-        btXacNhan.addActionListener(ac -> {
-            capNhatChung.run();
-
-            double phuThu = parseDoubleSafe(oNhapPhuThu.getText());
-            double doHoa = parseDoubleSafe(oNhapGiamGia.getText());
-            double chung = Math.max(0, tienPhong + phuThu - doHoa);
-            String phuongThuc = (String) hopChonPhuongThuc.getSelectedItem();
-
-            int xacNhan = JOptionPane.showConfirmDialog(
-                    this,
-                    "Xác nhận đã nhận đủ số tiền: " + dinhDangTienTeChinh.format(chung) + " (" + phuongThuc + ")?\n"
-                            + "Hệ thống sẽ hoàn tất Check-out và chuyển Phòng " + datPhong.getSoPhong() + " sang ĐANG DỌN.",
-                    "Xác nhận thanh toán & Trả phòng",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
-
-            if (xacNhan != JOptionPane.YES_OPTION) return;
-
-            int maDatPhong = datPhong.getIdDatPhong();
-            int maPhong = datPhong.getMaPhong();
-
-            boolean thanhCong = dichVuDatPhong.traPhongVaThanhToan(maDatPhong, maPhong, tienPhong, phuThu, doHoa, chung, phuongThuc);
-            if (thanhCong) {
-                hoanTat = true;
-                HoaDon hoaDon = new HoaDonService().timTheoDatPhong(maDatPhong);
-                JOptionPane.showMessageDialog(this,
-                        "Thanh toán và Check-out thành công!\n"
-                                + "Tổng tiền: " + dinhDangTienTeChinh.format(chung) + " (" + phuongThuc + ")\n"
-                                + "Phòng " + datPhong.getSoPhong() + " đã chuyển sang trạng thái ĐANG DỌN."
-                                + (hoaDon == null ? "\nKhông thể tải hóa đơn để xem trước."
-                                        : "\nHóa đơn sẵn sàng để xem trước và in."),
-                        "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                Window doiTuongCha = getOwner();
-                dispose();
-                if (hoaDon != null) {
-                    SwingUtilities.invokeLater(() -> DialogChiTietHoaDon.hienThiXemTruocHoaDon(doiTuongCha, hoaDon));
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thực hiện trả phòng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+    private double parseDoubleSafe(String vanBan) {
+        if (vanBan == null) return 0;
+        String chuoi = vanBan.replaceAll("[^0-9.]", "").trim();
+        try {
+            return Double.parseDouble(chuoi);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private void hienThiPhieuInHoaDon() {
-        JDialog hopThoaiIn = new JDialog(this, "Phiếu thanh toán khách sạn", true);
-        hopThoaiIn.setSize(480, 560);
-        hopThoaiIn.setLocationRelativeTo(this);
-        hopThoaiIn.setLayout(new BorderLayout());
+        if (datPhong == null) return;
+        double phuThu = parseDoubleSafe(oNhapPhuThu.getText());
+        double giamGia = parseDoubleSafe(oNhapGiamGia.getText());
+        double tong = Math.max(0, tienPhong + phuThu - giamGia);
 
-        JTextArea oNhapBill = new JTextArea();
-        oNhapBill.setFont(new Font("Monospaced", Font.PLAIN, 13));
-        oNhapBill.setEditable(false);
-        oNhapBill.setMargin(new Insets(15, 20, 15, 20));
+        HoaDon hdTam = new HoaDon();
+        hdTam.setIdDatPhong(datPhong.getIdDatPhong());
+        hdTam.setTenKhachHang(datPhong.getTenKhachHang());
+        hdTam.setSoDienThoai(datPhong.getSoDienThoai());
+        hdTam.setSoCCCD(datPhong.getCccd());
+        hdTam.setSoPhong(datPhong.getSoPhong());
+        hdTam.setTenLoaiPhong(datPhong.getTenLoaiPhong());
+        hdTam.setNgayLap(new java.sql.Timestamp(System.currentTimeMillis()));
+        hdTam.setTienPhong((float) tienPhong);
+        hdTam.setPhuThu((float) phuThu);
+        hdTam.setGiamGia((float) giamGia);
+        hdTam.setTongTien((float) tong);
+        hdTam.setPhuongThucThanhToan((String) hopChonPhuongThuc.getSelectedItem());
+        hdTam.setTrangThaiThanhToan("PAID");
 
+        DialogChiTietHoaDon.hienThiXemTruocHoaDon(this, hdTam);
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        khungChinh = new javax.swing.JPanel();
+        khungDau = new javax.swing.JPanel();
+        nhanTieuDe = new javax.swing.JLabel();
+        nhanPhu = new javax.swing.JLabel();
+        khungThongTin = new javax.swing.JPanel();
+        lblKhach = new javax.swing.JLabel();
+        nhanKhach = new javax.swing.JLabel();
+        lblCCCD = new javax.swing.JLabel();
+        nhanCCCD = new javax.swing.JLabel();
+        lblPhong = new javax.swing.JLabel();
+        nhanPhong = new javax.swing.JLabel();
+        lblNgay = new javax.swing.JLabel();
+        nhanNgay = new javax.swing.JLabel();
+        lblDonGia = new javax.swing.JLabel();
+        nhanDonGia = new javax.swing.JLabel();
+        lblTienPhong = new javax.swing.JLabel();
+        nhanTienPhong = new javax.swing.JLabel();
+        lblPhuThu = new javax.swing.JLabel();
+        oNhapPhuThu = new javax.swing.JTextField();
+        lblGiamGia = new javax.swing.JLabel();
+        oNhapGiamGia = new javax.swing.JTextField();
+        lblPhuongThuc = new javax.swing.JLabel();
+        hopChonPhuongThuc = new javax.swing.JComboBox<>();
+        lblChungTien = new javax.swing.JLabel();
+        nhanChungTien = new javax.swing.JLabel();
+        nhanGhiChu = new javax.swing.JLabel();
+        btInHoaDon = new javax.swing.JButton();
+        btHuy = new javax.swing.JButton();
+        btXacNhan = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Trả phòng & Thanh toán");
+        setResizable(false);
+
+        khungChinh.setBackground(new java.awt.Color(255, 255, 255));
+
+        khungDau.setBackground(new java.awt.Color(192, 57, 43));
+
+        nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
+        nhanTieuDe.setText("HÓA ĐƠN THANH TOÁN & TRẢ PHÒNG");
+
+        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        nhanPhu.setForeground(new java.awt.Color(250, 219, 216));
+        nhanPhu.setText("Xác nhận tính tiền và kết thúc lượt lưu trú");
+
+        javax.swing.GroupLayout khungDauLayout = new javax.swing.GroupLayout(khungDau);
+        khungDau.setLayout(khungDauLayout);
+        khungDauLayout.setHorizontalGroup(
+            khungDauLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungDauLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(khungDauLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTieuDe)
+                    .addComponent(nhanPhu))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        khungDauLayout.setVerticalGroup(
+            khungDauLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungDauLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(nhanTieuDe)
+                .addGap(4, 4, 4)
+                .addComponent(nhanPhu)
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
+        khungThongTin.setBackground(new java.awt.Color(248, 249, 250));
+
+        lblKhach.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblKhach.setText("Khách hàng:");
+
+        nhanKhach.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanKhach.setText("---");
+
+        lblCCCD.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblCCCD.setText("Số CCCD:");
+
+        nhanCCCD.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanCCCD.setText("---");
+
+        lblPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPhong.setText("Phòng lưu trú:");
+
+        nhanPhong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanPhong.setText("---");
+
+        lblNgay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblNgay.setText("Thời gian:");
+
+        nhanNgay.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanNgay.setText("---");
+
+        lblDonGia.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblDonGia.setText("Đơn giá phòng:");
+
+        nhanDonGia.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        nhanDonGia.setText("---");
+
+        lblTienPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblTienPhong.setText("Tiền phòng:");
+
+        nhanTienPhong.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nhanTienPhong.setForeground(new java.awt.Color(192, 57, 43));
+        nhanTienPhong.setText("0 đ");
+
+        javax.swing.GroupLayout khungThongTinLayout = new javax.swing.GroupLayout(khungThongTin);
+        khungThongTin.setLayout(khungThongTinLayout);
+        khungThongTinLayout.setHorizontalGroup(
+            khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungThongTinLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblKhach)
+                    .addComponent(lblCCCD)
+                    .addComponent(lblPhong)
+                    .addComponent(lblNgay)
+                    .addComponent(lblDonGia)
+                    .addComponent(lblTienPhong))
+                .addGap(20, 20, 20)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanKhach, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(nhanCCCD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nhanPhong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nhanNgay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nhanDonGia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nhanTienPhong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 15, 15))
+        );
+        khungThongTinLayout.setVerticalGroup(
+            khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungThongTinLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblKhach)
+                    .addComponent(nhanKhach))
+                .addGap(6, 6, 6)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCCCD)
+                    .addComponent(nhanCCCD))
+                .addGap(6, 6, 6)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPhong)
+                    .addComponent(nhanPhong))
+                .addGap(6, 6, 6)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNgay)
+                    .addComponent(nhanNgay))
+                .addGap(6, 6, 6)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDonGia)
+                    .addComponent(nhanDonGia))
+                .addGap(6, 6, 6)
+                .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTienPhong)
+                    .addComponent(nhanTienPhong))
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
+        lblPhuThu.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPhuThu.setText("Phụ thu (VNĐ):");
+
+        oNhapPhuThu.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapPhuThu.setText("0");
+
+        lblGiamGia.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblGiamGia.setText("Giảm giá (VNĐ):");
+
+        oNhapGiamGia.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapGiamGia.setText("0");
+
+        lblPhuongThuc.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        lblPhuongThuc.setText("Phương thức:");
+
+        hopChonPhuongThuc.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        hopChonPhuongThuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tiền mặt", "Chuyển khoản", "Thẻ" }));
+
+        lblChungTien.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        lblChungTien.setForeground(new java.awt.Color(192, 57, 43));
+        lblChungTien.setText("TỔNG THANH TOÁN:");
+
+        nhanChungTien.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        nhanChungTien.setForeground(new java.awt.Color(192, 57, 43));
+        nhanChungTien.setText("0 đ");
+
+        nhanGhiChu.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
+        nhanGhiChu.setForeground(new java.awt.Color(108, 117, 125));
+        nhanGhiChu.setText("Lưu ý: Sau khi xác nhận thanh toán, phòng sẽ tự động chuyển sang ĐANG DỌN (CLEANING).");
+
+        btInHoaDon.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btInHoaDon.setText("In / Xem trước hóa đơn");
+        btInHoaDon.setFocusPainted(false);
+        btInHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btInHoaDonActionPerformed(evt);
+            }
+        });
+
+        btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setText("Hủy bỏ");
+        btHuy.setFocusPainted(false);
+        btHuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btHuyActionPerformed(evt);
+            }
+        });
+
+        btXacNhan.setBackground(new java.awt.Color(192, 57, 43));
+        btXacNhan.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btXacNhan.setForeground(new java.awt.Color(255, 255, 255));
+        btXacNhan.setText("Xác nhận thanh toán & Trả phòng");
+        btXacNhan.setFocusPainted(false);
+        btXacNhan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btXacNhanActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
+        khungChinh.setLayout(khungChinhLayout);
+        khungChinhLayout.setHorizontalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungDau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanGhiChu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(khungThongTin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblPhuThu)
+                                    .addComponent(lblGiamGia)
+                                    .addComponent(lblPhuongThuc)
+                                    .addComponent(lblChungTien))
+                                .addGap(20, 20, 20)
+                                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(oNhapPhuThu, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                                    .addComponent(oNhapGiamGia)
+                                    .addComponent(hopChonPhuongThuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(nhanChungTien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addComponent(btInHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 15, Short.MAX_VALUE)))
+                .addGap(15, 15, 15))
+        );
+        khungChinhLayout.setVerticalGroup(
+            khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(khungChinhLayout.createSequentialGroup()
+                .addComponent(khungDau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addComponent(khungThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPhuThu)
+                    .addComponent(oNhapPhuThu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblGiamGia)
+                    .addComponent(oNhapGiamGia, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPhuongThuc)
+                    .addComponent(hopChonPhuongThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblChungTien)
+                    .addComponent(nhanChungTien))
+                .addGap(12, 12, 12)
+                .addComponent(nhanGhiChu)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btInHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(khungChinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btInHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInHoaDonActionPerformed
+        hienThiPhieuInHoaDon();
+    }//GEN-LAST:event_btInHoaDonActionPerformed
+
+    private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
+        dispose();
+    }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXacNhanActionPerformed
         double phuThu = parseDoubleSafe(oNhapPhuThu.getText());
         double doHoa = parseDoubleSafe(oNhapGiamGia.getText());
         double chung = Math.max(0, tienPhong + phuThu - doHoa);
         String phuongThuc = (String) hopChonPhuongThuc.getSelectedItem();
 
-        StringBuilder boTaoChuoi = new StringBuilder();
-        boTaoChuoi.append("================================================\n");
-        boTaoChuoi.append("             KHÁCH SẠN HOTEL MANAGEMENT         \n");
-        boTaoChuoi.append("         Địa chỉ: 123 Đường ABC, TP. Hà Nội     \n");
-        boTaoChuoi.append("             Điện thoại: 024.3828.9999          \n");
-        boTaoChuoi.append("------------------------------------------------\n");
-        boTaoChuoi.append("             HÓA ĐƠN THANH TOÁN (BILL)          \n");
-        boTaoChuoi.append("------------------------------------------------\n");
-        boTaoChuoi.append(String.format("Mã đơn đặt phòng : #%d\n", datPhong.getIdDatPhong()));
-        boTaoChuoi.append(String.format("Khách hàng       : %s\n", datPhong.getTenKhachHang()));
-        boTaoChuoi.append(String.format("Số CCCD          : %s\n", datPhong.getCccd()));
-        boTaoChuoi.append(String.format("Số điện thoại    : %s\n", datPhong.getSoDienThoai()));
-        boTaoChuoi.append(String.format("Phòng            : P.%s (%s)\n", datPhong.getSoPhong(), datPhong.getTenLoaiPhong()));
-        boTaoChuoi.append(String.format("Ngày nhận phòng  : %s\n", datPhong.getNgayNhanPhong()));
-        boTaoChuoi.append(String.format("Ngày trả phòng   : %s\n", LocalDate.now()));
-        boTaoChuoi.append("------------------------------------------------\n");
-        boTaoChuoi.append(String.format("Tiền phòng       : %15s\n", dinhDangTienTeChinh.format(tienPhong)));
-        boTaoChuoi.append(String.format("Phụ thu          : %15s\n", dinhDangTienTeChinh.format(phuThu)));
-        boTaoChuoi.append(String.format("Giảm giá         : %15s\n", "-" + dinhDangTienTeChinh.format(doHoa)));
-        boTaoChuoi.append("------------------------------------------------\n");
-        boTaoChuoi.append(String.format("TỔNG CỘNG        : %15s\n", dinhDangTienTeChinh.format(chung)));
-        boTaoChuoi.append(String.format("Phương thức TT   : %s\n", phuongThuc));
-        boTaoChuoi.append("================================================\n");
-        boTaoChuoi.append("       Cảm ơn Quý khách & Hẹn gặp lại!          \n");
+        int xacNhan = JOptionPane.showConfirmDialog(
+                this,
+                "Xác nhận đã nhận đủ số tiền: " + dinhDangTienTeChinh.format(chung) + " (" + phuongThuc + ")?\n"
+                        + "Hệ thống sẽ hoàn tất Check-out và chuyển Phòng " + datPhong.getSoPhong() + " sang ĐANG DỌN.",
+                "Xác nhận thanh toán & Trả phòng",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
 
-        oNhapBill.setText(boTaoChuoi.toString());
+        if (xacNhan != JOptionPane.YES_OPTION) return;
 
-        JScrollPane thanhCuon = new JScrollPane(oNhapBill);
-        hopThoaiIn.add(thanhCuon, BorderLayout.CENTER);
+        int maDatPhong = datPhong.getIdDatPhong();
+        int ketQuaDatPhong = dichVuDatPhong.capNhatTrangThai(maDatPhong, "CHECKED_OUT");
 
-        JPanel khungNut = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btHang = new JButton("Đóng");
-        btHang.addActionListener(ac -> hopThoaiIn.dispose());
-        khungNut.add(btHang);
-        hopThoaiIn.add(khungNut, BorderLayout.SOUTH);
+        if (ketQuaDatPhong > 0) {
+            HoaDonService dichVuHoaDon = new HoaDonService();
+            HoaDon hdTonTai = dichVuHoaDon.timTheoDatPhong(maDatPhong);
 
-        hopThoaiIn.setVisible(true);
-    }
+            if (hdTonTai != null) {
+                hdTonTai.setTienPhong((float) tienPhong);
+                hdTonTai.setPhuThu((float) phuThu);
+                hdTonTai.setGiamGia((float) doHoa);
+                hdTonTai.setTongTien((float) chung);
+                hdTonTai.setPhuongThucThanhToan(phuongThuc);
+                hdTonTai.setTrangThaiThanhToan("PAID");
+                dichVuHoaDon.sua(hdTonTai);
+            } else {
+                HoaDon hdMoi = new HoaDon();
+                hdMoi.setIdDatPhong(maDatPhong);
+                hdMoi.setTienPhong((float) tienPhong);
+                hdMoi.setPhuThu((float) phuThu);
+                hdMoi.setGiamGia((float) doHoa);
+                hdMoi.setTongTien((float) chung);
+                hdMoi.setPhuongThucThanhToan(phuongThuc);
+                hdMoi.setTrangThaiThanhToan("PAID");
+                dichVuHoaDon.them(hdMoi);
+            }
 
-    private double parseDoubleSafe(String chuoi) {
-        if (chuoi == null) return 0;
-        try {
-            return Double.parseDouble(chuoi.trim().replaceAll("[^0-9.]", ""));
-        } catch (Exception suKien) {
-            return 0;
+            hoanTat = true;
+            JOptionPane.showMessageDialog(this, "Trả phòng & Xuất hóa đơn thành công!");
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thao tác thất bại! Vui lòng kiểm tra lại kết nối CSDL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private JLabel taoLabel(String vanBan, boolean inDam) {
-        JLabel nhan = new JLabel(vanBan);
-        nhan.setFont(new Font("Segoe UI", inDam ? Font.BOLD : Font.PLAIN, 13));
-        if (inDam) nhan.setForeground(new Color(51, 65, 85));
-        return nhan;
-    }
+    }//GEN-LAST:event_btXacNhanActionPerformed
 
     public boolean isCompleted() {
         return hoanTat;
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btHuy;
+    private javax.swing.JButton btInHoaDon;
+    private javax.swing.JButton btXacNhan;
+    private javax.swing.JComboBox<String> hopChonPhuongThuc;
+    private javax.swing.JPanel khungChinh;
+    private javax.swing.JPanel khungDau;
+    private javax.swing.JPanel khungThongTin;
+    private javax.swing.JLabel lblCCCD;
+    private javax.swing.JLabel lblChungTien;
+    private javax.swing.JLabel lblDonGia;
+    private javax.swing.JLabel lblGiamGia;
+    private javax.swing.JLabel lblKhach;
+    private javax.swing.JLabel lblNgay;
+    private javax.swing.JLabel lblPhong;
+    private javax.swing.JLabel lblPhuThu;
+    private javax.swing.JLabel lblPhuongThuc;
+    private javax.swing.JLabel lblTienPhong;
+    private javax.swing.JLabel nhanCCCD;
+    private javax.swing.JLabel nhanChungTien;
+    private javax.swing.JLabel nhanDonGia;
+    private javax.swing.JLabel nhanGhiChu;
+    private javax.swing.JLabel nhanKhach;
+    private javax.swing.JLabel nhanNgay;
+    private javax.swing.JLabel nhanPhu;
+    private javax.swing.JLabel nhanPhong;
+    private javax.swing.JLabel nhanTienPhong;
+    private javax.swing.JLabel nhanTieuDe;
+    private javax.swing.JTextField oNhapGiamGia;
+    private javax.swing.JTextField oNhapPhuThu;
+    // End of variables declaration//GEN-END:variables
 }
