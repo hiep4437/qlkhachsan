@@ -20,6 +20,7 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
         super(doiTuongCha, hoaDonCanSua == null ? "Lập hóa đơn mới" : "Chỉnh sửa hóa đơn #" + hoaDonCanSua.getIdHoaDon(),
                 ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.hoaDon = hoaDonCanSua != null ? hoaDonCanSua : new HoaDon();
         boolean dangSua = (hoaDonCanSua != null && hoaDonCanSua.getIdHoaDon() > 0);
 
@@ -375,3 +376,4 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
     private javax.swing.JTextField oNhapTienPhong;
     // End of variables declaration//GEN-END:variables
 }
+

@@ -54,6 +54,7 @@ public class ViewDangNhap extends javax.swing.JFrame {
      */
     public ViewDangNhap() {
         initComponents();
+        view.AppIcon.apply(this);
         setLocationRelativeTo(null);
         capNhatThongTinServer();
         getRootPane().setDefaultButton(btDangNhap);
@@ -91,7 +92,6 @@ public class ViewDangNhap extends javax.swing.JFrame {
         nhanBieuTuong.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         nhanBieuTuong.setText("QUẢN LÝ KHÁCH SẠN");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(128, 128, 128));
         nhanPhu.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         nhanPhu.setText("Đăng nhập");
@@ -109,9 +109,13 @@ public class ViewDangNhap extends javax.swing.JFrame {
         btDangNhap.setBackground(new java.awt.Color(41, 128, 185));
         btDangNhap.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btDangNhap.setForeground(new java.awt.Color(255, 255, 255));
+        btDangNhap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/user.png"))); // NOI18N
         btDangNhap.setText("Đăng nhập");
 
+        btThoat.setBackground(new java.awt.Color(204, 0, 51));
         btThoat.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btThoat.setForeground(new java.awt.Color(255, 255, 255));
+        btThoat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/logout.png"))); // NOI18N
         btThoat.setText("Thoát");
         btThoat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,7 +127,9 @@ public class ViewDangNhap extends javax.swing.JFrame {
         nhanThongBaoServer.setForeground(new java.awt.Color(100, 100, 100));
         nhanThongBaoServer.setText("CSDL: localhost:3306/hotel_management");
 
+        btCauHinhServer.setBackground(new java.awt.Color(102, 102, 102));
         btCauHinhServer.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        btCauHinhServer.setForeground(new java.awt.Color(255, 255, 255));
         btCauHinhServer.setText(" Cấu hình máy chủ");
         btCauHinhServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,29 +142,28 @@ public class ViewDangNhap extends javax.swing.JFrame {
         khungChinhLayout.setHorizontalGroup(
             khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, khungChinhLayout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
-                        .addComponent(nhanThongBaoServer, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                        .addComponent(btCauHinhServer))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nhanNguoiDung)
-                            .addComponent(nhanMatKhau))
-                        .addGap(15, 15, 15)
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(oNhapTenDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(oNhapMatKhau)))
-                    .addComponent(nhanBieuTuong, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nhanPhu, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(nhanBieuTuong, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                        .addComponent(nhanPhu, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
+                            .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(nhanNguoiDung)
+                                .addComponent(nhanMatKhau))
+                            .addGap(15, 15, 15)
+                            .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, khungChinhLayout.createSequentialGroup()
+                                    .addComponent(btDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(oNhapTenDangNhap, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                                .addComponent(oNhapMatKhau))))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(nhanThongBaoServer, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btCauHinhServer)))
                 .addGap(25, 25, 25))
-            .addGroup(khungChinhLayout.createSequentialGroup()
-                .addGap(95, 95, 95)
-                .addComponent(btDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         khungChinhLayout.setVerticalGroup(
             khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,10 +184,10 @@ public class ViewDangNhap extends javax.swing.JFrame {
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btDangNhap, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btThoat, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nhanThongBaoServer)
-                    .addComponent(btCauHinhServer, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btCauHinhServer, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(nhanThongBaoServer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(15, 15, 15))
         );
 

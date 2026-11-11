@@ -13,6 +13,7 @@ public class DialogThemSuaKhachHang extends javax.swing.JDialog {
         super(doiTuongCha, khachHangCanSua == null ? "Thêm khách hàng mới" : "Chỉnh sửa khách hàng: " + khachHangCanSua.getNameKhachHang(),
                 ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.khachHang = khachHangCanSua != null ? khachHangCanSua : new KhachHang();
         boolean dangSua = (khachHangCanSua != null && khachHangCanSua.getIdKhachHang() > 0);
         if (dangSua) {
@@ -279,3 +280,4 @@ public class DialogThemSuaKhachHang extends javax.swing.JDialog {
     private javax.swing.JTextField oNhapThuDienTu;
     // End of variables declaration//GEN-END:variables
 }
+

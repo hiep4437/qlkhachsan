@@ -14,6 +14,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
     public DialogThongTinTaiKhoan(Window doiTuongCha, NguoiDung nguoiDung, Runnable khiUpdatedHamGoiLai) {
         super(doiTuongCha, "Thông tin tài khoản cá nhân", ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.nguoiDung = nguoiDung;
         this.khiUpdatedHamGoiLai = khiUpdatedHamGoiLai;
 
@@ -410,3 +411,4 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
     private javax.swing.JPanel tabThongTin;
     // End of variables declaration//GEN-END:variables
 }
+

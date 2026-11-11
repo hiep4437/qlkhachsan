@@ -28,6 +28,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
     public DialogChiTietHoaDon(Window doiTuongCha, HoaDon hoaDon) {
         super(doiTuongCha, "Chi tiết hóa đơn thanh toán #" + (hoaDon != null ? hoaDon.getIdHoaDon() : ""), ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.hoaDon = hoaDon;
 
         if (hoaDon != null) {
@@ -496,3 +497,4 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
     private javax.swing.JLabel nhanTrangThai;
     // End of variables declaration//GEN-END:variables
 }
+

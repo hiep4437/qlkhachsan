@@ -29,7 +29,10 @@ D:\public_html\Java\qlkhachsan\src\service\KhachHangService.java
 D:\public_html\Java\qlkhachsan\src\service\NguoiDungService.java
 D:\public_html\Java\qlkhachsan\src\service\PhongService.java
 D:\public_html\Java\qlkhachsan\src\service\StatisticService.java
+D:\public_html\Java\qlkhachsan\src\view\AppIcon.java
+D:\public_html\Java\qlkhachsan\src\view\dialog\DialogCapNhatTrangThaiPhong.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogChiTietHoaDon.java
+D:\public_html\Java\qlkhachsan\src\view\dialog\DialogDatPhongNhanh.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThemSuaDatPhong.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThemSuaHoaDon.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThemSuaKhachHang.java
@@ -37,6 +40,8 @@ D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThemSuaPhong.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThemSuaTaiKhoan.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogThongTinTaiKhoan.java
 D:\public_html\Java\qlkhachsan\src\view\dialog\DialogTraPhongThanhToan.java
+D:\public_html\Java\qlkhachsan\src\view\util\ModernTabbedPaneUI.java
+D:\public_html\Java\qlkhachsan\src\view\view\PanelSoDoPhong.java
 D:\public_html\Java\qlkhachsan\src\view\view\ViewBaoCaoThongKe.java
 D:\public_html\Java\qlkhachsan\src\view\view\ViewDangNhap.java
 D:\public_html\Java\qlkhachsan\src\view\view\ViewDatPhong.java

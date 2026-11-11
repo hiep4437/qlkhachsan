@@ -10,6 +10,7 @@ view\dialog\DialogThemSuaTaiKhoan$1.class
 view\dialog\DialogChiTietHoaDon$1.class
 view\view\ViewDangNhap$1.class
 controller\DatPhongController$1.class
+view\view\PanelSoDoPhong$1.class
 view\view\ViewHoaDon$2.class
 view\view\ViewTrangChu.class
 view\dialog\DialogThemSuaHoaDon.class
@@ -56,6 +57,7 @@ view\view\ViewHoaDon$1.class
 view\dialog\DialogTraPhongThanhToan$4.class
 view\dialog\DialogThemSuaHoaDon$3.class
 controller\LoginController$1.class
+view\dialog\DialogDatPhongNhanh.class
 model\NguoiDung.class
 view\view\ViewQuanLyTaiKhoan.class
 model\ThongTinPhongDangO.class
@@ -69,7 +71,6 @@ view\view\ViewQuanLyPhong.class
 view\dialog\DialogThemSuaDatPhong$2.class
 view\dialog\DialogThemSuaTaiKhoan$2.class
 controller\KhachHangController$1.class
-view\view\ViewTrangChu$1.class
 view\dialog\DialogTraPhongThanhToan.class
 dao\ThongKeDAO$ChiTietHoaDonBaoCao.class
 view\view\ViewDangNhap$2.class
@@ -89,13 +90,16 @@ controller\DatPhongController$2.class
 view\dialog\DialogThemSuaDatPhong$4.class
 controller\PhongController.class
 service\DatPhongService.class
+view\dialog\DialogCapNhatTrangThaiPhong.class
 view\view\ViewDatPhong$3.class
 controller\StatisticController$2.class
 view\dialog\DialogThemSuaKhachHang$1.class
 view\view\ViewBaoCaoThongKe$1.class
+view\dialog\DialogCapNhatTrangThaiPhong$1.class
 view\dialog\DialogChiTietHoaDon$3.class
 controller\KhachHangController$2.class
 view\view\ViewBaoCaoThongKe.class
+view\view\ViewHoaDon$4.class
 view\dialog\DialogThongTinTaiKhoan$1.class
 view\view\ViewQuanLyKhachHang$2.class
 controller\HoaDonController$2.class
@@ -105,9 +109,11 @@ dao\HoaDonDAO.class
 service\StatisticService.class
 view\dialog\DialogChiTietHoaDon.class
 controller\NguoiDungController.class
+view\view\PanelSoDoPhong.class
 view\view\ViewDatPhong$2.class
 view\dialog\DialogThemSuaTaiKhoan$3.class
 view\dialog\DialogTraPhongThanhToan$1.class
 view\dialog\DialogThemSuaKhachHang$2.class
 dao\KhachHangDAO.class
+view\AppIcon.class
 controller\StatisticController$3.class

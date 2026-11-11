@@ -18,6 +18,7 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
               nguoiDungCanSua == null ? "Thêm tài khoản người dùng mới" : "Chỉnh sửa tài khoản: " + nguoiDungCanSua.getTenDangNhap(),
               ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.nguoiDung = nguoiDungCanSua != null ? nguoiDungCanSua : new NguoiDung();
         this.dangSua = (nguoiDungCanSua != null && nguoiDungCanSua.getIdNguoiDung() > 0);
 
@@ -340,3 +341,4 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
     private javax.swing.JPasswordField oNhapXacNhanMatKhau;
     // End of variables declaration//GEN-END:variables
 }
+

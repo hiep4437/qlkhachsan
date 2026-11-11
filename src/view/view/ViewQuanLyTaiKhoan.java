@@ -59,6 +59,7 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
     public ViewQuanLyTaiKhoan(NguoiDung nguoiDungHienTai) {
         this.nguoiDungHienTai = nguoiDungHienTai;
         initComponents();
+        view.AppIcon.apply(this);
         setSize(1050, 680);
         setMinimumSize(new Dimension(900, 550));
         setLocationRelativeTo(null);
@@ -156,8 +157,10 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
 
         oNhapTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
 
+        btTimKiem.setBackground(new java.awt.Color(41, 128, 185));
         btTimKiem.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        btTimKiem.setText("Tìm kiếm");
+        btTimKiem.setForeground(new java.awt.Color(255, 255, 255));
+        btTimKiem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/timkiem.png"))); // NOI18N
         btTimKiem.setFocusPainted(false);
 
         nhanVaiTro.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -175,6 +178,7 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
         hopChonLocTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả trạng thái", "Hoạt động", "Khóa" }));
 
         btLamMoiTim.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btLamMoiTim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/load.png"))); // NOI18N
         btLamMoiTim.setText("Xóa lọc");
         btLamMoiTim.setFocusPainted(false);
 
@@ -206,19 +210,22 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
 
         btThem.setBackground(new java.awt.Color(13, 110, 253));
         btThem.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btThem.setForeground(new java.awt.Color(0, 0, 0));
+        btThem.setForeground(new java.awt.Color(255, 255, 255));
+        btThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/them.png"))); // NOI18N
         btThem.setText("Thêm tài khoản");
         btThem.setFocusPainted(false);
 
         btSua.setBackground(new java.awt.Color(255, 193, 7));
         btSua.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btSua.setForeground(new java.awt.Color(0, 0, 0));
+        btSua.setForeground(new java.awt.Color(255, 255, 255));
+        btSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/sua.png"))); // NOI18N
         btSua.setText("Sửa tài khoản");
         btSua.setFocusPainted(false);
 
         btXoa.setBackground(new java.awt.Color(220, 53, 69));
         btXoa.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btXoa.setForeground(new java.awt.Color(0, 0, 0));
+        btXoa.setForeground(new java.awt.Color(255, 255, 255));
+        btXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/xoa.png"))); // NOI18N
         btXoa.setText("Xóa tài khoản");
         btXoa.setFocusPainted(false);
 
@@ -234,7 +241,10 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
         btDatLaiMatKhau.setText("Đặt lại mật khẩu");
         btDatLaiMatKhau.setFocusPainted(false);
 
+        btLamMoi.setBackground(new java.awt.Color(41, 128, 185));
         btLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btLamMoi.setForeground(new java.awt.Color(255, 255, 255));
+        btLamMoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/load.png"))); // NOI18N
         btLamMoi.setText("Làm mới");
         btLamMoi.setFocusPainted(false);
 
@@ -257,8 +267,8 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(oNhapTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(15, 15, 15)
+                                .addComponent(btTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(60, 60, 60)
                                 .addComponent(nhanVaiTro)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(hopChonLocVaiTro, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -384,3 +394,4 @@ public class ViewQuanLyTaiKhoan extends javax.swing.JFrame {
     public javax.swing.JTextField oNhapTimKiem;
     // End of variables declaration//GEN-END:variables
 }
+

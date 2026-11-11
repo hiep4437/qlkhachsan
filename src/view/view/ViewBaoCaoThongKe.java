@@ -19,6 +19,7 @@ public class ViewBaoCaoThongKe extends JFrame {
 
     public ViewBaoCaoThongKe() {
         initComponents();
+        view.AppIcon.apply(this);
         setSize(1240, 760);
         setMinimumSize(new Dimension(980, 620));
         setLocationRelativeTo(null);
@@ -460,3 +461,4 @@ public class ViewBaoCaoThongKe extends JFrame {
     private javax.swing.JPanel thePhong;
     // End of variables declaration//GEN-END:variables
 }
+

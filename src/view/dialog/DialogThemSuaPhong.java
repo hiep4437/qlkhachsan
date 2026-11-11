@@ -19,6 +19,7 @@ public class DialogThemSuaPhong extends javax.swing.JDialog {
         super(doiTuongCha, phongCanSua == null ? "Thêm phòng mới" : "Chỉnh sửa phòng " + phongCanSua.getSoPhong(),
                 ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.phong = phongCanSua != null ? phongCanSua : new Phong();
         boolean dangSua = (phongCanSua != null && phongCanSua.getMaPhong() > 0);
 
@@ -383,3 +384,4 @@ public class DialogThemSuaPhong extends javax.swing.JDialog {
     private javax.swing.JSpinner vongQuayTang;
     // End of variables declaration//GEN-END:variables
 }
+

@@ -26,6 +26,7 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
     public DialogTraPhongThanhToan(Window doiTuongCha, DatPhong nut) {
         super(doiTuongCha, "Trả phòng & Xuất hóa đơn thanh toán", ModalityType.APPLICATION_MODAL);
         initComponents();
+        view.AppIcon.apply(this);
         this.datPhong = nut;
 
         if (datPhong != null) {
@@ -173,7 +174,6 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDe.setText("HÓA ĐƠN THANH TOÁN & TRẢ PHÒNG");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(250, 219, 216));
         nhanPhu.setText("Xác nhận tính tiền và kết thúc lượt lưu trú");
 
@@ -252,7 +252,7 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
                     .addComponent(lblTienPhong))
                 .addGap(20, 20, 20)
                 .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nhanKhach, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(nhanKhach, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanCCCD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanPhong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanNgay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -318,10 +318,9 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
 
         nhanGhiChu.setFont(new java.awt.Font("Segoe UI", 2, 11)); // NOI18N
         nhanGhiChu.setForeground(new java.awt.Color(108, 117, 125));
-        nhanGhiChu.setText("Lưu ý: Sau khi xác nhận thanh toán, phòng sẽ tự động chuyển sang ĐANG DỌN (CLEANING).");
+        nhanGhiChu.setText("Lưu ý: Sau khi xác nhận thanh toán, phòng sẽ về trạng thái đang dọn.");
 
-        btInHoaDon.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        btInHoaDon.setText("In / Xem trước hóa đơn");
+        btInHoaDon.setText("In hoá đơn");
         btInHoaDon.setFocusPainted(false);
         btInHoaDon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -341,7 +340,7 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
         btXacNhan.setBackground(new java.awt.Color(192, 57, 43));
         btXacNhan.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btXacNhan.setForeground(new java.awt.Color(255, 255, 255));
-        btXacNhan.setText("Xác nhận thanh toán & Trả phòng");
+        btXacNhan.setText("Xác nhận thanh toán");
         btXacNhan.setFocusPainted(false);
         btXacNhan.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -515,11 +514,12 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
     private javax.swing.JLabel nhanGhiChu;
     private javax.swing.JLabel nhanKhach;
     private javax.swing.JLabel nhanNgay;
-    private javax.swing.JLabel nhanPhu;
     private javax.swing.JLabel nhanPhong;
+    private javax.swing.JLabel nhanPhu;
     private javax.swing.JLabel nhanTienPhong;
     private javax.swing.JLabel nhanTieuDe;
     private javax.swing.JTextField oNhapGiamGia;
     private javax.swing.JTextField oNhapPhuThu;
     // End of variables declaration//GEN-END:variables
 }
+
