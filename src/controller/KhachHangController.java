@@ -9,7 +9,6 @@ import java.awt.Window;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import model.DatPhong;
@@ -210,15 +209,7 @@ public class KhachHangController {
         JTable bangLichSu = new JTable(moHinhLichSu);
         bangLichSu.setRowHeight(32);
         bangLichSu.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-
-        DefaultTableCellRenderer giua = new DefaultTableCellRenderer();
-        giua.setHorizontalAlignment(SwingConstants.CENTER);
-        bangLichSu.getColumnModel().getColumn(0).setCellRenderer(giua);
-        bangLichSu.getColumnModel().getColumn(1).setCellRenderer(giua);
-        bangLichSu.getColumnModel().getColumn(3).setCellRenderer(giua);
-        bangLichSu.getColumnModel().getColumn(4).setCellRenderer(giua);
-        bangLichSu.getColumnModel().getColumn(5).setCellRenderer(giua);
-        bangLichSu.getColumnModel().getColumn(6).setCellRenderer(giua);
+        view.TableAlignment.centerData(bangLichSu);
 
         hopThoai.add(new JScrollPane(bangLichSu), BorderLayout.CENTER);
 

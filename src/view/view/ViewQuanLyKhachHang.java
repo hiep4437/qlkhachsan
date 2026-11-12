@@ -1,5 +1,6 @@
 package view.view;
 
+import view.TableAlignment;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -61,6 +62,7 @@ public class ViewQuanLyKhachHang extends javax.swing.JFrame {
 
     private void caiDatBang() {
         moHinh = (DefaultTableModel) bang.getModel();
+        TableAlignment.centerData(bang);
         boSapXep = new TableRowSorter<>(moHinh);
         bang.setRowSorter(boSapXep);
         List<RowSorter.SortKey> cacKhoaSapXep = new ArrayList<>();
@@ -312,4 +314,3 @@ public class ViewQuanLyKhachHang extends javax.swing.JFrame {
     public javax.swing.JTextField oNhapTimKiem;
     // End of variables declaration//GEN-END:variables
 }
-

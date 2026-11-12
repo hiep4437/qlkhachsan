@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import dao.ThongKeDAO;
 import service.StatisticService;
 import view.view.ViewBaoCaoThongKe;
+import view.TableAlignment;
 
 public class StatisticController {
 
@@ -33,11 +33,8 @@ public class StatisticController {
     }
 
     private void caiDatRenderers() {
-        DefaultTableCellRenderer giua = new DefaultTableCellRenderer();
-        giua.setHorizontalAlignment(SwingConstants.CENTER);
-
-        DefaultTableCellRenderer phai = new DefaultTableCellRenderer();
-        phai.setHorizontalAlignment(SwingConstants.RIGHT);
+        TableAlignment.centerData(viewBaoCaoThongKe.bangPhong);
+        TableAlignment.centerData(viewBaoCaoThongKe.bangHoaDon);
 
         // Bảng Phòng
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -54,9 +51,7 @@ public class StatisticController {
         });
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(1).setPreferredWidth(140);
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(2).setPreferredWidth(80);
-        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(2).setCellRenderer(giua);
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(3).setPreferredWidth(100);
-        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(3).setCellRenderer(giua);
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(4).setPreferredWidth(140);
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -64,30 +59,22 @@ public class StatisticController {
                                                            boolean hasTieuDiem, int hang, int chiSoCot) {
                 Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
-                setHorizontalAlignment(RIGHT);
+                setHorizontalAlignment(CENTER);
                 setForeground(dangChon ? bang.getSelectionForeground() : new Color(192, 57, 43));
                 return thanhPhan;
             }
         });
         viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(5).setPreferredWidth(90);
-        viewBaoCaoThongKe.bangPhong.getColumnModel().getColumn(5).setCellRenderer(giua);
 
         // Bảng Hóa đơn
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(0).setPreferredWidth(60);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(0).setCellRenderer(giua);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(1).setPreferredWidth(130);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(1).setCellRenderer(giua);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(2).setPreferredWidth(80);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(2).setCellRenderer(giua);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(3).setPreferredWidth(140);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(4).setPreferredWidth(100);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(4).setCellRenderer(giua);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(5).setPreferredWidth(95);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(5).setCellRenderer(phai);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(6).setPreferredWidth(80);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(6).setCellRenderer(phai);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(7).setPreferredWidth(80);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(7).setCellRenderer(phai);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(8).setPreferredWidth(110);
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -95,13 +82,12 @@ public class StatisticController {
                                                            boolean hasTieuDiem, int hang, int chiSoCot) {
                 Component thanhPhan = super.getTableCellRendererComponent(bang, giaTri, dangChon, hasTieuDiem, hang, chiSoCot);
                 setFont(new Font("Segoe UI", Font.BOLD, 13));
-                setHorizontalAlignment(RIGHT);
+                setHorizontalAlignment(CENTER);
                 setForeground(dangChon ? bang.getSelectionForeground() : new Color(39, 174, 96));
                 return thanhPhan;
             }
         });
         viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(9).setPreferredWidth(100);
-        viewBaoCaoThongKe.bangHoaDon.getColumnModel().getColumn(9).setCellRenderer(giua);
     }
 
     public void taiDuLieu() {

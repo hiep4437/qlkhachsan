@@ -46,7 +46,6 @@ service\NguoiDungService.class
 view\view\ViewQuanLyPhong$3.class
 view\dialog\DialogThemSuaPhong$3.class
 view\dialog\DialogThemSuaHoaDon$4.class
-view\dialog\DialogTraPhongThanhToan$5.class
 view\dialog\DialogThemSuaPhong$2.class
 view\dialog\DialogThemSuaDatPhong$1.class
 controller\HoaDonController.class
@@ -96,7 +95,6 @@ controller\StatisticController$2.class
 view\dialog\DialogThemSuaKhachHang$1.class
 view\view\ViewBaoCaoThongKe$1.class
 view\dialog\DialogCapNhatTrangThaiPhong$1.class
-view\dialog\DialogChiTietHoaDon$3.class
 controller\KhachHangController$2.class
 view\view\ViewBaoCaoThongKe.class
 view\view\ViewHoaDon$4.class
