@@ -139,7 +139,6 @@ public class DialogThemSuaPhong extends javax.swing.JDialog {
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDe.setText("THÊM PHÒNG MỚI");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
         nhanPhu.setText("Nhập thông tin chi tiết phòng mới");
 
@@ -202,7 +201,9 @@ public class DialogThemSuaPhong extends javax.swing.JDialog {
         oNhapMoTa.setWrapStyleWord(true);
         cuonMoTa.setViewportView(oNhapMoTa);
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
         btHuy.addActionListener(new java.awt.event.ActionListener() {

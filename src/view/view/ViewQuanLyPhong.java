@@ -191,6 +191,7 @@ public class ViewQuanLyPhong extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        bang.setRowHeight(30);
         cuonPane.setViewportView(bang);
 
         btThem.setBackground(new java.awt.Color(13, 110, 253));

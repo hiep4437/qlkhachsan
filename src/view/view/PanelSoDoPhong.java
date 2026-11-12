@@ -2,6 +2,8 @@ package view.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -38,6 +40,7 @@ public class PanelSoDoPhong extends javax.swing.JPanel {
     private final PhongService dichVuPhong = new PhongService();
     private final DatPhongService dichVuDatPhong = new DatPhongService();
     private final DecimalFormat dinhDangTienTe = new DecimalFormat("#,### đ");
+    private boolean dangMoDialog = false;
 
     public PanelSoDoPhong() {
         this(null);
@@ -348,10 +351,27 @@ public class PanelSoDoPhong extends javax.swing.JPanel {
         the.add(khungDuoi, BorderLayout.SOUTH);
 
         final ThongTinPhongDangO thongTinKhach = khachDangO;
-        the.addMouseListener(new MouseAdapter() {
+        ganSuKienClickThe(the, () -> xuLyClickThePhong(hangHienTai, thongTinKhach), the);
+
+        return the;
+    }
+
+    private void ganSuKienClickThe(Component comp, Runnable hanhDong, JPanel the) {
+        comp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        comp.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                xuLyClickThePhong(hangHienTai, thongTinKhach);
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (dangMoDialog) return;
+                    dangMoDialog = true;
+                    SwingUtilities.invokeLater(() -> {
+                        try {
+                            hanhDong.run();
+                        } finally {
+                            dangMoDialog = false;
+                        }
+                    });
+                }
             }
 
             @Override
@@ -365,7 +385,11 @@ public class PanelSoDoPhong extends javax.swing.JPanel {
             }
         });
 
-        return the;
+        if (comp instanceof Container) {
+            for (Component con : ((Container) comp).getComponents()) {
+                ganSuKienClickThe(con, hanhDong, the);
+            }
+        }
     }
 
     private void xuLyClickThePhong(Phong hangHienTai, ThongTinPhongDangO thongTinKhach) {

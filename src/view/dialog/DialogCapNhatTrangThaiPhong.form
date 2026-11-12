@@ -48,26 +48,22 @@
               <Component id="khungTieuDe" alignment="0" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="nhanPhong" min="-2" max="-2" attributes="0"/>
+                      <Component id="nhanTrangThaiHienTaiTieuDe" min="-2" max="-2" attributes="0"/>
+                      <Component id="nhanTrangThaiMoiTieuDe" min="-2" max="-2" attributes="0"/>
+                      <Component id="nhanGhiChu" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Component id="nhanThongTinPhong" alignment="0" max="32767" attributes="0"/>
+                      <Component id="nhanTrangThaiHienTai" alignment="0" max="32767" attributes="0"/>
+                      <Component id="hopChonTrangThaiMoi" alignment="0" pref="260" max="32767" attributes="0"/>
+                      <Component id="oNhapGhiChu" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="btDong" min="-2" pref="90" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="btCapNhat" min="-2" pref="130" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="nhanPhong" min="-2" max="-2" attributes="0"/>
-                              <Component id="nhanTrangThaiHienTaiTieuDe" min="-2" max="-2" attributes="0"/>
-                              <Component id="nhanTrangThaiMoiTieuDe" min="-2" max="-2" attributes="0"/>
-                              <Component id="nhanGhiChu" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="nhanThongTinPhong" max="32767" attributes="0"/>
-                              <Component id="nhanTrangThaiHienTai" max="32767" attributes="0"/>
-                              <Component id="hopChonTrangThaiMoi" pref="260" max="32767" attributes="0"/>
-                              <Component id="oNhapGhiChu" max="32767" attributes="0"/>
-                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace pref="25" max="32767" attributes="0"/>
@@ -195,7 +191,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="13" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="&#x110;ang d&#x1ecd;n d&#x1eb9;p (CLEANING)"/>
+            <Property name="text" type="java.lang.String" value="&#x110;ang d&#x1ecd;n d&#x1eb9;p"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="nhanTrangThaiMoiTieuDe">
@@ -258,8 +254,14 @@
         </Component>
         <Component class="javax.swing.JButton" name="btDong">
           <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="33" green="0" red="cc" type="rgb"/>
+            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="13" style="0"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="&#x110;&#xf3;ng"/>
             <Property name="focusPainted" type="boolean" value="false"/>

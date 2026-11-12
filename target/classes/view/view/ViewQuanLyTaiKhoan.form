@@ -70,15 +70,15 @@
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="hopChonLocTrangThai" min="-2" pref="140" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btLamMoiTim" min="-2" pref="90" max="-2" attributes="0"/>
+                                  <Component id="btLamMoiTim" min="-2" pref="128" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="btThem" min="-2" pref="155" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btSua" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btXoa" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="btThem" min="-2" pref="179" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btSua" min="-2" pref="171" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btXoa" min="-2" pref="168" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btKhoaMoKhoa" min="-2" pref="155" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="btDatLaiMatKhau" min="-2" pref="160" max="-2" attributes="0"/>
@@ -86,7 +86,7 @@
                                   <Component id="btLamMoi" min="-2" pref="120" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="0" pref="100" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="35" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -148,7 +148,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="8b" green="74" red="64" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="T&#x1ed5;ng s&#x1ed1;: 0 t&#xe0;i kho&#x1ea3;n | Admin: 0 | Nh&#xe2;n vi&#xea;n: 0"/>
+            <Property name="text" type="java.lang.String" value="T&#x1ed5;ng s&#x1ed1;: 0 t&#xe0;i kho&#x1ea3;n | Qu&#x1ea3;n tr&#x1ecb;: 0 | Nh&#xe2;n vi&#xea;n: 0"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
@@ -214,8 +214,8 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="3">
                 <StringItem index="0" value="T&#x1ea5;t c&#x1ea3; vai tr&#xf2;"/>
-                <StringItem index="1" value="ADMIN"/>
-                <StringItem index="2" value="STAFF"/>
+                <StringItem index="1" value="Qu&#x1ea3;n tr&#x1ecb;"/>
+                <StringItem index="2" value="Nh&#xe2;n vi&#xea;n"/>
               </StringArray>
             </Property>
           </Properties>
@@ -255,8 +255,14 @@
         </Component>
         <Component class="javax.swing.JButton" name="btLamMoiTim">
           <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="b9" green="80" red="29" type="rgb"/>
+            </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="13" style="0"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/img/load.png"/>
@@ -289,6 +295,7 @@
                     <Column editable="false" title="Tr&#x1ea1;ng th&#xe1;i" type="java.lang.String"/>
                   </Table>
                 </Property>
+                <Property name="rowHeight" type="int" value="30"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

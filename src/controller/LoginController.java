@@ -70,12 +70,20 @@ public class LoginController {
         NguoiDung nguoiDungDangNhap = dichVu.kiemTraDangNhap(ten, matKhau);
 
         if (nguoiDungDangNhap != null) {
-            JOptionPane.showMessageDialog(viewDangNhap, "Đăng nhập thành công!\nXin chào: " + nguoiDungDangNhap.getHoTen() + " (" + nguoiDungDangNhap.getVaiTro() + ")", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    viewDangNhap,
+                    "Đăng nhập thành công!\nXin chào: " + nguoiDungDangNhap.getHoTen() + " (" + nguoiDungDangNhap.getVaiTroHienThi() + ")",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
             ViewTrangChu trangChu = new ViewTrangChu(nguoiDungDangNhap);
             trangChu.setVisible(true);
             viewDangNhap.dispose();
         } else {
-            JOptionPane.showMessageDialog(viewDangNhap, "Sai tên đăng nhập hoặc mật khẩu, hoặc tài khoản đã bị vô hiệu hóa!", "Đăng nhập thất bại", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    viewDangNhap,
+                    "Sai tên đăng nhập hoặc mật khẩu, hoặc tài khoản đã bị vô hiệu hóa!",
+                    "Đăng nhập thất bại",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }

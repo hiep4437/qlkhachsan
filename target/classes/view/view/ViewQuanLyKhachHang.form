@@ -62,19 +62,19 @@
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="btTimKiem" min="-2" pref="54" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="btThem" min="-2" pref="160" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btSua" min="-2" pref="130" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="btThem" min="-2" pref="175" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btSua" min="-2" pref="161" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btLichSu" min="-2" pref="170" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btXoa" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="btXoa" min="-2" pref="166" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btLamMoi" min="-2" pref="120" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="0" pref="334" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="280" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -197,6 +197,7 @@
                     <Column editable="false" title="S&#x1ed1; l&#x1ea7;n thu&#xea; ph&#xf2;ng" type="java.lang.Integer"/>
                   </Table>
                 </Property>
+                <Property name="rowHeight" type="int" value="30"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

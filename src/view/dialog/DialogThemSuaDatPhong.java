@@ -63,10 +63,12 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
             }
         });
 
+        oNhapNgayNhan.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayNhan, "yyyy-MM-dd"));
+        oNhapNgayTra.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayTra, "yyyy-MM-dd"));
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
-        oNhapNgayNhan.setText(homNay.format(DINH_DANG_NGAY));
-        oNhapNgayTra.setText(ngayMai.format(DINH_DANG_NGAY));
+        oNhapNgayNhan.setValue(java.sql.Date.valueOf(homNay));
+        oNhapNgayTra.setValue(java.sql.Date.valueOf(ngayMai));
 
         hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(dangSua
                 ? new String[] { "BOOKED", "CHECKED_IN", "CHECKED_OUT", "CANCELLED" }
@@ -78,10 +80,10 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
                                                           boolean dangChon, boolean oDangChon) {
                 super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
                 String chuoi = String.valueOf(giaTri);
-                if ("BOOKED".equalsIgnoreCase(chuoi)) setText("Đã đặt (BOOKED)");
-                else if ("CHECKED_IN".equalsIgnoreCase(chuoi)) setText("Đã nhận phòng (CHECKED_IN)");
-                else if ("CHECKED_OUT".equalsIgnoreCase(chuoi)) setText("Đã trả phòng (CHECKED_OUT)");
-                else if ("CANCELLED".equalsIgnoreCase(chuoi)) setText("Đã hủy (CANCELLED)");
+                if ("BOOKED".equalsIgnoreCase(chuoi)) setText("Đã đặt");
+                else if ("CHECKED_IN".equalsIgnoreCase(chuoi)) setText("Đã nhận phòng");
+                else if ("CHECKED_OUT".equalsIgnoreCase(chuoi)) setText("Đã trả phòng");
+                else if ("CANCELLED".equalsIgnoreCase(chuoi)) setText("Đã hủy");
                 return this;
             }
         });
@@ -93,10 +95,10 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
 
             oNhapCCCD.setText(this.datPhong.getCccd() != null ? this.datPhong.getCccd() : "");
             if (this.datPhong.getNgayNhanPhong() != null) {
-                oNhapNgayNhan.setText(this.datPhong.getNgayNhanPhong().toLocalDate().format(DINH_DANG_NGAY));
+                oNhapNgayNhan.setValue(new java.util.Date(this.datPhong.getNgayNhanPhong().getTime()));
             }
             if (this.datPhong.getNgayTraPhong() != null) {
-                oNhapNgayTra.setText(this.datPhong.getNgayTraPhong().toLocalDate().format(DINH_DANG_NGAY));
+                oNhapNgayTra.setValue(new java.util.Date(this.datPhong.getNgayTraPhong().getTime()));
             }
             oNhapGhiChu.setText(this.datPhong.getGhiChu() != null ? this.datPhong.getGhiChu() : "");
 
@@ -176,9 +178,9 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
         nhanPhong = new javax.swing.JLabel();
         hopChonPhong = new javax.swing.JComboBox<>();
         nhanNgayNhan = new javax.swing.JLabel();
-        oNhapNgayNhan = new javax.swing.JTextField();
+        oNhapNgayNhan = new javax.swing.JSpinner();
         nhanNgayTra = new javax.swing.JLabel();
-        oNhapNgayTra = new javax.swing.JTextField();
+        oNhapNgayTra = new javax.swing.JSpinner();
         nhanSoNguoi = new javax.swing.JLabel();
         vongQuaySoNguoi = new javax.swing.JSpinner();
         nhanTrangThai = new javax.swing.JLabel();
@@ -198,9 +200,8 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
 
         nhanTieuDe.setFont(new java.awt.Font("Segoe UI", 1, 17)); // NOI18N
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
-        nhanTieuDe.setText("TẠO ĐƠN ĐẶT PHÒNG MỚI");
+        nhanTieuDe.setText("TẠO ĐƠN ĐặT PHÒNG MỚI");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
         nhanPhu.setText("Nhập thông tin khách hàng và chọn phòng lưu trú");
 
@@ -230,7 +231,7 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
 
         oNhapCCCD.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
 
-        btKiemTraCCCD.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btKiemTraCCCD.setBackground(new java.awt.Color(255, 255, 254));
         btKiemTraCCCD.setText("Tìm");
         btKiemTraCCCD.setFocusPainted(false);
         btKiemTraCCCD.addActionListener(new java.awt.event.ActionListener() {
@@ -262,8 +263,14 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
         nhanNgayNhan.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanNgayNhan.setText("Ngày nhận:");
 
+        oNhapNgayNhan.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapNgayNhan.setModel(new javax.swing.SpinnerDateModel());
+
         nhanNgayTra.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanNgayTra.setText("Ngày trả:");
+
+        oNhapNgayTra.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapNgayTra.setModel(new javax.swing.SpinnerDateModel());
 
         nhanSoNguoi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanSoNguoi.setText("Số người:");
@@ -281,7 +288,9 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
 
         oNhapGhiChu.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
         btHuy.addActionListener(new java.awt.event.ActionListener() {
@@ -308,23 +317,19 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
             .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(khungChinhLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanCCCD)
+                    .addComponent(nhanHoTen)
+                    .addComponent(nhanSDT)
+                    .addComponent(nhanPhong)
+                    .addComponent(nhanNgayNhan)
+                    .addComponent(nhanNgayTra)
+                    .addComponent(nhanSoNguoi)
+                    .addComponent(nhanTrangThai)
+                    .addComponent(nhanGhiChu))
+                .addGap(55, 55, 55)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nhanCCCD)
-                            .addComponent(nhanHoTen)
-                            .addComponent(nhanSDT)
-                            .addComponent(nhanPhong)
-                            .addComponent(nhanNgayNhan)
-                            .addComponent(nhanNgayTra)
-                            .addComponent(nhanSoNguoi)
-                            .addComponent(nhanTrangThai)
-                            .addComponent(nhanGhiChu))
-                        .addGap(20, 20, 20)
                         .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(khungChinhLayout.createSequentialGroup()
                                 .addComponent(oNhapCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -333,12 +338,17 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
                             .addComponent(oNhapHoTen)
                             .addComponent(oNhapSDT)
                             .addComponent(hopChonPhong, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(oNhapNgayNhan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(oNhapNgayTra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(oNhapNgayNhan)
+                            .addComponent(oNhapNgayTra)
                             .addComponent(vongQuaySoNguoi)
                             .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(oNhapGhiChu))))
-                .addContainerGap(25, Short.MAX_VALUE))
+                            .addComponent(oNhapGhiChu))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(khungChinhLayout.createSequentialGroup()
+                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         khungChinhLayout.setVerticalGroup(
             khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,11 +391,11 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nhanGhiChu)
                     .addComponent(oNhapGhiChu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -464,10 +474,12 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
         LocalDate ngayNhan;
         LocalDate ngayTra;
         try {
-            ngayNhan = LocalDate.parse(oNhapNgayNhan.getText().trim(), DINH_DANG_NGAY);
-            ngayTra = LocalDate.parse(oNhapNgayTra.getText().trim(), DINH_DANG_NGAY);
+            java.util.Date uNhan = (java.util.Date) oNhapNgayNhan.getValue();
+            java.util.Date uTra = (java.util.Date) oNhapNgayTra.getValue();
+            ngayNhan = new Date(uNhan.getTime()).toLocalDate();
+            ngayTra = new Date(uTra.getTime()).toLocalDate();
         } catch (Exception ngoaiLe) {
-            JOptionPane.showMessageDialog(this, "Ngày không hợp lệ. Định dạng: yyyy-MM-dd (VD: 2026-01-15)", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ngày không hợp lệ!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -540,8 +552,8 @@ public class DialogThemSuaDatPhong extends javax.swing.JDialog {
     private javax.swing.JTextField oNhapCCCD;
     private javax.swing.JTextField oNhapGhiChu;
     private javax.swing.JTextField oNhapHoTen;
-    private javax.swing.JTextField oNhapNgayNhan;
-    private javax.swing.JTextField oNhapNgayTra;
+    private javax.swing.JSpinner oNhapNgayNhan;
+    private javax.swing.JSpinner oNhapNgayTra;
     private javax.swing.JTextField oNhapSDT;
     private javax.swing.JSpinner vongQuaySoNguoi;
     // End of variables declaration//GEN-END:variables

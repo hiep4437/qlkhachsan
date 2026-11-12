@@ -156,6 +156,7 @@ public class ViewHoaDon extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        bang.setRowHeight(30);
         cuonPane.setViewportView(bang);
 
         btXemChiTiet.setBackground(new java.awt.Color(13, 110, 253));

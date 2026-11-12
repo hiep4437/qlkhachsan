@@ -126,7 +126,6 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDe.setText("LẬP HÓA ĐƠN MỚI");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
         nhanPhu.setText("Nhập thông tin đặt phòng và các khoản tiền");
 
@@ -196,7 +195,9 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
         hopChonTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PAID", "UNPAID", "REFUNDED" }));
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
         btHuy.addActionListener(new java.awt.event.ActionListener() {
@@ -223,29 +224,28 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
             .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(khungChinhLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanMaDP)
+                    .addComponent(nhanTienPhong)
+                    .addComponent(nhanPhuThu)
+                    .addComponent(nhanGiamGia)
+                    .addComponent(nhanChungTien)
+                    .addComponent(nhanPhuongThuc)
+                    .addComponent(nhanTrangThai))
+                .addGap(20, 20, 20)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(khungChinhLayout.createSequentialGroup()
                         .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                         .addComponent(btLuu, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nhanMaDP)
-                            .addComponent(nhanTienPhong)
-                            .addComponent(nhanPhuThu)
-                            .addComponent(nhanGiamGia)
-                            .addComponent(nhanChungTien)
-                            .addComponent(nhanPhuongThuc)
-                            .addComponent(nhanTrangThai))
-                        .addGap(20, 20, 20)
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(oNhapMaDatPhong, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(oNhapTienPhong)
-                            .addComponent(oNhapPhuThu)
-                            .addComponent(oNhapGiamGia)
-                            .addComponent(oNhapChungTien)
-                            .addComponent(hopChonPhuongThuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(oNhapMaDatPhong, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                        .addComponent(oNhapTienPhong)
+                        .addComponent(oNhapPhuThu)
+                        .addComponent(oNhapGiamGia)
+                        .addComponent(oNhapChungTien)
+                        .addComponent(hopChonPhuongThuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(hopChonTrangThai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         khungChinhLayout.setVerticalGroup(
@@ -364,8 +364,8 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
     private javax.swing.JLabel nhanGiamGia;
     private javax.swing.JLabel nhanMaDP;
     private javax.swing.JLabel nhanPhu;
-    private javax.swing.JLabel nhanPhuongThuc;
     private javax.swing.JLabel nhanPhuThu;
+    private javax.swing.JLabel nhanPhuongThuc;
     private javax.swing.JLabel nhanTienPhong;
     private javax.swing.JLabel nhanTieuDe;
     private javax.swing.JLabel nhanTrangThai;

@@ -67,7 +67,6 @@ public class DialogThemSuaKhachHang extends javax.swing.JDialog {
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDe.setText("THÊM KHÁCH HÀNG MỚI");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
         nhanPhu.setText("Nhập thông tin chi tiết khách hàng");
 
@@ -117,7 +116,9 @@ public class DialogThemSuaKhachHang extends javax.swing.JDialog {
 
         oNhapDiaChi.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
         btHuy.addActionListener(new java.awt.event.ActionListener() {

@@ -67,6 +67,12 @@ public class HoaDonController {
 			String tenKhach = !chiSo.getTenKhachHang().isEmpty() ? chiSo.getTenKhachHang() : "---";
 			String sdt = !chiSo.getSoDienThoai().isEmpty() ? chiSo.getSoDienThoai() : "---";
 
+			String trangThaiHienThi;
+			String rawTT = chiSo.getTrangThaiThanhToan();
+			if ("PAID".equalsIgnoreCase(rawTT)) trangThaiHienThi = "Đã thanh toán";
+			else if ("REFUNDED".equalsIgnoreCase(rawTT)) trangThaiHienThi = "Đã hoàn tiền";
+			else trangThaiHienThi = "Chưa thanh toán";
+
 			viewHoaDon.moHinh.addRow(new Object[] {
 				chiSo.getIdHoaDon(),
 				soPhong,
@@ -78,7 +84,7 @@ public class HoaDonController {
 				giamGiaStr,
 				chungTienStr,
 				chiSo.getPhuongThucThanhToan() != null ? chiSo.getPhuongThucThanhToan() : "Tiền mặt",
-				chiSo.getTrangThaiThanhToan() != null ? chiSo.getTrangThaiThanhToan() : "UNPAID"
+				trangThaiHienThi
 			});
 		}
 
@@ -115,11 +121,18 @@ public class HoaDonController {
 
 		// 2. Lọc theo trạng thái
 		if (trangThaiLoc != null && !trangThaiLoc.equals("Tất cả trạng thái")) {
-			String bieuThucChinhQuy = "";
-			if (trangThaiLoc.contains("PAID")) bieuThucChinhQuy = "PAID|ĐÃ THANH TOÁN";
-			else if (trangThaiLoc.contains("REFUNDED")) bieuThucChinhQuy = "REFUNDED|HOÀN TIỀN";
-			else bieuThucChinhQuy = "UNPAID|CHƯA THANH TOÁN";
-			cacBoLoc.add(RowFilter.regexFilter("(?i)" + bieuThucChinhQuy, 10));
+			final String trangThaiFilter;
+			if (trangThaiLoc.contains("REFUNDED")) trangThaiFilter = "Đã hoàn tiền";
+			else if (trangThaiLoc.contains("UNPAID")) trangThaiFilter = "Chưa thanh toán";
+			else trangThaiFilter = "Đã thanh toán";
+			cacBoLoc.add(new RowFilter<DefaultTableModel, Object>() {
+				@Override
+				public boolean include(Entry<? extends DefaultTableModel, ?> phanTu) {
+					Object giaTri = phanTu.getValue(10);
+					if (giaTri == null) return false;
+					return giaTri.toString().trim().equalsIgnoreCase(trangThaiFilter);
+				}
+			});
 		}
 
 		// 3. Lọc theo thời gian (Hôm nay, Tháng này, Năm nay)

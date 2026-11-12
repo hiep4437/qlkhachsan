@@ -54,8 +54,8 @@
                           <Component id="nhanThongKe" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="btThem" min="-2" pref="150" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="btThem" min="-2" pref="170" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="btKiemTraIn" min="-2" pref="170" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btKiemTraOut" min="-2" pref="185" max="-2" attributes="0"/>
@@ -65,7 +65,7 @@
                           <Component id="btHuyDat" min="-2" pref="112" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="btLamMoi" min="-2" pref="120" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="80" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="66" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="nhanTim" min="-2" max="-2" attributes="0"/>
@@ -283,6 +283,7 @@
                     <Column editable="false" title="Ghi ch&#xfa;" type="java.lang.String"/>
                   </Table>
                 </Property>
+                <Property name="rowHeight" type="int" value="30"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

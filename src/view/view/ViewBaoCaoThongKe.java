@@ -27,15 +27,22 @@ public class ViewBaoCaoThongKe extends JFrame {
         moHinhPhong = (DefaultTableModel) bangPhong.getModel();
         moHinhHoaDon = (DefaultTableModel) bangHoaDon.getModel();
 
+        oNhapTuNgay.setEditor(new javax.swing.JSpinner.DateEditor(oNhapTuNgay, "dd/MM/yyyy"));
+        oNhapDenNgay.setEditor(new javax.swing.JSpinner.DateEditor(oNhapDenNgay, "dd/MM/yyyy"));
+
         hopChonKyBaoCao.addActionListener(ac -> capNhatTheoKyNhanh());
-        // Lắng nghe thay đổi ngày khi người dùng nhập thủ công
-        oNhapTuNgay.addActionListener(ac -> {
-            LocalDate parsed = docNgayTuText(oNhapTuNgay.getText());
-            if (parsed != null) { tuNgay = parsed; datKyTuyChinh(); }
+        // Lắng nghe thay đổi ngày khi người dùng đổi ngày
+        oNhapTuNgay.addChangeListener(e -> {
+            if (oNhapTuNgay.getValue() instanceof java.util.Date) {
+                tuNgay = new java.sql.Date(((java.util.Date) oNhapTuNgay.getValue()).getTime()).toLocalDate();
+                datKyTuyChinh();
+            }
         });
-        oNhapDenNgay.addActionListener(ac -> {
-            LocalDate parsed = docNgayTuText(oNhapDenNgay.getText());
-            if (parsed != null) { denNgay = parsed; datKyTuyChinh(); }
+        oNhapDenNgay.addChangeListener(e -> {
+            if (oNhapDenNgay.getValue() instanceof java.util.Date) {
+                denNgay = new java.sql.Date(((java.util.Date) oNhapDenNgay.getValue()).getTime()).toLocalDate();
+                datKyTuyChinh();
+            }
         });
         capNhatONgay();
     }
@@ -95,25 +102,23 @@ public class ViewBaoCaoThongKe extends JFrame {
 
     private void capNhatONgay() {
         if (oNhapTuNgay != null) {
-            oNhapTuNgay.setText(tuNgay.format(DINH_DANG_NGAY));
+            oNhapTuNgay.setValue(java.sql.Date.valueOf(tuNgay));
         }
         if (oNhapDenNgay != null) {
-            oNhapDenNgay.setText(denNgay.format(DINH_DANG_NGAY));
+            oNhapDenNgay.setValue(java.sql.Date.valueOf(denNgay));
         }
     }
 
     public LocalDate getTuNgay() {
-        if (oNhapTuNgay != null) {
-            LocalDate parsed = docNgayTuText(oNhapTuNgay.getText());
-            if (parsed != null) return parsed;
+        if (oNhapTuNgay != null && oNhapTuNgay.getValue() instanceof java.util.Date) {
+            return new java.sql.Date(((java.util.Date) oNhapTuNgay.getValue()).getTime()).toLocalDate();
         }
         return tuNgay;
     }
 
     public LocalDate getDenNgay() {
-        if (oNhapDenNgay != null) {
-            LocalDate parsed = docNgayTuText(oNhapDenNgay.getText());
-            if (parsed != null) return parsed;
+        if (oNhapDenNgay != null && oNhapDenNgay.getValue() instanceof java.util.Date) {
+            return new java.sql.Date(((java.util.Date) oNhapDenNgay.getValue()).getTime()).toLocalDate();
         }
         return denNgay;
     }
@@ -140,18 +145,18 @@ public class ViewBaoCaoThongKe extends JFrame {
         nhanKyNhanh = new javax.swing.JLabel();
         hopChonKyBaoCao = new javax.swing.JComboBox<>();
         nhanTuNgay = new javax.swing.JLabel();
-        oNhapTuNgay = new javax.swing.JTextField();
+        oNhapTuNgay = new javax.swing.JSpinner();
         nhanDenNgay = new javax.swing.JLabel();
-        oNhapDenNgay = new javax.swing.JTextField();
+        oNhapDenNgay = new javax.swing.JSpinner();
         btLoc = new javax.swing.JButton();
         nhanThongKeKy = new javax.swing.JLabel();
         cacTabBaoCao = new javax.swing.JTabbedPane();
-        thePhong = new javax.swing.JPanel();
-        cuonPanePhong = new javax.swing.JScrollPane();
-        bangPhong = new javax.swing.JTable();
         theHoaDon = new javax.swing.JPanel();
         cuonPaneHoaDon = new javax.swing.JScrollPane();
         bangHoaDon = new javax.swing.JTable();
+        thePhong = new javax.swing.JPanel();
+        cuonPanePhong = new javax.swing.JScrollPane();
+        bangPhong = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Báo cáo doanh thu");
@@ -163,7 +168,7 @@ public class ViewBaoCaoThongKe extends JFrame {
         nhanTieuDe.setText("BÁO CÁO THỐNG KÊ DOANH THU");
 
         khungCard1.setBackground(new java.awt.Color(248, 250, 252));
-        khungCard1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
+        khungCard1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         nhanTieuDeCard1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         nhanTieuDeCard1.setForeground(new java.awt.Color(100, 116, 139));
@@ -182,7 +187,7 @@ public class ViewBaoCaoThongKe extends JFrame {
                 .addGroup(khungCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nhanTieuDeCard1)
                     .addComponent(nhanGiaTriChungDoanhThu))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         khungCard1Layout.setVerticalGroup(
             khungCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -191,11 +196,11 @@ public class ViewBaoCaoThongKe extends JFrame {
                 .addComponent(nhanTieuDeCard1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nhanGiaTriChungDoanhThu)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         khungCard2.setBackground(new java.awt.Color(248, 250, 252));
-        khungCard2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
+        khungCard2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         nhanTieuDeCard2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         nhanTieuDeCard2.setForeground(new java.awt.Color(100, 116, 139));
@@ -214,7 +219,7 @@ public class ViewBaoCaoThongKe extends JFrame {
                 .addGroup(khungCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nhanTieuDeCard2)
                     .addComponent(nhanGiaTriDoanhThuThang))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         khungCard2Layout.setVerticalGroup(
             khungCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,11 +228,11 @@ public class ViewBaoCaoThongKe extends JFrame {
                 .addComponent(nhanTieuDeCard2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nhanGiaTriDoanhThuThang)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         khungCard3.setBackground(new java.awt.Color(248, 250, 252));
-        khungCard3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(226, 232, 240)));
+        khungCard3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         nhanTieuDeCard3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         nhanTieuDeCard3.setForeground(new java.awt.Color(100, 116, 139));
@@ -246,7 +251,7 @@ public class ViewBaoCaoThongKe extends JFrame {
                 .addGroup(khungCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nhanTieuDeCard3)
                     .addComponent(nhanGiaTriDoanhThuNgay))
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         khungCard3Layout.setVerticalGroup(
             khungCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,10 +272,16 @@ public class ViewBaoCaoThongKe extends JFrame {
         nhanTuNgay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanTuNgay.setText("Từ ngày:");
 
+        oNhapTuNgay.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapTuNgay.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(1794498160000L), new java.util.Date(-62135568000000L), new java.util.Date(32503680000000L), java.util.Calendar.YEAR));
+
         nhanDenNgay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanDenNgay.setText("Đến ngày:");
 
-        btLoc.setBackground(new java.awt.Color(24, 44, 97));
+        oNhapDenNgay.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapDenNgay.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(1794498160000L), new java.util.Date(-62135568000000L), new java.util.Date(32503680000000L), java.util.Calendar.YEAR));
+
+        btLoc.setBackground(new java.awt.Color(41, 128, 185));
         btLoc.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btLoc.setForeground(new java.awt.Color(255, 255, 255));
         btLoc.setText("Xem thống kê");
@@ -280,46 +291,14 @@ public class ViewBaoCaoThongKe extends JFrame {
         nhanThongKeKy.setForeground(new java.awt.Color(37, 99, 235));
         nhanThongKeKy.setText("Thực thu trong kỳ: 0 đ");
 
+        cacTabBaoCao.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        cacTabBaoCao.setToolTipText("");
         cacTabBaoCao.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
 
-        bangPhong.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        cuonPaneHoaDon.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        cuonPaneHoaDon.setVerifyInputWhenFocusTarget(false);
 
-            },
-            new String [] {
-                "Phòng", "Loại phòng", "Tầng", "Lượt thuê", "Doanh thu", "Tỷ trọng"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        cuonPanePhong.setViewportView(bangPhong);
-
-        javax.swing.GroupLayout thePhongLayout = new javax.swing.GroupLayout(thePhong);
-        thePhong.setLayout(thePhongLayout);
-        thePhongLayout.setHorizontalGroup(
-            thePhongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cuonPanePhong, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
-        );
-        thePhongLayout.setVerticalGroup(
-            thePhongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cuonPanePhong, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
-        );
-
-        cacTabBaoCao.addTab("Tổng quan theo phòng", thePhong);
-
+        bangHoaDon.setRowHeight(30);
         bangHoaDon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -349,14 +328,53 @@ public class ViewBaoCaoThongKe extends JFrame {
         theHoaDon.setLayout(theHoaDonLayout);
         theHoaDonLayout.setHorizontalGroup(
             theHoaDonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cuonPaneHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addComponent(cuonPaneHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
         );
         theHoaDonLayout.setVerticalGroup(
             theHoaDonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cuonPaneHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+            .addComponent(cuonPaneHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
         );
 
-        cacTabBaoCao.addTab("Chi tiết hóa đơn", theHoaDon);
+        cacTabBaoCao.addTab("Thống kê doanh thu", theHoaDon);
+
+        bangPhong.setRowHeight(30);
+        bangPhong.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Phòng", "Loại phòng", "Tầng", "Lượt thuê", "Doanh thu", "Tỷ trọng"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        cuonPanePhong.setViewportView(bangPhong);
+
+        javax.swing.GroupLayout thePhongLayout = new javax.swing.GroupLayout(thePhong);
+        thePhong.setLayout(thePhongLayout);
+        thePhongLayout.setHorizontalGroup(
+            thePhongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(cuonPanePhong, javax.swing.GroupLayout.DEFAULT_SIZE, 898, Short.MAX_VALUE)
+        );
+        thePhongLayout.setVerticalGroup(
+            thePhongLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(cuonPanePhong, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+        );
+
+        cacTabBaoCao.addTab("Tỉ lệ thuê phòng", thePhong);
 
         javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
         khungChinh.setLayout(khungChinhLayout);
@@ -382,15 +400,15 @@ public class ViewBaoCaoThongKe extends JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(nhanTuNgay)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(oNhapTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(oNhapTuNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(nhanDenNgay)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(oNhapDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(oNhapDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(nhanThongKeKy, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
+                        .addComponent(nhanThongKeKy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(20, 20, 20))
         );
         khungChinhLayout.setVerticalGroup(
@@ -414,7 +432,7 @@ public class ViewBaoCaoThongKe extends JFrame {
                     .addComponent(btLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nhanThongKeKy))
                 .addGap(18, 18, 18)
-                .addComponent(cacTabBaoCao, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                .addComponent(cacTabBaoCao)
                 .addGap(15, 15, 15))
         );
 
@@ -455,8 +473,8 @@ public class ViewBaoCaoThongKe extends JFrame {
     private javax.swing.JLabel nhanTieuDeCard2;
     private javax.swing.JLabel nhanTieuDeCard3;
     private javax.swing.JLabel nhanTuNgay;
-    public javax.swing.JTextField oNhapDenNgay;
-    public javax.swing.JTextField oNhapTuNgay;
+    public javax.swing.JSpinner oNhapDenNgay;
+    public javax.swing.JSpinner oNhapTuNgay;
     private javax.swing.JPanel theHoaDon;
     private javax.swing.JPanel thePhong;
     // End of variables declaration//GEN-END:variables

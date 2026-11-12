@@ -20,7 +20,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
 
         if (nguoiDung != null) {
             nhanTieuDeTen.setText(nguoiDung.getHoTen());
-            String chuoiVaiTro = nguoiDung.isAdmin() ? "Quản trị viên (ADMIN)" : "Nhân viên (STAFF)";
+            String chuoiVaiTro = nguoiDung.getVaiTroHienThi();
             nhanTieuDeVaiTro.setText("Vai trò: " + chuoiVaiTro + "  •  @" + nguoiDung.getTenDangNhap());
 
             oNhapMa.setText(String.valueOf(nguoiDung.getIdNguoiDung()));
@@ -105,6 +105,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
         lblTrangThai = new javax.swing.JLabel();
         oNhapTrangThai = new javax.swing.JTextField();
         btLuuHoTen = new javax.swing.JButton();
+        btDong = new javax.swing.JButton();
         tabDoiMatKhau = new javax.swing.JPanel();
         lblCuMatKhau = new javax.swing.JLabel();
         oNhapCuMatKhau = new javax.swing.JPasswordField();
@@ -113,7 +114,6 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
         lblXacNhanMatKhau = new javax.swing.JLabel();
         oNhapXacNhanMatKhau = new javax.swing.JPasswordField();
         btLuuMatKhau = new javax.swing.JButton();
-        btDong = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thông tin tài khoản cá nhân");
@@ -127,7 +127,6 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
         nhanTieuDeTen.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDeTen.setText("Người dùng");
 
-        nhanTieuDeVaiTro.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanTieuDeVaiTro.setForeground(new java.awt.Color(200, 225, 255));
         nhanTieuDeVaiTro.setText("Vai trò");
 
@@ -192,11 +191,22 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
         btLuuHoTen.setBackground(new java.awt.Color(37, 99, 235));
         btLuuHoTen.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btLuuHoTen.setForeground(new java.awt.Color(255, 255, 255));
-        btLuuHoTen.setText("Lưu họ tên mới");
+        btLuuHoTen.setText("Lưu thông tin");
         btLuuHoTen.setFocusPainted(false);
         btLuuHoTen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btLuuHoTenActionPerformed(evt);
+            }
+        });
+
+        btDong.setBackground(new java.awt.Color(204, 0, 51));
+        btDong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btDong.setForeground(new java.awt.Color(255, 255, 255));
+        btDong.setText("Đóng");
+        btDong.setFocusPainted(false);
+        btDong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btDongActionPerformed(evt);
             }
         });
 
@@ -206,23 +216,25 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
             tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tabThongTinLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btLuuHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblMa)
+                    .addComponent(lblTenDangNhap)
+                    .addComponent(lblFullTen)
+                    .addComponent(lblVaiTro)
+                    .addComponent(lblTrangThai))
+                .addGap(20, 20, 20)
+                .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(tabThongTinLayout.createSequentialGroup()
-                        .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblMa)
-                            .addComponent(lblTenDangNhap)
-                            .addComponent(lblFullTen)
-                            .addComponent(lblVaiTro)
-                            .addComponent(lblTrangThai))
-                        .addGap(20, 20, 20)
-                        .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(oNhapMa, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                            .addComponent(oNhapTenDangNhap)
-                            .addComponent(oNhapFullTen)
-                            .addComponent(oNhapVaiTro)
-                            .addComponent(oNhapTrangThai))))
-                .addContainerGap(25, Short.MAX_VALUE))
+                        .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addComponent(btLuuHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(oNhapMa, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                        .addComponent(oNhapTenDangNhap)
+                        .addComponent(oNhapFullTen)
+                        .addComponent(oNhapVaiTro)
+                        .addComponent(oNhapTrangThai)))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         tabThongTinLayout.setVerticalGroup(
             tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -247,9 +259,11 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
                 .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTrangThai)
                     .addComponent(oNhapTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(btLuuHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(tabThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btLuuHoTen, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(65, 65, 65))
         );
 
         khungTab.addTab("Thông tin cá nhân", tabThongTin);
@@ -300,7 +314,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
                             .addComponent(oNhapCuMatKhau, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                             .addComponent(oNhapMoiMatKhau)
                             .addComponent(oNhapXacNhanMatKhau))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         tabDoiMatKhauLayout.setVerticalGroup(
             tabDoiMatKhauLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -317,21 +331,12 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
                 .addGroup(tabDoiMatKhauLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblXacNhanMatKhau)
                     .addComponent(oNhapXacNhanMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
                 .addComponent(btLuuMatKhau, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                .addGap(74, 74, 74))
         );
 
         khungTab.addTab("Đổi mật khẩu", tabDoiMatKhau);
-
-        btDong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        btDong.setText("Đóng");
-        btDong.setFocusPainted(false);
-        btDong.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDongActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout khungChinhLayout = new javax.swing.GroupLayout(khungChinh);
         khungChinh.setLayout(khungChinhLayout);
@@ -340,9 +345,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
             .addComponent(khungDauTrang, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(khungChinhLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(khungTab, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(khungTab, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         khungChinhLayout.setVerticalGroup(
@@ -351,9 +354,7 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
                 .addComponent(khungDauTrang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addComponent(khungTab, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -370,6 +371,10 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btLuuMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuMatKhauActionPerformed
+        doiMatKhau();
+    }//GEN-LAST:event_btLuuMatKhauActionPerformed
+
     private void btDongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDongActionPerformed
         dispose();
     }//GEN-LAST:event_btDongActionPerformed
@@ -377,10 +382,6 @@ public class DialogThongTinTaiKhoan extends javax.swing.JDialog {
     private void btLuuHoTenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuHoTenActionPerformed
         capNhatHoTen();
     }//GEN-LAST:event_btLuuHoTenActionPerformed
-
-    private void btLuuMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLuuMatKhauActionPerformed
-        doiMatKhau();
-    }//GEN-LAST:event_btLuuMatKhauActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btDong;

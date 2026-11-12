@@ -234,6 +234,7 @@
                     <Column editable="false" title="M&#xf4; t&#x1ea3;" type="java.lang.String"/>
                   </Table>
                 </Property>
+                <Property name="rowHeight" type="int" value="30"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>

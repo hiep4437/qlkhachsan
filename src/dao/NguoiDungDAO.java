@@ -11,15 +11,18 @@ public class NguoiDungDAO {
 
     // Chuyen doi chuoi vai tro sang so TINYINT (0: STAFF, 1: ADMIN)
     public static int chuyenVaiTroSangSo(String vaiTro) {
-        if (vaiTro != null && (vaiTro.equalsIgnoreCase("ADMIN") || vaiTro.equals("1") || vaiTro.toLowerCase().contains("quản trị"))) {
-            return 1;
+        if (vaiTro != null) {
+            String vt = vaiTro.trim().toLowerCase();
+            if (vt.equals("admin") || vt.equals("1") || vt.contains("quản trị") || vt.contains("quan tri")) {
+                return 1;
+            }
         }
         return 0; // STAFF
     }
 
-    // Chuyen doi so TINYINT sang chuoi vai tro
+    // Chuyen doi so TINYINT sang chuoi vai tro (hien thi tieng Viet)
     public static String chuyenSoSangVaiTro(int vaiTro) {
-        return (vaiTro == 1) ? "ADMIN" : "STAFF";
+        return (vaiTro == 1) ? "Quản trị" : "Nhân viên";
     }
 
     // Them nguoi dung moi

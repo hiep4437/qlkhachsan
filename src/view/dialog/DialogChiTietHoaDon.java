@@ -4,7 +4,9 @@ import java.awt.Dialog;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.print.PrinterException;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -33,9 +35,19 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
             nhanTieuDe.setText("CHI TIẾT HÓA ĐƠN #" + hoaDon.getIdHoaDon());
 
             String luongTrinh = hoaDon.getTrangThaiThanhToan();
-            boolean daTra = (luongTrinh != null && (luongTrinh.contains("PAID") || luongTrinh.contains("Đã thanh toán")));
-            nhanTrangThai.setText(daTra ? "ĐÃ THANH TOÁN" : "CHƯA THANH TOÁN");
-            nhanTrangThai.setForeground(daTra ? new java.awt.Color(46, 204, 113) : new java.awt.Color(241, 196, 15));
+            boolean daTra = (luongTrinh != null && (luongTrinh.equalsIgnoreCase("PAID") || luongTrinh.contains("Đã thanh toán")));
+            boolean daHoan = (luongTrinh != null && (luongTrinh.equalsIgnoreCase("REFUNDED") || luongTrinh.contains("Hoàn tiền")));
+
+            if (daTra) {
+                nhanTrangThai.setText("ĐÃ THANH TOÁN");
+                nhanTrangThai.setForeground(new java.awt.Color(46, 204, 113));
+            } else if (daHoan) {
+                nhanTrangThai.setText("ĐÃ HOÀN TIỀN");
+                nhanTrangThai.setForeground(new java.awt.Color(155, 89, 182));
+            } else {
+                nhanTrangThai.setText("CHƯA THANH TOÁN");
+                nhanTrangThai.setForeground(new java.awt.Color(241, 196, 15));
+            }
 
             String soPhong = (hoaDon.getSoPhong() != null && !hoaDon.getSoPhong().isEmpty()) ? "Phòng " + hoaDon.getSoPhong() : "---";
             String tenKhach = (hoaDon.getTenKhachHang() != null && !hoaDon.getTenKhachHang().isEmpty()) ? hoaDon.getTenKhachHang() : "---";
@@ -54,7 +66,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
             nhanPhuongThuc.setText(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan() : "Tiền mặt");
             nhanTongTien.setText(dinhDangTienTeChinh.format(hoaDon.getTongTien()));
 
-            if (daTra) {
+            if (daTra || daHoan) {
                 btThanhToanNgay.setVisible(false);
             }
         }
@@ -95,6 +107,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         nhanPhuongThuc = new javax.swing.JLabel();
         lblTongTien = new javax.swing.JLabel();
         nhanTongTien = new javax.swing.JLabel();
+        btIn = new javax.swing.JButton();
         btThanhToanNgay = new javax.swing.JButton();
         btDong = new javax.swing.JButton();
 
@@ -174,7 +187,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
                     .addComponent(lblNgayLap))
                 .addGap(20, 20, 20)
                 .addGroup(khungThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nhanPhong, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .addComponent(nhanPhong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanKhach, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanCCCD, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhanNgayLap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -244,7 +257,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         javax.swing.GroupLayout khungTienLayout = new javax.swing.GroupLayout(khungTien);
         khungTien.setLayout(khungTienLayout);
         khungTienLayout.setHorizontalGroup(
-            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            khungTienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(khungTienLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(khungTienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,7 +276,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
                 .addGap(15, 15, 15))
         );
         khungTienLayout.setVerticalGroup(
-            khungTieuDeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            khungTienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(khungTienLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(khungTienLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -288,10 +301,21 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
+        btIn.setBackground(new java.awt.Color(41, 128, 185));
+        btIn.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btIn.setForeground(new java.awt.Color(255, 255, 255));
+        btIn.setText("In hóa đơn");
+        btIn.setFocusPainted(false);
+        btIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btInActionPerformed(evt);
+            }
+        });
+
         btThanhToanNgay.setBackground(new java.awt.Color(39, 174, 96));
         btThanhToanNgay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btThanhToanNgay.setForeground(new java.awt.Color(255, 255, 255));
-        btThanhToanNgay.setText("Xác nhận thanh toán ngay");
+        btThanhToanNgay.setText("Xác nhận thanh toán");
         btThanhToanNgay.setFocusPainted(false);
         btThanhToanNgay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -299,7 +323,9 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
             }
         });
 
+        btDong.setBackground(new java.awt.Color(204, 0, 51));
         btDong.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btDong.setForeground(new java.awt.Color(255, 255, 255));
         btDong.setText("Đóng");
         btDong.setFocusPainted(false);
         btDong.addActionListener(new java.awt.event.ActionListener() {
@@ -317,9 +343,11 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
                 .addGap(25, 25, 25)
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addComponent(btThanhToanNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btIn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btThanhToanNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(khungThongTin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(khungTien, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(25, 25, 25))
@@ -335,7 +363,8 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btDong, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btThanhToanNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btThanhToanNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btIn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
 
@@ -357,6 +386,10 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_btDongActionPerformed
 
+    private void btInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInActionPerformed
+        inHoaDonThucTe(this, hoaDon, true);
+    }//GEN-LAST:event_btInActionPerformed
+
     private void btThanhToanNgayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThanhToanNgayActionPerformed
         if (hoaDon == null) return;
         int tepCauHinh = JOptionPane.showConfirmDialog(
@@ -375,6 +408,28 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btThanhToanNgayActionPerformed
 
+    public static void inHoaDonThucTe(Window doiTuongCha, HoaDon hoaDon, boolean coDongTrangThai) {
+        if (hoaDon == null) {
+            JOptionPane.showMessageDialog(doiTuongCha, "Không tìm thấy thông tin hóa đơn để in!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String noiDung = taoNoiDungHoaDon(hoaDon, coDongTrangThai);
+        JTextArea inArea = new JTextArea(noiDung);
+        inArea.setFont(new Font("Monospaced", Font.PLAIN, 10));
+
+        try {
+            MessageFormat header = new MessageFormat("HÓA ĐƠN #" + (hoaDon.getIdHoaDon() > 0 ? hoaDon.getIdHoaDon() : ""));
+            MessageFormat footer = new MessageFormat("- Trang {0} -");
+            boolean hoanTat = inArea.print(header, footer, true, null, null, true);
+            if (hoanTat) {
+                JOptionPane.showMessageDialog(doiTuongCha, "Đã gửi lệnh in hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (PrinterException ex) {
+            JOptionPane.showMessageDialog(doiTuongCha, "Không thể thực hiện in: " + ex.getMessage(), "Lỗi máy in", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void hienThiXemTruocHoaDon(Window doiTuongCha, HoaDon hoaDon) {
         if (hoaDon == null) {
             JOptionPane.showMessageDialog(doiTuongCha, "Không tìm thấy hóa đơn để xem.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -382,7 +437,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         }
 
         JDialog hopThoaiHoaDon = new JDialog(doiTuongCha, "Hóa đơn #" + hoaDon.getIdHoaDon(), Dialog.ModalityType.APPLICATION_MODAL);
-        hopThoaiHoaDon.setSize(460, 520);
+        hopThoaiHoaDon.setSize(460, 540);
         hopThoaiHoaDon.setLocationRelativeTo(doiTuongCha);
         hopThoaiHoaDon.setLayout(new java.awt.BorderLayout());
 
@@ -391,10 +446,14 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         oNhap.setEditable(false);
         oNhap.setMargin(new Insets(15, 20, 15, 20));
 
-        oNhap.setText(noiDungHoaDon(hoaDon));
+        oNhap.setText(taoNoiDungHoaDon(hoaDon, true));
         hopThoaiHoaDon.add(new JScrollPane(oNhap), java.awt.BorderLayout.CENTER);
 
         JPanel khungDuoi = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        JButton btInNgay = new JButton("In hóa đơn");
+        btInNgay.addActionListener(ac -> inHoaDonThucTe(hopThoaiHoaDon, hoaDon, true));
+        khungDuoi.add(btInNgay);
+
         JButton btDong = new JButton("Đóng");
         btDong.addActionListener(ac -> hopThoaiHoaDon.dispose());
         khungDuoi.add(btDong);
@@ -403,28 +462,49 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
         hopThoaiHoaDon.setVisible(true);
     }
 
-    private static String noiDungHoaDon(HoaDon hoaDon) {
+    public static String taoNoiDungHoaDon(HoaDon hoaDon, boolean coDongTrangThai) {
+        if (hoaDon == null) return "";
         DecimalFormat dinhDangTienTeChinh = new DecimalFormat("#,### đ");
         SimpleDateFormat dinhDangNgay = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         StringBuilder sb = new StringBuilder();
         sb.append("=========================================\n");
         sb.append("        HÓA ĐƠN THANH TOÁN KHÁCH SẠN     \n");
         sb.append("=========================================\n\n");
-        sb.append("Mã hóa đơn: #").append(hoaDon.getIdHoaDon()).append("\n");
-        sb.append("Thời gian: ").append(hoaDon.getNgayLap() != null ? dinhDangNgay.format(hoaDon.getNgayLap()) : "").append("\n");
-        sb.append("Khách hàng: ").append(hoaDon.getTenKhachHang()).append("\n");
-        sb.append("Số điện thoại: ").append(hoaDon.getSoDienThoai()).append("\n");
-        sb.append("CCCD: ").append(hoaDon.getSoCCCD()).append("\n");
-        sb.append("Phòng: ").append(hoaDon.getSoPhong()).append(" (").append(hoaDon.getTenLoaiPhong()).append(")\n\n");
+        sb.append("Mã hóa đơn:       #").append(hoaDon.getIdHoaDon() > 0 ? hoaDon.getIdHoaDon() : "").append("\n");
+        sb.append("Thời gian:        ").append(hoaDon.getNgayLap() != null ? dinhDangNgay.format(hoaDon.getNgayLap()) : dinhDangNgay.format(new java.util.Date())).append("\n");
+        sb.append("Khách hàng:       ").append(hoaDon.getTenKhachHang() != null ? hoaDon.getTenKhachHang() : "").append("\n");
+        sb.append("Số điện thoại:    ").append(hoaDon.getSoDienThoai() != null ? hoaDon.getSoDienThoai() : "").append("\n");
+        sb.append("CCCD:             ").append(hoaDon.getSoCCCD() != null ? hoaDon.getSoCCCD() : "").append("\n");
+        sb.append("Phòng:            ").append(hoaDon.getSoPhong() != null ? hoaDon.getSoPhong() : "");
+        if (hoaDon.getTenLoaiPhong() != null && !hoaDon.getTenLoaiPhong().isEmpty()) {
+            sb.append(" (").append(hoaDon.getTenLoaiPhong()).append(")");
+        }
+        sb.append("\n\n");
         sb.append("-----------------------------------------\n");
         sb.append("Tiền phòng:       ").append(dinhDangTienTeChinh.format(hoaDon.getTienPhong())).append("\n");
         sb.append("Phụ thu:          ").append(dinhDangTienTeChinh.format(hoaDon.getPhuThu())).append("\n");
         sb.append("Giảm giá:        -").append(dinhDangTienTeChinh.format(hoaDon.getGiamGia())).append("\n");
         sb.append("-----------------------------------------\n");
         sb.append("TỔNG TIỀN:        ").append(dinhDangTienTeChinh.format(hoaDon.getTongTien())).append("\n");
-        sb.append("Phương thức:      ").append(hoaDon.getPhuongThucThanhToan()).append("\n");
-        sb.append("Trạng thái:       ").append(hoaDon.getTrangThaiThanhToan()).append("\n\n");
-        sb.append("=========================================\n");
+        sb.append("Phương thức:      ").append(hoaDon.getPhuongThucThanhToan() != null ? hoaDon.getPhuongThucThanhToan() : "Tiền mặt").append("\n");
+        
+        if (coDongTrangThai) {
+            String tt = hoaDon.getTrangThaiThanhToan();
+            String ttHienThi = "Chưa thanh toán";
+            if (tt != null) {
+                String ttUpper = tt.trim().toUpperCase();
+                if (ttUpper.contains("PAID") || ttUpper.contains("ĐÃ THANH TOÁN")) {
+                    ttHienThi = "Đã thanh toán";
+                } else if (ttUpper.contains("REFUND") || ttUpper.contains("HOÀN TIỀN")) {
+                    ttHienThi = "Đã hoàn tiền";
+                } else {
+                    ttHienThi = "Chưa thanh toán";
+                }
+            }
+            sb.append("Trạng thái:       ").append(ttHienThi).append("\n");
+        }
+        
+        sb.append("\n=========================================\n");
         sb.append("        CẢM ƠN QUÝ KHÁCH & HẸN GẶP LẠI!  \n");
         sb.append("=========================================\n");
         return sb.toString();
@@ -436,6 +516,7 @@ public class DialogChiTietHoaDon extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btDong;
+    private javax.swing.JButton btIn;
     private javax.swing.JButton btThanhToanNgay;
     private javax.swing.JPanel khungChinh;
     private javax.swing.JPanel khungThongTin;

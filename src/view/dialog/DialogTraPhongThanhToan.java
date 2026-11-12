@@ -156,6 +156,7 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
         lblChungTien = new javax.swing.JLabel();
         nhanChungTien = new javax.swing.JLabel();
         nhanGhiChu = new javax.swing.JLabel();
+        btInHoaDon = new javax.swing.JButton();
         btHuy = new javax.swing.JButton();
         btXacNhan = new javax.swing.JButton();
 
@@ -317,6 +318,16 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
         nhanGhiChu.setForeground(new java.awt.Color(108, 117, 125));
         nhanGhiChu.setText("Lưu ý: Sau khi xác nhận thanh toán, phòng sẽ về trạng thái đang dọn.");
 
+        btInHoaDon.setBackground(new java.awt.Color(255, 255, 254));
+        btInHoaDon.setText("In hoá đơn");
+        btInHoaDon.setFocusPainted(false);
+        btInHoaDon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btInHoaDonActionPerformed(evt);
+            }
+        });
+
+        btHuy.setBackground(new java.awt.Color(255, 255, 254));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
@@ -361,10 +372,12 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
                                     .addComponent(oNhapGiamGia)
                                     .addComponent(hopChonPhuongThuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(nhanChungTien, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                    .addGroup(khungChinhLayout.createSequentialGroup()
-                                        .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(khungChinhLayout.createSequentialGroup()
+                                .addComponent(btInHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 15, Short.MAX_VALUE)))
                 .addGap(15, 15, 15))
         );
@@ -395,7 +408,8 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btXacNhan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btInHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
         );
 
@@ -416,6 +430,10 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
     private void btHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btHuyActionPerformed
         dispose();
     }//GEN-LAST:event_btHuyActionPerformed
+
+    private void btInHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInHoaDonActionPerformed
+        DialogChiTietHoaDon.inHoaDonThucTe(this, taoHoaDonThanhToan(), false);
+    }//GEN-LAST:event_btInHoaDonActionPerformed
 
     private void btXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXacNhanActionPerformed
         double phuThu = parseDoubleSafe(oNhapPhuThu.getText());
@@ -449,12 +467,18 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
             if (hoaDon == null) {
                 hoaDon = taoHoaDonThanhToan();
                 JOptionPane.showMessageDialog(this,
-                        "Thanh toán thành công, nhưng không tải được hóa đơn đã lưu. Hóa đơn tạm sẽ được hiển thị.",
+                        "Thanh toán thành công, nhưng không tải được hóa đơn đã lưu. Hóa đơn tạm sẽ được dùng để in.",
                         "Thông báo",
                         JOptionPane.WARNING_MESSAGE);
             }
-            DialogChiTietHoaDon.hienThiXemTruocHoaDon(this, hoaDon);
-            JOptionPane.showMessageDialog(this, "Trả phòng & thanh toán thành công. Phòng đã chuyển sang trạng thái đang dọn.");
+            int chonIn = JOptionPane.showConfirmDialog(this,
+                    "Trả phòng & thanh toán thành công!\nPhòng đã chuyển sang trạng thái đang dọn.\n\nBạn có muốn in hóa đơn ngay không?",
+                    "Thành công",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (chonIn == JOptionPane.YES_OPTION) {
+                DialogChiTietHoaDon.inHoaDonThucTe(this, hoaDon, false);
+            }
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Thao tác thất bại! Vui lòng kiểm tra lại kết nối CSDL.", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -467,6 +491,7 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btHuy;
+    private javax.swing.JButton btInHoaDon;
     private javax.swing.JButton btXacNhan;
     private javax.swing.JComboBox<String> hopChonPhuongThuc;
     private javax.swing.JPanel khungChinh;

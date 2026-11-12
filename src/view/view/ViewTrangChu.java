@@ -10,8 +10,10 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
@@ -182,8 +184,9 @@ public class ViewTrangChu extends JFrame {
 
     private void capNhatNutUserMenu() {
         if (btNguoiDungMenu != null && nguoiDungHienTai != null) {
-            String huyHieuVaiTro = nguoiDungHienTai.isAdmin() ? "ADMIN" : "STAFF";
-            btNguoiDungMenu.setText("  " + nguoiDungHienTai.getHoTen() + " (" + huyHieuVaiTro + ")  ");
+            String huyHieuVaiTro = nguoiDungHienTai.isAdmin() ? "Quản trị" : "Nhân viên";
+            btNguoiDungMenu.setText(huyHieuVaiTro);
+//            btNguoiDungMenu.setText("  " + nguoiDungHienTai.getHoTen() + " (" + huyHieuVaiTro + ")  ");
         }
     }
 
@@ -193,13 +196,27 @@ public class ViewTrangChu extends JFrame {
                 BorderFactory.createLineBorder(new Color(200, 205, 215), 1),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-        // Header thông tin
-        String chuoiVaiTro = nguoiDungHienTai.isAdmin() ? "Quản trị viên (ADMIN)" : "Nhân viên (STAFF)";
-        JMenuItem menuTieuDe = new JMenuItem("<html><b>" + nguoiDungHienTai.getHoTen() + "</b><br><font color='#666666'>@"
-                + nguoiDungHienTai.getTenDangNhap() + " • " + chuoiVaiTro + "</font></html>");
-        menuTieuDe.setEnabled(false);
-        menuTieuDe.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        menuBatLen.add(menuTieuDe);
+        // Header thông tin rõ nét, không làm mờ
+        String chuoiVaiTro = nguoiDungHienTai.isAdmin() ? "Quản trị" : "Nhân viên";
+        JPanel panelHeader = new JPanel(new BorderLayout(0, 3));
+        panelHeader.setOpaque(true);
+        panelHeader.setBackground(new Color(248, 250, 252));
+        panelHeader.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(226, 232, 240), 1),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)));
+
+        javax.swing.JLabel nhanTenHeader = new javax.swing.JLabel(nguoiDungHienTai.getHoTen());
+        nhanTenHeader.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        nhanTenHeader.setForeground(new Color(30, 41, 59));
+
+        javax.swing.JLabel nhanPhuHeader = new javax.swing.JLabel("@" + nguoiDungHienTai.getTenDangNhap() + " • " + chuoiVaiTro);
+        nhanPhuHeader.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        nhanPhuHeader.setForeground(new Color(71, 85, 105));
+
+        panelHeader.add(nhanTenHeader, BorderLayout.NORTH);
+        panelHeader.add(nhanPhuHeader, BorderLayout.SOUTH);
+
+        menuBatLen.add(panelHeader);
         menuBatLen.addSeparator();
 
         // 1. Xem thông tin tài khoản
@@ -211,7 +228,7 @@ public class ViewTrangChu extends JFrame {
 
         // 2. Quản lý tài khoản (cho ADMIN)
         if (nguoiDungHienTai.isAdmin()) {
-            JMenuItem menuQuanLyTaiKhoan = new JMenuItem(" Quản lý tài khoản (Admin)");
+            JMenuItem menuQuanLyTaiKhoan = new JMenuItem("  Quản lý tài khoản");
             menuQuanLyTaiKhoan.setFont(new Font("Segoe UI", Font.PLAIN, 13));
             menuQuanLyTaiKhoan.setCursor(new Cursor(Cursor.HAND_CURSOR));
             menuQuanLyTaiKhoan.addActionListener(ac -> moTabQuanLyTaiKhoan());

@@ -68,21 +68,23 @@ public class NguoiDungController {
         int nguoiDung    = 0;
 
         for (NguoiDung doiTuong : danhSach) {
-            if ("ADMIN".equalsIgnoreCase(doiTuong.getVaiTro())) quanTri++;
+            boolean laAdmin = doiTuong.isAdmin();
+            if (laAdmin) quanTri++;
             else nguoiDung++;
 
+            String vaiTroHienThi = laAdmin ? "Quản trị" : "Nhân viên";
             String trangThaiHienThi = doiTuong.isTrangThai() ? "Hoạt động" : "Đã khóa";
             viewQuanLyTaiKhoan.moHinh.addRow(new Object[]{
                 doiTuong.getIdNguoiDung(),
                 doiTuong.getTenDangNhap(),
                 doiTuong.getHoTen(),
-                doiTuong.getVaiTro(),
+                vaiTroHienThi,
                 trangThaiHienThi
             });
         }
 
         viewQuanLyTaiKhoan.nhanThongKe.setText(String.format(
-                "Tổng số: %d tài khoản  |  Admin: %d  |  Nhân viên: %d", chung, quanTri, nguoiDung));
+                "Tổng số: %d tài khoản  |  Quản trị: %d  |  Nhân viên: %d", chung, quanTri, nguoiDung));
 
         apDungBoLoc();
     }
@@ -112,7 +114,8 @@ public class NguoiDungController {
         }
 
         if (locVaiTro != null && !locVaiTro.equals("Tất cả vai trò")) {
-            cacBoLoc.add(RowFilter.regexFilter("(?i)^" + locVaiTro + "$", 3));
+            String bieuThuc = (locVaiTro.contains("Quản") || locVaiTro.equalsIgnoreCase("ADMIN")) ? "Quản trị|ADMIN" : "Nhân viên|STAFF";
+            cacBoLoc.add(RowFilter.regexFilter("(?i)(" + bieuThuc + ")", 3));
         }
 
         if (locTrangThai != null && !locTrangThai.equals("Tất cả trạng thái")) {

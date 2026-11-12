@@ -27,8 +27,11 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
             public Component getListCellRendererComponent(JList<?> danhSach, Object giaTri, int chiSo,
                                                           boolean dangChon, boolean oDangChon) {
                 super.getListCellRendererComponent(danhSach, giaTri, chiSo, dangChon, oDangChon);
-                if ("ADMIN".equals(giaTri)) setText("Quản trị viên (ADMIN)");
-                else setText("Nhân viên (STAFF)");
+                if (giaTri != null && (giaTri.toString().contains("Quản") || giaTri.toString().equalsIgnoreCase("ADMIN"))) {
+                    setText("Quản trị");
+                } else {
+                    setText("Nhân viên");
+                }
                 return this;
             }
         });
@@ -42,7 +45,7 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
 
             oNhapHoTen.setText(this.nguoiDung.getHoTen() != null ? this.nguoiDung.getHoTen() : "");
             oNhapTenDangNhap.setText(this.nguoiDung.getTenDangNhap() != null ? this.nguoiDung.getTenDangNhap() : "");
-            hopChonVaiTro.setSelectedItem("ADMIN".equalsIgnoreCase(this.nguoiDung.getVaiTro()) ? "ADMIN" : "STAFF");
+            hopChonVaiTro.setSelectedItem(this.nguoiDung.isAdmin() ? "Quản trị" : "Nhân viên");
             hopChonTrangThai.setSelectedIndex(this.nguoiDung.isTrangThai() ? 0 : 1);
         }
 
@@ -90,7 +93,6 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
         nhanTieuDe.setForeground(new java.awt.Color(255, 255, 255));
         nhanTieuDe.setText("TẠO TÀI KHOẢN MỚI");
 
-        nhanPhu.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         nhanPhu.setForeground(new java.awt.Color(220, 230, 242));
         nhanPhu.setText("Nhập thông tin đăng nhập và vai trò cho người dùng");
 
@@ -143,7 +145,7 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
         nhanVaiTro.setText("Vai trò:");
 
         hopChonVaiTro.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        hopChonVaiTro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "STAFF", "ADMIN" }));
+        hopChonVaiTro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân viên", "Quản trị" }));
 
         nhanTrangThai.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanTrangThai.setText("Trạng thái:");
@@ -151,7 +153,9 @@ public class DialogThemSuaTaiKhoan extends javax.swing.JDialog {
         hopChonTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         hopChonTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hoạt động", "Đã khóa" }));
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy bỏ");
         btHuy.setFocusPainted(false);
         btHuy.addActionListener(new java.awt.event.ActionListener() {

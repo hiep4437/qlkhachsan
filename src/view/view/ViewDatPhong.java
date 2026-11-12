@@ -175,6 +175,7 @@ public class ViewDatPhong extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        bang.setRowHeight(30);
         cuonPane.setViewportView(bang);
 
         btThem.setBackground(new java.awt.Color(13, 110, 253));
@@ -230,8 +231,8 @@ public class ViewDatPhong extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(nhanThongKe))
                     .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addComponent(btThem, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btThem, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btKiemTraIn, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btKiemTraOut, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,7 +242,7 @@ public class ViewDatPhong extends javax.swing.JFrame {
                         .addComponent(btHuyDat, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 80, Short.MAX_VALUE))
+                        .addGap(0, 66, Short.MAX_VALUE))
                     .addGroup(khungChinhLayout.createSequentialGroup()
                         .addComponent(nhanTim)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)

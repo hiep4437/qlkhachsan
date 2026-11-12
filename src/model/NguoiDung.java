@@ -71,7 +71,13 @@ public class NguoiDung {
 	}
 
 	public boolean isAdmin() {
-		return vaiTro != null && vaiTro.equalsIgnoreCase("ADMIN");
+		if (vaiTro == null) return false;
+		String vt = vaiTro.trim().toLowerCase();
+		return vt.equals("admin") || vt.equals("1") || vt.contains("quản trị") || vt.contains("quan tri");
+	}
+
+	public String getVaiTroHienThi() {
+		return isAdmin() ? "Quản trị" : "Nhân viên";
 	}
 
 	@Override

@@ -25,6 +25,7 @@ view\dialog\DialogTraPhongThanhToan$3.class
 view\dialog\DialogThemSuaHoaDon$2.class
 view\view\ViewQuanLyKhachHang.class
 view\view\ViewQuanLyTaiKhoan$2.class
+view\dialog\DialogCauHinhServer$2.class
 view\dialog\DialogThemSuaDatPhong$6.class
 view\dialog\DialogThemSuaPhong$4.class
 view\view\ViewQuanLyPhong$2.class
@@ -37,6 +38,7 @@ dao\DBConecter.class
 model\Phong.class
 view\view\ViewDatPhong.class
 view\view\ViewQuanLyTaiKhoan$3.class
+view\dialog\DialogCauHinhServer$1.class
 view\dialog\DialogThemSuaTaiKhoan.class
 view\view\ViewBaoCaoThongKe$2.class
 view\view\ViewHoaDon.class
@@ -46,8 +48,10 @@ service\NguoiDungService.class
 view\view\ViewQuanLyPhong$3.class
 view\dialog\DialogThemSuaPhong$3.class
 view\dialog\DialogThemSuaHoaDon$4.class
+view\dialog\DialogTraPhongThanhToan$5.class
 view\dialog\DialogThemSuaPhong$2.class
 view\dialog\DialogThemSuaDatPhong$1.class
+view\TableAlignment.class
 controller\HoaDonController.class
 dao\PhongDAO.class
 model\LoaiPhong.class
@@ -81,7 +85,9 @@ controller\StatisticController.class
 view\dialog\DialogChiTietHoaDon$2.class
 view\dialog\DialogThemSuaDatPhong.class
 dao\LoaiPhongDAO.class
+controller\HoaDonController$3.class
 view\dialog\DialogTraPhongThanhToan$2.class
+view\dialog\DialogCauHinhServer$4.class
 view\view\ViewHoaDon$3.class
 controller\HoaDonController$1.class
 view\view\ViewQuanLyKhachHang$3.class
@@ -95,6 +101,7 @@ controller\StatisticController$2.class
 view\dialog\DialogThemSuaKhachHang$1.class
 view\view\ViewBaoCaoThongKe$1.class
 view\dialog\DialogCapNhatTrangThaiPhong$1.class
+view\dialog\DialogChiTietHoaDon$3.class
 controller\KhachHangController$2.class
 view\view\ViewBaoCaoThongKe.class
 view\view\ViewHoaDon$4.class
@@ -105,6 +112,7 @@ controller\PhongController$1.class
 controller\DatPhongController$3.class
 dao\HoaDonDAO.class
 service\StatisticService.class
+view\dialog\DialogCauHinhServer$3.class
 view\dialog\DialogChiTietHoaDon.class
 controller\NguoiDungController.class
 view\view\PanelSoDoPhong.class
@@ -114,4 +122,5 @@ view\dialog\DialogTraPhongThanhToan$1.class
 view\dialog\DialogThemSuaKhachHang$2.class
 dao\KhachHangDAO.class
 view\AppIcon.class
+view\dialog\DialogCauHinhServer.class
 controller\StatisticController$3.class

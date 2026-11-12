@@ -48,10 +48,12 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         String loai = (phong.getTenLoaiPhong() != null && !phong.getTenLoaiPhong().isEmpty()) ? phong.getTenLoaiPhong() : "Tiêu chuẩn";
         nhanMoTa.setText("Loại: " + loai + "  |  Đơn giá: " + dinhDangTienTe.format(phong.getGiaMoiDem()) + "/đêm");
 
+        oNhapNgayNhan.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayNhan, "yyyy-MM-dd"));
+        oNhapNgayTra.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayTra, "yyyy-MM-dd"));
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
-        oNhapNgayNhan.setText(homNay.format(DINH_DANG_NGAY));
-        oNhapNgayTra.setText(ngayMai.format(DINH_DANG_NGAY));
+        oNhapNgayNhan.setValue(java.sql.Date.valueOf(homNay));
+        oNhapNgayTra.setValue(java.sql.Date.valueOf(ngayMai));
         oNhapGhiChu.setText("Khách đặt trực tiếp");
 
         int sucChua = Math.max(1, phong.getSucChua());
@@ -60,8 +62,8 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         capNhatTamTinh();
 
         // Lắng nghe đổi ngày để tính lại tiền
-        oNhapNgayNhan.addActionListener(e -> capNhatTamTinh());
-        oNhapNgayTra.addActionListener(e -> capNhatTamTinh());
+        oNhapNgayNhan.addChangeListener(e -> capNhatTamTinh());
+        oNhapNgayTra.addChangeListener(e -> capNhatTamTinh());
 
         btKiemTraCCCD.addActionListener(e -> kiemTraCCCD());
         btNhanPhong.addActionListener(e -> xuLyNhanPhong());
@@ -70,8 +72,10 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
 
     private void capNhatTamTinh() {
         try {
-            LocalDate ngNhan = LocalDate.parse(oNhapNgayNhan.getText().trim(), DINH_DANG_NGAY);
-            LocalDate ngTra = LocalDate.parse(oNhapNgayTra.getText().trim(), DINH_DANG_NGAY);
+            java.util.Date uNhan = (java.util.Date) oNhapNgayNhan.getValue();
+            java.util.Date uTra = (java.util.Date) oNhapNgayTra.getValue();
+            LocalDate ngNhan = new Date(uNhan.getTime()).toLocalDate();
+            LocalDate ngTra = new Date(uTra.getTime()).toLocalDate();
             long dem = ChronoUnit.DAYS.between(ngNhan, ngTra);
             if (dem <= 0) dem = 1;
             nhanTamTinh.setText(dinhDangTienTe.format(dem * phong.getGiaMoiDem()) + " (" + dem + " đêm)");
@@ -113,8 +117,10 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         Date ngayNhan;
         Date ngayTra;
         try {
-            ngayNhan = Date.valueOf(LocalDate.parse(oNhapNgayNhan.getText().trim(), DINH_DANG_NGAY));
-            ngayTra = Date.valueOf(LocalDate.parse(oNhapNgayTra.getText().trim(), DINH_DANG_NGAY));
+            java.util.Date uNhan = (java.util.Date) oNhapNgayNhan.getValue();
+            java.util.Date uTra = (java.util.Date) oNhapNgayTra.getValue();
+            ngayNhan = new Date(uNhan.getTime());
+            ngayTra = new Date(uTra.getTime());
             if (ngayNhan.toLocalDate().isBefore(LocalDate.now())) {
                 JOptionPane.showMessageDialog(this, "Ngày nhận phòng phải từ hôm nay trở đi!", "Ngày nhận không hợp lệ", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -124,7 +130,7 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
                 return;
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận và ngày trả hợp lệ (định dạng yyyy-MM-dd)!", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày nhận và ngày trả hợp lệ!", "Lỗi ngày tháng", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -187,9 +193,9 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         nhanDiaChi = new javax.swing.JLabel();
         oNhapDiaChi = new javax.swing.JTextField();
         nhanNgayNhan = new javax.swing.JLabel();
-        oNhapNgayNhan = new javax.swing.JTextField();
+        oNhapNgayNhan = new javax.swing.JSpinner();
         nhanNgayTra = new javax.swing.JLabel();
-        oNhapNgayTra = new javax.swing.JTextField();
+        oNhapNgayTra = new javax.swing.JSpinner();
         nhanSoNguoi = new javax.swing.JLabel();
         vongQuaySoNguoi = new javax.swing.JSpinner();
         nhanGhiChu = new javax.swing.JLabel();
@@ -262,11 +268,13 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         nhanNgayNhan.setText("Ngày nhận:");
 
         oNhapNgayNhan.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapNgayNhan.setModel(new javax.swing.SpinnerDateModel());
 
         nhanNgayTra.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanNgayTra.setText("Ngày trả:");
 
         oNhapNgayTra.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        oNhapNgayTra.setModel(new javax.swing.SpinnerDateModel());
 
         nhanSoNguoi.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         nhanSoNguoi.setText("Số người:");
@@ -291,7 +299,9 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
         btNhanPhong.setText("Nhận phòng");
         btNhanPhong.setFocusPainted(false);
 
+        btHuy.setBackground(new java.awt.Color(204, 0, 51));
         btHuy.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        btHuy.setForeground(new java.awt.Color(255, 255, 255));
         btHuy.setText("Hủy");
         btHuy.setFocusPainted(false);
 
@@ -301,38 +311,36 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
             khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(khungTieuDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(khungChinhLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(35, 35, 35)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanCCCD)
+                    .addComponent(nhanHoTen)
+                    .addComponent(nhanSDT)
+                    .addComponent(nhanDiaChi)
+                    .addComponent(nhanNgayNhan)
+                    .addComponent(nhanNgayTra)
+                    .addComponent(nhanSoNguoi)
+                    .addComponent(nhanGhiChu)
+                    .addComponent(nhanTamTinhTieuDe))
+                .addGap(20, 20, 20)
+                .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, khungChinhLayout.createSequentialGroup()
+                        .addComponent(oNhapCCCD, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btKiemTraCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(oNhapHoTen, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(oNhapSDT, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(oNhapDiaChi, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(oNhapNgayNhan, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(oNhapNgayTra, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(vongQuaySoNguoi, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(oNhapGhiChu, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nhanTamTinh, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(khungChinhLayout.createSequentialGroup()
                         .addComponent(btHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btNhanPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(khungChinhLayout.createSequentialGroup()
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nhanCCCD)
-                            .addComponent(nhanHoTen)
-                            .addComponent(nhanSDT)
-                            .addComponent(nhanDiaChi)
-                            .addComponent(nhanNgayNhan)
-                            .addComponent(nhanNgayTra)
-                            .addComponent(nhanSoNguoi)
-                            .addComponent(nhanGhiChu)
-                            .addComponent(nhanTamTinhTieuDe))
-                        .addGap(20, 20, 20)
-                        .addGroup(khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(khungChinhLayout.createSequentialGroup()
-                                .addComponent(oNhapCCCD, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btKiemTraCCCD, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(oNhapHoTen)
-                            .addComponent(oNhapSDT)
-                            .addComponent(oNhapDiaChi)
-                            .addComponent(oNhapNgayNhan)
-                            .addComponent(oNhapNgayTra)
-                            .addComponent(vongQuaySoNguoi)
-                            .addComponent(oNhapGhiChu)
-                            .addComponent(nhanTamTinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(25, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btNhanPhong, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         khungChinhLayout.setVerticalGroup(
             khungChinhLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -418,8 +426,8 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
     private javax.swing.JTextField oNhapDiaChi;
     private javax.swing.JTextField oNhapGhiChu;
     private javax.swing.JTextField oNhapHoTen;
-    private javax.swing.JTextField oNhapNgayNhan;
-    private javax.swing.JTextField oNhapNgayTra;
+    private javax.swing.JSpinner oNhapNgayNhan;
+    private javax.swing.JSpinner oNhapNgayTra;
     private javax.swing.JTextField oNhapSDT;
     private javax.swing.JSpinner vongQuaySoNguoi;
     // End of variables declaration//GEN-END:variables

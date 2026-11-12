@@ -42,6 +42,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import view.dialog.DialogCauHinhServer;
 
 /**
  *
@@ -127,9 +128,8 @@ public class ViewDangNhap extends javax.swing.JFrame {
         nhanThongBaoServer.setForeground(new java.awt.Color(100, 100, 100));
         nhanThongBaoServer.setText("CSDL: localhost:3306/hotel_management");
 
-        btCauHinhServer.setBackground(new java.awt.Color(102, 102, 102));
+        btCauHinhServer.setBackground(new java.awt.Color(255, 255, 254));
         btCauHinhServer.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        btCauHinhServer.setForeground(new java.awt.Color(255, 255, 255));
         btCauHinhServer.setText(" Cấu hình máy chủ");
         btCauHinhServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,121 +218,7 @@ public class ViewDangNhap extends javax.swing.JFrame {
     }
 
     public void hienThiDialogCauHinhServer() {
-        JDialog hopThoai = new JDialog(this, "Cấu hình kết nối máy chủ CSDL", true);
-        hopThoai.setSize(440, 320);
-        hopThoai.setLocationRelativeTo(this);
-        hopThoai.setLayout(new BorderLayout(10, 10));
-
-        JPanel khungBieuMau = new JPanel(new GridBagLayout());
-        khungBieuMau.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
-        GridBagConstraints gia = new GridBagConstraints();
-        gia.fill = GridBagConstraints.HORIZONTAL;
-        gia.insets = new Insets(6, 6, 6, 6);
-
-        JTextField oNhapMayChu = new JTextField(DBConecter.getHost(), 15);
-        JTextField oNhapCong = new JTextField(DBConecter.getPort(), 15);
-        JTextField oNhapCoSoDuLieu = new JTextField(DBConecter.getDatabase(), 15);
-        JTextField oNhapNguoiDung = new JTextField(DBConecter.getUser(), 15);
-        JPasswordField oNhapMatKhau = new JPasswordField(DBConecter.getPass(), 15);
-
-        gia.gridx = 0;
-        gia.gridy = 0;
-        khungBieuMau.add(new JLabel("Máy chủ (Host):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 0;
-        khungBieuMau.add(oNhapMayChu, gia);
-
-        gia.gridx = 0;
-        gia.gridy = 1;
-        khungBieuMau.add(new JLabel("Cổng (Port):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 1;
-        khungBieuMau.add(oNhapCong, gia);
-
-        gia.gridx = 0;
-        gia.gridy = 2;
-        khungBieuMau.add(new JLabel("Tên CSDL (Database):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 2;
-        khungBieuMau.add(oNhapCoSoDuLieu, gia);
-
-        gia.gridx = 0;
-        gia.gridy = 3;
-        khungBieuMau.add(new JLabel("Tài khoản (User):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 3;
-        khungBieuMau.add(oNhapNguoiDung, gia);
-
-        gia.gridx = 0;
-        gia.gridy = 4;
-        khungBieuMau.add(new JLabel("Mật khẩu (Password):"), gia);
-        gia.gridx = 1;
-        gia.gridy = 4;
-        khungBieuMau.add(oNhapMatKhau, gia);
-
-        JLabel nhanTrangThai = new JLabel(" ");
-        nhanTrangThai.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        nhanTrangThai.setHorizontalAlignment(SwingConstants.CENTER);
-
-        JPanel khungCacNut = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton btTest = new JButton("Kiểm tra kết nối");
-        JButton btLuu = new JButton("Lưu cấu hình");
-        JButton btMacDinh = new JButton("Mặc định");
-        JButton btHang = new JButton("Đóng");
-
-        khungCacNut.add(btTest);
-        khungCacNut.add(btLuu);
-        khungCacNut.add(btMacDinh);
-        khungCacNut.add(btHang);
-
-        btTest.addActionListener(ac -> {
-            String chuoiMatKhau = new String(oNhapMatKhau.getPassword());
-            nhanTrangThai.setText("Đang kiểm tra kết nối...");
-            nhanTrangThai.setForeground(Color.BLUE);
-            String loi = DBConecter.testConnection(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
-                    oNhapNguoiDung.getText(), chuoiMatKhau);
-            if (loi == null) {
-                nhanTrangThai.setText("Kết nối thành công tới CSDL MySQL!");
-                nhanTrangThai.setForeground(new Color(39, 174, 96));
-            } else {
-                nhanTrangThai.setText("Kết nối thất bại: " + loi);
-                nhanTrangThai.setForeground(new Color(192, 57, 43));
-            }
-        });
-
-        btLuu.addActionListener(ac -> {
-            String chuoiMatKhau = new String(oNhapMatKhau.getPassword());
-            boolean thanhCong = DBConecter.saveConfig(oNhapMayChu.getText(), oNhapCong.getText(), oNhapCoSoDuLieu.getText(),
-                    oNhapNguoiDung.getText(), chuoiMatKhau);
-            if (thanhCong) {
-                capNhatThongTinServer();
-                JOptionPane.showMessageDialog(hopThoai, "Đã lưu cấu hình máy chủ thành công!", "Thông báo",
-                        JOptionPane.INFORMATION_MESSAGE);
-                hopThoai.dispose();
-            } else {
-                JOptionPane.showMessageDialog(hopThoai, "Không thể lưu cấu hình!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        btMacDinh.addActionListener(ac -> {
-            oNhapMayChu.setText("localhost");
-            oNhapCong.setText("3306");
-            oNhapCoSoDuLieu.setText("hotel_management");
-            oNhapNguoiDung.setText("root");
-            oNhapMatKhau.setText("");
-            nhanTrangThai.setText("Đã khôi phục giá trị mặc định. Bấm 'Lưu cấu hình' để áp dụng.");
-            nhanTrangThai.setForeground(Color.DARK_GRAY);
-        });
-
-        btHang.addActionListener(ac -> hopThoai.dispose());
-
-        JPanel khungGiua = new JPanel(new BorderLayout());
-        khungGiua.add(khungBieuMau, BorderLayout.CENTER);
-        khungGiua.add(nhanTrangThai, BorderLayout.SOUTH);
-
-        hopThoai.add(khungGiua, BorderLayout.CENTER);
-        hopThoai.add(khungCacNut, BorderLayout.SOUTH);
-        hopThoai.setVisible(true);
+        new view.dialog.DialogCauHinhServer(this, this::capNhatThongTinServer).setVisible(true);
     }
 
     public String getTenDangNhap() {
