@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JLabel;
@@ -239,8 +240,8 @@ public class StatisticController {
         vungIn.setFont(new Font("Monospaced", Font.PLAIN, 11));
         try {
             boolean daIn = vungIn.print(
-                    new java.awt.print.MessageFormat("BÁO CÁO THỐNG KÊ DOANH THU  –  " + khoangNgay),
-                    new java.awt.print.MessageFormat("Trang {0}"),
+                    new MessageFormat("BÁO CÁO THỐNG KÊ DOANH THU  –  " + khoangNgay),
+                    new MessageFormat("Trang {0}"),
                     true,
                     null,
                     null,
