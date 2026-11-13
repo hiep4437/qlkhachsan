@@ -9,6 +9,7 @@ module hotel {
     exports dao;
     exports model;
     exports service;
+    exports view;
     exports view.view;
     exports view.dialog;
 }

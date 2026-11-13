@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
+import view.InputValidator;
 
 public class ViewBaoCaoThongKe extends JFrame {
 
@@ -29,6 +30,9 @@ public class ViewBaoCaoThongKe extends JFrame {
 
         oNhapTuNgay.setEditor(new javax.swing.JSpinner.DateEditor(oNhapTuNgay, "dd/MM/yyyy"));
         oNhapDenNgay.setEditor(new javax.swing.JSpinner.DateEditor(oNhapDenNgay, "dd/MM/yyyy"));
+        // Chỉ cho phép nhập số và ký tự đặc biệt ngày tháng
+        InputValidator.chiNhapNgayChoSpinner(oNhapTuNgay);
+        InputValidator.chiNhapNgayChoSpinner(oNhapDenNgay);
 
         hopChonKyBaoCao.addActionListener(ac -> capNhatTheoKyNhanh());
         // Lắng nghe thay đổi ngày khi người dùng đổi ngày
@@ -149,6 +153,7 @@ public class ViewBaoCaoThongKe extends JFrame {
         nhanDenNgay = new javax.swing.JLabel();
         oNhapDenNgay = new javax.swing.JSpinner();
         btLoc = new javax.swing.JButton();
+        btIn = new javax.swing.JButton();
         nhanThongKeKy = new javax.swing.JLabel();
         cacTabBaoCao = new javax.swing.JTabbedPane();
         theHoaDon = new javax.swing.JPanel();
@@ -287,6 +292,12 @@ public class ViewBaoCaoThongKe extends JFrame {
         btLoc.setText("Xem thống kê");
         btLoc.setFocusPainted(false);
 
+        btIn.setBackground(new java.awt.Color(39, 174, 96));
+        btIn.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btIn.setForeground(new java.awt.Color(255, 255, 255));
+        btIn.setText("🖨 In báo cáo");
+        btIn.setFocusPainted(false);
+
         nhanThongKeKy.setFont(new java.awt.Font("Segoe UI", 2, 13)); // NOI18N
         nhanThongKeKy.setForeground(new java.awt.Color(37, 99, 235));
         nhanThongKeKy.setText("Thực thu trong kỳ: 0 đ");
@@ -407,6 +418,8 @@ public class ViewBaoCaoThongKe extends JFrame {
                         .addComponent(oNhapDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(btIn, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(nhanThongKeKy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(20, 20, 20))
@@ -430,6 +443,7 @@ public class ViewBaoCaoThongKe extends JFrame {
                     .addComponent(nhanDenNgay)
                     .addComponent(oNhapDenNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btIn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nhanThongKeKy))
                 .addGap(18, 18, 18)
                 .addComponent(cacTabBaoCao)
@@ -453,6 +467,7 @@ public class ViewBaoCaoThongKe extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JTable bangHoaDon;
     public javax.swing.JTable bangPhong;
+    public javax.swing.JButton btIn;
     public javax.swing.JButton btLoc;
     private javax.swing.JTabbedPane cacTabBaoCao;
     private javax.swing.JScrollPane cuonPaneHoaDon;

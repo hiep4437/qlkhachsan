@@ -16,6 +16,7 @@ view\view\ViewTrangChu.class
 view\dialog\DialogThemSuaHoaDon.class
 controller\KhachHangController.class
 view\dialog\DialogThemSuaPhong.class
+view\InputValidator$2.class
 view\dialog\DialogThemSuaDatPhong$3.class
 view\dialog\DialogThemSuaKhachHang.class
 model\DatPhong.class
@@ -34,6 +35,7 @@ view\view\ViewDangNhap$3.class
 service\KhachHangService.class
 dao\NguoiDungDAO.class
 dao\ThongKeDAO$ThongKePhong.class
+view\InputValidator.class
 dao\DBConecter.class
 model\Phong.class
 view\view\ViewDatPhong.class
@@ -47,6 +49,7 @@ module-info.class
 service\NguoiDungService.class
 view\view\ViewQuanLyPhong$3.class
 view\dialog\DialogThemSuaPhong$3.class
+view\InputValidator$1.class
 view\dialog\DialogThemSuaHoaDon$4.class
 view\dialog\DialogTraPhongThanhToan$5.class
 view\dialog\DialogThemSuaPhong$2.class
@@ -60,6 +63,7 @@ view\view\ViewHoaDon$1.class
 view\dialog\DialogTraPhongThanhToan$4.class
 view\dialog\DialogThemSuaHoaDon$3.class
 controller\LoginController$1.class
+view\InputValidator$3.class
 view\dialog\DialogDatPhongNhanh.class
 model\NguoiDung.class
 view\view\ViewQuanLyTaiKhoan.class
@@ -101,6 +105,7 @@ controller\StatisticController$2.class
 view\dialog\DialogThemSuaKhachHang$1.class
 view\view\ViewBaoCaoThongKe$1.class
 view\dialog\DialogCapNhatTrangThaiPhong$1.class
+view\InputValidator$4.class
 view\dialog\DialogChiTietHoaDon$3.class
 controller\KhachHangController$2.class
 view\view\ViewBaoCaoThongKe.class

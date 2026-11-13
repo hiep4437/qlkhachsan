@@ -1,5 +1,5 @@
 package controller;
-
+// báo cáo thống kê
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableCellRenderer;
 import dao.ThongKeDAO;
 import service.StatisticService;
@@ -30,6 +31,7 @@ public class StatisticController {
         taiDuLieu();
 
         viewBaoCaoThongKe.btLoc.addActionListener(ac -> taiDuLieu());
+        viewBaoCaoThongKe.btIn.addActionListener(ac -> xuLyIn());
     }
 
     private void caiDatRenderers() {
@@ -167,5 +169,94 @@ public class StatisticController {
                     "Lỗi tải thống kê",
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void xuLyIn() {
+        // Xây dựng nội dung báo cáo dạng văn bản
+        StringBuilder sb = new StringBuilder();
+        String khoangNgay = viewBaoCaoThongKe.getTuNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                + " – " + viewBaoCaoThongKe.getDenNgay().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        sb.append("============================================================\n");
+        sb.append("        HỆ THỐNG QUẢN LÝ KHÁCH SẠN\n");
+        sb.append("        BÁO CÁO THỐNG KÊ DOANH THU\n");
+        sb.append("        Kỳ: ").append(khoangNgay).append("\n");
+        sb.append("============================================================\n\n");
+
+        // Tổng quan
+        sb.append("TỔNG QUAN\n");
+        sb.append("------------------------------------------------------------\n");
+        sb.append(String.format("  %-30s %s\n", "Doanh thu kỳ:", viewBaoCaoThongKe.nhanGiaTriChungDoanhThu.getText()));
+        sb.append(String.format("  %-30s %s hóa đơn\n", "Hóa đơn đã thu:", viewBaoCaoThongKe.nhanGiaTriDoanhThuThang.getText()));
+        sb.append(String.format("  %-30s %s\n", "Lượt thuê phòng:", viewBaoCaoThongKe.nhanGiaTriDoanhThuNgay.getText()));
+        sb.append("\n");
+
+        // Bảng thống kê hóa đơn
+        sb.append("THỐNG KÊ DOANH THU CHI TIẾT\n");
+        sb.append("------------------------------------------------------------\n");
+        javax.swing.table.TableModel moHinhHD = viewBaoCaoThongKe.bangHoaDon.getModel();
+        // Header
+        sb.append(String.format("%-6s %-20s %-6s %-18s %-12s %-14s %-12s\n",
+                "MãHĐ", "Thời gian", "Phòng", "Khách hàng", "Tiền phòng", "Thực thu", "Thanh toán"));
+        sb.append("    ").append("-".repeat(90)).append("\n");
+        for (int i = 0; i < moHinhHD.getRowCount(); i++) {
+            sb.append(String.format("%-6s %-20s %-6s %-18s %-12s %-14s %-12s\n",
+                    obj(moHinhHD.getValueAt(i, 0)),   // Mã HĐ
+                    obj(moHinhHD.getValueAt(i, 1)),   // Thời gian
+                    obj(moHinhHD.getValueAt(i, 2)),   // Phòng
+                    obj(moHinhHD.getValueAt(i, 3)),   // Khách hàng
+                    obj(moHinhHD.getValueAt(i, 5)),   // Tiền phòng
+                    obj(moHinhHD.getValueAt(i, 8)),   // Thực thu
+                    obj(moHinhHD.getValueAt(i, 9))    // Thanh toán
+            ));
+        }
+        sb.append("\n");
+
+        // Bảng thống kê theo phòng
+        sb.append("TỈ LỆ THUÊ PHÒNG\n");
+        sb.append("------------------------------------------------------------\n");
+        javax.swing.table.TableModel moHinhPhong = viewBaoCaoThongKe.bangPhong.getModel();
+        sb.append(String.format("%-8s %-20s %-8s %-12s %-16s %-8s\n",
+                "Phòng", "Loại phòng", "Tầng", "Lượt thuê", "Doanh thu", "Tỷ trọng"));
+        sb.append("    ").append("-".repeat(74)).append("\n");
+        for (int i = 0; i < moHinhPhong.getRowCount(); i++) {
+            sb.append(String.format("%-8s %-20s %-8s %-12s %-16s %-8s\n",
+                    obj(moHinhPhong.getValueAt(i, 0)),
+                    obj(moHinhPhong.getValueAt(i, 1)),
+                    obj(moHinhPhong.getValueAt(i, 2)),
+                    obj(moHinhPhong.getValueAt(i, 3)),
+                    obj(moHinhPhong.getValueAt(i, 4)),
+                    obj(moHinhPhong.getValueAt(i, 5))
+            ));
+        }
+        sb.append("\n");
+        sb.append("============================================================\n");
+        sb.append("  ").append(viewBaoCaoThongKe.nhanThongKeKy.getText()).append("\n");
+        sb.append("============================================================\n");
+
+        // In thật bằng JTextArea.print()
+        JTextArea vungIn = new JTextArea(sb.toString());
+        vungIn.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        try {
+            boolean daIn = vungIn.print(
+                    new java.awt.print.MessageFormat("BÁO CÁO THỐNG KÊ DOANH THU  –  " + khoangNgay),
+                    new java.awt.print.MessageFormat("Trang {0}"),
+                    true,
+                    null,
+                    null,
+                    true
+            );
+            if (daIn) {
+                JOptionPane.showMessageDialog(viewBaoCaoThongKe,
+                        "In báo cáo thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (java.awt.print.PrinterException ex) {
+            JOptionPane.showMessageDialog(viewBaoCaoThongKe,
+                    "Lỗi khi in: " + ex.getMessage(), "Lỗi in", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private String obj(Object o) {
+        return o != null ? o.toString() : "";
     }
 }

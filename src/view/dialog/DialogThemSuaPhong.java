@@ -9,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import model.LoaiPhong;
 import model.Phong;
+import view.InputValidator;
 
 public class DialogThemSuaPhong extends javax.swing.JDialog {
 
@@ -20,6 +21,8 @@ public class DialogThemSuaPhong extends javax.swing.JDialog {
                 ModalityType.APPLICATION_MODAL);
         initComponents();
         view.AppIcon.apply(this);
+        // Chỉ cho phép nhập số vào ô giá mỗi đêm
+        InputValidator.chiNhapGiaTien(oNhapGiaMoiDem);
         this.phong = phongCanSua != null ? phongCanSua : new Phong();
         boolean dangSua = (phongCanSua != null && phongCanSua.getMaPhong() > 0);
 

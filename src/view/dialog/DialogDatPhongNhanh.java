@@ -17,6 +17,7 @@ import model.KhachHang;
 import model.Phong;
 import service.DatPhongService;
 import service.KhachHangService;
+import view.InputValidator;
 
 public class DialogDatPhongNhanh extends javax.swing.JDialog {
 
@@ -36,6 +37,9 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
 
         initComponents();
         view.AppIcon.apply(this);
+        // Chỉ cho phép nhập số vào ô SĐT và CCCD
+        InputValidator.chiNhapSoVaGioiHan(oNhapSDT, 11);
+        InputValidator.chiNhapSoVaGioiHan(oNhapCCCD, 12);
 
         khoiTaoDuLieu();
         setLocationRelativeTo(cha);
@@ -50,6 +54,11 @@ public class DialogDatPhongNhanh extends javax.swing.JDialog {
 
         oNhapNgayNhan.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayNhan, "yyyy-MM-dd"));
         oNhapNgayTra.setEditor(new javax.swing.JSpinner.DateEditor(oNhapNgayTra, "yyyy-MM-dd"));
+        // Chỉ cho phép nhập số và ký tự đặc biệt ngày tháng
+        InputValidator.chiNhapNgayChoSpinner(oNhapNgayNhan);
+        InputValidator.chiNhapNgayChoSpinner(oNhapNgayTra);
+        // Chỉ cho phép nhập số vào ô số người
+        InputValidator.chiNhapSoChoSpinner(vongQuaySoNguoi);
         LocalDate homNay = LocalDate.now();
         LocalDate ngayMai = homNay.plusDays(1);
         oNhapNgayNhan.setValue(java.sql.Date.valueOf(homNay));

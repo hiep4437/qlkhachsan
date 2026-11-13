@@ -3,6 +3,7 @@ package view.dialog;
 import java.awt.Window;
 import javax.swing.JOptionPane;
 import model.KhachHang;
+import view.InputValidator;
 
 public class DialogThemSuaKhachHang extends javax.swing.JDialog {
 
@@ -14,6 +15,9 @@ public class DialogThemSuaKhachHang extends javax.swing.JDialog {
                 ModalityType.APPLICATION_MODAL);
         initComponents();
         view.AppIcon.apply(this);
+        // Chỉ cho phép nhập số vào ô SĐT và CCCD
+        InputValidator.chiNhapSoVaGioiHan(oNhapSDT, 11);
+        InputValidator.chiNhapSoVaGioiHan(oNhapCCCD, 12);
         this.khachHang = khachHangCanSua != null ? khachHangCanSua : new KhachHang();
         boolean dangSua = (khachHangCanSua != null && khachHangCanSua.getIdKhachHang() > 0);
         if (dangSua) {

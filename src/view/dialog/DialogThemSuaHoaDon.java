@@ -9,6 +9,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import model.HoaDon;
+import view.InputValidator;
 
 public class DialogThemSuaHoaDon extends javax.swing.JDialog {
 
@@ -21,6 +22,11 @@ public class DialogThemSuaHoaDon extends javax.swing.JDialog {
                 ModalityType.APPLICATION_MODAL);
         initComponents();
         view.AppIcon.apply(this);
+        // Chỉ cho phép nhập số vào các ô giá tiền
+        InputValidator.chiNhapGiaTien(oNhapTienPhong);
+        InputValidator.chiNhapGiaTien(oNhapPhuThu);
+        InputValidator.chiNhapGiaTien(oNhapGiamGia);
+        InputValidator.chiNhapSo(oNhapMaDatPhong);
         this.hoaDon = hoaDonCanSua != null ? hoaDonCanSua : new HoaDon();
         boolean dangSua = (hoaDonCanSua != null && hoaDonCanSua.getIdHoaDon() > 0);
 

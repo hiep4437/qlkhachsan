@@ -11,6 +11,7 @@ import model.DatPhong;
 import model.HoaDon;
 import service.DatPhongService;
 import service.HoaDonService;
+import view.InputValidator;
 
 public class DialogTraPhongThanhToan extends javax.swing.JDialog {
 
@@ -27,6 +28,9 @@ public class DialogTraPhongThanhToan extends javax.swing.JDialog {
         super(doiTuongCha, "Trả phòng & Xuất hóa đơn thanh toán", ModalityType.APPLICATION_MODAL);
         initComponents();
         view.AppIcon.apply(this);
+        // Chỉ cho phép nhập số vào ô phụ thu, giảm giá
+        InputValidator.chiNhapGiaTien(oNhapPhuThu);
+        InputValidator.chiNhapGiaTien(oNhapGiamGia);
         this.datPhong = nut;
 
         if (datPhong != null) {
